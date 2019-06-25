@@ -1,0 +1,29 @@
+{
+  "name": "subscription-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiny-organics/subscription-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiny-organics/subscription-app/issues"
+  },
+  "homepage": "https://github.com/tiny-organics/subscription-app#readme",
+  "dependencies": {
+    "next": "^8.1.0",
+    "ngrok": "^3.2.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}
