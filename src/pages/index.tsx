@@ -1,13 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
+import Layout from '../components/Layout';
 
 const Index = () => (
-  <div>
+  <Layout>
     <p>Sample app using React and Next.js</p>
     <Link href='/antd'>
       <a>Ant Design</a>
     </Link>
-  </div>
+  </Layout>
 );
 
 export default Index;

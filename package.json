@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node server.js",
+    "dev": "next ./src",
     "build": "next build ./src",
     "lint": "tslint \"src/**/*.{ts,tsx}\"",
     "prettier": "find ./src -type f | xargs prettier --write",
-    "start": "next start"
+    "start": "NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",
@@ -51,5 +51,7 @@
     "tslint": "^5.18.0",
     "typescript": "^3.5.2"
   },
-  "pre-commit": ["lint"]
+  "pre-commit": [
+    "lint"
+  ]
 }

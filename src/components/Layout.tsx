@@ -2,7 +2,12 @@ import Head from 'next/head';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 
-export default ({ title, children }) => (
+interface IProps {
+  title?: string;
+  children: any;
+}
+
+export default ({ title, children }: IProps) => (
   <div>
     <Head>
       <title>{title}</title>
@@ -10,7 +15,7 @@ export default ({ title, children }) => (
       <meta charSet='utf-8' />
       <link
         rel='stylesheet'
-        href='//cdnjs.cloudflare.com/ajax/libs/antd/3.2.0/antd.min.css'
+        href='//cdnjs.cloudflare.com/ajax/libs/antd/3.19.0/antd.min.css'
       />
     </Head>
     <style jsx global>{`
