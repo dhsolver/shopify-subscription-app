@@ -16,7 +16,6 @@ const app = next({dev, dir: 'src'});
 const handle = app.getRequestHandler();
 
 const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, SHOPIFY_STOREFRONT_KEY } = process.env;
-console.log(process.env);
 
 const client = Client.buildClient({
   storefrontAccessToken: SHOPIFY_STOREFRONT_KEY,

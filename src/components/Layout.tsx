@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export default ({ title, children }: IProps) => (
-  <div>
+  <div style={{background: '#faf6f0', height: '100%', width: '100%'}}>
     <Head>
       <title>{title}</title>
       <meta name='viewport' content='width=device-width, initial-scale=1' />

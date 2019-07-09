@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "next ./src",
     "build": "next build ./src",
+    "dev": "node server.js",
     "lint": "tslint \"src/**/*.{ts,tsx}\"",
+    "heroku-postbuild": "next build ./src",
+    "postinstall": "npm run build",
     "prettier": "find ./src -type f | xargs prettier --write",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": "8.11.3"
@@ -27,6 +29,7 @@
   "homepage": "https://github.com/tiny-organics/subscription-app#readme",
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.1.29",
+    "@zeit/next-typescript": "^1.1.1",
     "antd": "^3.19.8",
     "dotenv": "^8.0.0",
     "isomorphic-fetch": "^2.2.1",
@@ -48,7 +51,6 @@
     "@types/react-dom": "^16.8.4",
     "@types/react-intl": "^2.3.18",
     "@types/styled-jsx": "^2.2.8",
-    "@zeit/next-typescript": "^1.1.1",
     "babel-plugin-import": "^1.12.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.18.2",
