@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const mobxReact = require('mobx-react');
 const { verifyRequest } = require('@shopify/koa-shopify-auth');
 const session = require('koa-session');
+const Client = require('shopify-buy');
 
 dotenv.config();
 
@@ -14,7 +15,13 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({dev, dir: 'src'});
 const handle = app.getRequestHandler();
 
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
+const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, SHOPIFY_STOREFRONT_KEY } = process.env;
+console.log(process.env);
+
+const client = Client.buildClient({
+  storefrontAccessToken: SHOPIFY_STOREFRONT_KEY,
+  domain: 'tiny-organics.myshopify.com'
+});
 
 mobxReact.useStaticRendering(true);
 
@@ -23,20 +30,20 @@ app.prepare().then(() => {
   server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
 
-  server.use(
-    createShopifyAuth({
-      apiKey: SHOPIFY_API_KEY,
-      secret: SHOPIFY_API_SECRET_KEY,
-      scopes: ['read_products'],
-      afterAuth(ctx) {
-        const { shop, accessToken } = ctx.session;
+  // server.use(
+  //   createShopifyAuth({
+  //     apiKey: SHOPIFY_API_KEY,
+  //     secret: SHOPIFY_API_SECRET_KEY,
+  //     scopes: ['read_products'],
+  //     afterAuth(ctx) {
+  //       const { shop, accessToken } = ctx.session;
+  //
+  //       ctx.redirect('/');
+  //     },
+  //   }),
+  // );
 
-        ctx.redirect('/');
-      },
-    }),
-  );
-
-  server.use(verifyRequest());
+  // server.use(verifyRequest());
   server.use(async (ctx) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;

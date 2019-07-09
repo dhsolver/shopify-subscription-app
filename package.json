@@ -11,6 +11,9 @@
     "prettier": "find ./src -type f | xargs prettier --write",
     "start": "NODE_ENV=production node server.js"
   },
+  "engines": {
+    "node": "8.11.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tiny-organics/subscription-app.git"
@@ -34,7 +37,8 @@
     "next": "^8.1.0",
     "ngrok": "^3.2.1",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "shopify-buy": "^2.6.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.4.4",
