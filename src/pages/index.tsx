@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import autoBindMethods from 'class-autobind-decorator';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import { FormModal } from '@mighty-justice/fields-ant';
@@ -33,6 +34,7 @@ const fieldSets = [
   },
 ];
 
+@autoBindMethods
 @observer
 class Index extends Component <{}> {
   @observable private isVisible = new SmartBool();
@@ -58,7 +60,7 @@ class Index extends Component <{}> {
           isVisible={this.isVisible}
           model={{}}
           onSave={this.onSave}
-          title='Set Law Firm Contact'
+          title={'Let\'s fill out a form'}
         />
         {this.submittedData && Object.keys(this.submittedData).map(key => (
           <p>

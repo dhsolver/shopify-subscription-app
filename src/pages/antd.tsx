@@ -6,7 +6,7 @@ import Demo from '../components/Demo';
 export default () => (
   <Layout title='Ant Design Page!'>
     <p>Page with typescript and ant design!</p>
-    <Demo/>
+    <Demo />
     <Link href='/'>
       <a>index</a>
     </Link>

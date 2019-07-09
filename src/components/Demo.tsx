@@ -1,13 +1,14 @@
 import React from 'react';
-import { Card, Descriptions, Radio } from 'antd';
+import { Card, Descriptions, message, Radio } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
+import Button from './common/Button';
 
 @observer
 class Demo extends React.Component <{}> {
   @observable private data: any = [];
-  private state = {
+  public state = {
     size: 'default',
   };
 
@@ -19,6 +20,10 @@ class Demo extends React.Component <{}> {
   private onChange = (e: any) => {
     const size: 'default' | 'middle' | 'small' = e.target.value;
     this.setState({ size });
+  }
+
+  private onProductSelect (a: any) {
+    message.success(`Success! You\'ve added ${a.currentTarget.value} to your cart!`);
   }
 
   public render () {
@@ -52,16 +57,20 @@ class Demo extends React.Component <{}> {
             Region: East China 1<br />
           </Descriptions.Item>
         </Descriptions>
-        <p>
+        <br />
+        <div>
           {this.data.map((datum: any) => (
             <>
               <Card key={datum.id} title={datum.title}>
+                <Button type='primary' value={datum.title} onClick={this.onProductSelect}>Add to cart</Button>
+                <br/>
+                <br/>
                 <p >{datum.description}</p>
               </Card>
               <br/>
             </>
           ))}
-        </p>
+        </div>
       </div>
     );
   }
