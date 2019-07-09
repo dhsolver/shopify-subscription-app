@@ -11,26 +11,26 @@ import Button from '../components/common/Button';
 const fieldSets = [
   {
     fields: [
-      {field: 'response_plum_gold'},
-      {field: 'innovate_adp_implementation'},
-      {field: 'principal_overriding_synergies'},
+      {field: 'child_first_name', label: 'First Name'},
+      {field: 'child_last_name', label: 'Last Name'},
+      {field: 'birthdate', type: 'date'},
     ],
-    legend: 'One',
+    legend: 'About your little one',
   },
   {
     fields: [
-      {field: 'blue_pants_dynamic'},
-      {field: 'program_dynamic_checking_account'},
-      {field: 'backing_up_enable_dynamic'},
+      {field: 'parent_first_name', label: 'First Name'},
+      {field: 'parent_last_name', label: 'Last Name'},
+      {field: 'phone_number', type: 'phone'},
+      {field: 'email'},
     ],
-    legend: 'Two',
+    legend: 'About you',
   },
   {
     fields: [
-      {field: 'copy_invoice_crossplatform'},
-      {field: 'orchestrate_frictionless_bleedingedge'},
-      {field: 'cambridgeshire_norway_metal'}],
-    legend: 'Three',
+      {field: 'delivery_date', type: 'datepicker'},
+    ],
+    legend: 'About your order',
   },
 ];
 
