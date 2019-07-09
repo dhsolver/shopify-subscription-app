@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
+import '../public/assets/styles/app.css';
 
 interface IProps {
   title?: string;

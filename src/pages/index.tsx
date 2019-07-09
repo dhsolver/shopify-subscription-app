@@ -4,9 +4,9 @@ import Layout from '../components/Layout';
 
 const Index = () => (
   <Layout>
-    <p>Sample app using React and Next.js</p>
+    <h2>Hello World</h2>
     <Link href='/antd'>
-      <a>Ant Design</a>
+      <a>Ant Design Page</a>
     </Link>
   </Layout>
 );

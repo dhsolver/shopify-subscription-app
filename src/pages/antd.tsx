@@ -5,7 +5,7 @@ import Demo from '../components/Demo';
 
 export default () => (
   <Layout title='Ant Design Page!'>
-    <p>Welcome to next.js!</p>
+    <p>Page with typescript and ant design!</p>
     <Demo/>
     <Link href='/'>
       <a>index</a>

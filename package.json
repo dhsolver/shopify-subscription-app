@@ -29,6 +29,7 @@
   "homepage": "https://github.com/tiny-organics/subscription-app#readme",
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.1.29",
+    "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "antd": "^3.19.8",
     "dotenv": "^8.0.0",
