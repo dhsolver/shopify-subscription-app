@@ -1,10 +1,20 @@
 import React from 'react';
-import { Descriptions, Radio } from 'antd';
+import { Card, Descriptions, Radio } from 'antd';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import Axios from 'axios';
 
+@observer
 class Demo extends React.Component <{}> {
+  @observable private data: any = [];
   private state = {
     size: 'default',
   };
+
+  public async componentDidMount (): void {
+    const response = await Axios.get('/a');
+    this.data = response.data;
+  }
 
   private onChange = (e: any) => {
     const size: 'default' | 'middle' | 'small' = e.target.value;
@@ -42,6 +52,16 @@ class Demo extends React.Component <{}> {
             Region: East China 1<br />
           </Descriptions.Item>
         </Descriptions>
+        <p>
+          {this.data.map((datum: any) => (
+            <>
+              <Card key={datum.id} title={datum.title}>
+                <p >{datum.description}</p>
+              </Card>
+              <br/>
+            </>
+          ))}
+        </p>
       </div>
     );
   }

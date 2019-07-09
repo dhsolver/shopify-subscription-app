@@ -1,12 +1,12 @@
 require('isomorphic-fetch');
 const Koa = require('koa');
+const { createServer } = require('http');
 const next = require('next');
-const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
 const dotenv = require('dotenv');
 const mobxReact = require('mobx-react');
-const { verifyRequest } = require('@shopify/koa-shopify-auth');
-const session = require('koa-session');
 const Client = require('shopify-buy');
+const { parse } = require('url')
+
 
 dotenv.config();
 
@@ -26,31 +26,24 @@ mobxReact.useStaticRendering(true);
 
 app.prepare().then(() => {
   const server = new Koa();
-  server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
 
-  // server.use(
-  //   createShopifyAuth({
-  //     apiKey: SHOPIFY_API_KEY,
-  //     secret: SHOPIFY_API_SECRET_KEY,
-  //     scopes: ['read_products'],
-  //     afterAuth(ctx) {
-  //       const { shop, accessToken } = ctx.session;
-  //
-  //       ctx.redirect('/');
-  //     },
-  //   }),
-  // );
+  createServer(async (req, res) => {
+    // Be sure to pass `true` as the second argument to `url.parse`.
+    // This tells it to parse the query portion of the URL.
+    const parsedUrl = parse(req.url, true)
+      , { pathname, query } = parsedUrl
 
-  // server.use(verifyRequest());
-  server.use(async (ctx) => {
-    await handle(ctx.req, ctx.res);
-    ctx.respond = false;
-    ctx.res.statusCode = 200;
-    return
-  });
+    if (pathname === '/a') {
+      const response = await client.product.fetchAll();
+      res.end(JSON.stringify(response))
 
-  server.listen(port, () => {
+    } else if (pathname === '/b') {
+      app.render(req, res, '/a', query)
+    } else {
+      handle(req, res, parsedUrl)
+    }
+  }).listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });

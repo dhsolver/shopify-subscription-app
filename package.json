@@ -8,7 +8,6 @@
     "dev": "node server.js",
     "lint": "tslint \"src/**/*.{ts,tsx}\"",
     "heroku-postbuild": "next build ./src",
-    "postinstall": "npm run build",
     "prettier": "find ./src -type f | xargs prettier --write",
     "start": "NODE_ENV=production node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,9 +31,12 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "antd": "^3.19.8",
+    "axios": "^0.19.0",
     "dotenv": "^8.0.0",
     "isomorphic-fetch": "^2.2.1",
     "koa": "^2.7.0",
+    "koa-response-handler": "^2.1.0",
+    "koa-router": "^7.4.0",
     "koa-session": "^5.12.0",
     "mobx": "^5.10.1",
     "mobx-react": "^6.1.1",
@@ -45,6 +47,7 @@
     "shopify-buy": "^2.6.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@mighty-justice/tslint-config": "^0.3.0",
     "@types/next": "^8.0.5",
