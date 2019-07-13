@@ -4,6 +4,11 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
 import Button from './common/Button';
+import Carousel from './common/Carousel';
+import Switch from './common/Switch';
+import Tabs from './common/Tabs';
+import Steps from './common/Steps';
+import ItemSelector from './ItemSelector';
 
 @observer
 class Demo extends React.Component <{}> {
@@ -24,6 +29,10 @@ class Demo extends React.Component <{}> {
 
   private onProductSelect (a: any) {
     message.success(`Success! You\'ve added ${a.currentTarget.value} to your cart!`);
+  }
+
+  private onSwitchChange (checked: boolean) {
+   // console.log(`switch to ${checked}`);
   }
 
   public render () {
@@ -57,6 +66,22 @@ class Demo extends React.Component <{}> {
             Region: East China 1<br />
           </Descriptions.Item>
         </Descriptions>
+
+        <br/>
+
+        <Carousel />
+
+        <Switch onChange={this.onSwitchChange} />
+
+        <Tabs />
+
+        <Steps/>
+
+        <ItemSelector
+          name='Coconut Curry'
+          description='We love coconut curry'
+        />
+
         <br />
         <div>
           {this.data.map((datum: any) => (
