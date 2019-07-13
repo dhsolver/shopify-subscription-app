@@ -6,19 +6,23 @@ import Button from './Button';
 
 const referralLink = 'https://some.link?id=123q0w98rysd0h';
 
+if (typeof window === 'undefined') {
+    global.window = {};
+}
+
 @autoBindMethods
 @observer
 class ReferralLink extends Component <{}> {
   private input: any;
   private onCopy (e) {
     this.input.select();
-    document.execCommand('copy');
+    window.document.execCommand('copy');
     e.target.focus();
     message.success('Copied!');
   }
 
   public renderCopyButton () {
-    if (!document.queryCommandSupported('copy')) { return null; }
+    if (!window.document || !window.document.queryCommandSupported('copy')) { return null; }
     return (
       <Button onClick={this.onCopy}>
         Copy
