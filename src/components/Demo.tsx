@@ -10,7 +10,8 @@ import Tabs from './common/Tabs';
 import Steps from './common/Steps';
 import ItemSelector from './ItemSelector';
 import SubscriptionSelector from './SubscriptionSelector';
-import ReferralLink from './common/ReferralLink';
+import dynamic from 'next/dynamic';
+const ReferralLink = dynamic(import ('./common/ReferralLink'), { ssr: false });
 
 @observer
 class Demo extends React.Component <{}> {

@@ -5,8 +5,7 @@ const next = require('next');
 const dotenv = require('dotenv');
 const mobxReact = require('mobx-react');
 const Client = require('shopify-buy');
-const { parse } = require('url')
-
+const { parse } = require('url');
 
 dotenv.config();
 
