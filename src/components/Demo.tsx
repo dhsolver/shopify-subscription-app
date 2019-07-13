@@ -10,6 +10,7 @@ import Tabs from './common/Tabs';
 import Steps from './common/Steps';
 import ItemSelector from './ItemSelector';
 import SubscriptionSelector from './SubscriptionSelector';
+import ReferralLink from './common/ReferralLink';
 
 @observer
 class Demo extends React.Component <{}> {
@@ -84,6 +85,8 @@ class Demo extends React.Component <{}> {
         />
 
         <SubscriptionSelector />
+
+        <ReferralLink />
 
         <br />
         <div>
