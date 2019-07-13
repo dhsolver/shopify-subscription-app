@@ -9,6 +9,7 @@ import Switch from './common/Switch';
 import Tabs from './common/Tabs';
 import Steps from './common/Steps';
 import ItemSelector from './ItemSelector';
+import SubscriptionSelector from './SubscriptionSelector';
 
 @observer
 class Demo extends React.Component <{}> {
@@ -81,6 +82,8 @@ class Demo extends React.Component <{}> {
           name='Coconut Curry'
           description='We love coconut curry'
         />
+
+        <SubscriptionSelector />
 
         <br />
         <div>
