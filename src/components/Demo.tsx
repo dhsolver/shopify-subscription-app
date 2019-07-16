@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, message } from 'antd';
-import { observable } from 'mobx';
+import { Col, message, Row } from 'antd';
+import { observable, toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
-import Button from './common/Button';
 import Carousel from './common/Carousel';
 import Switch from './common/Switch';
 import Tabs from './common/Tabs';
@@ -12,6 +11,8 @@ import ItemSelector from './ItemSelector';
 import SubscriptionSelector from './SubscriptionSelector';
 import dynamic from 'next/dynamic';
 const ReferralLink = dynamic(import ('./common/ReferralLink'), { ssr: false });
+import { chunk } from 'lodash';
+import PersonalInfoForm from './PersonalInfoForm';
 
 @observer
 class Demo extends React.Component <{}> {
@@ -25,15 +26,6 @@ class Demo extends React.Component <{}> {
     this.data = response.data;
   }
 
-  private onChange = (e: any) => {
-    const size: 'default' | 'middle' | 'small' = e.target.value;
-    this.setState({ size });
-  }
-
-  private onProductSelect (a: any) {
-    message.success(`Success! You\'ve added ${a.currentTarget.value} to your cart!`);
-  }
-
   private onSwitchChange (checked: boolean) {
    // console.log(`switch to ${checked}`);
   }
@@ -41,6 +33,8 @@ class Demo extends React.Component <{}> {
   public render () {
     return (
       <div>
+        <PersonalInfoForm />
+
         <Carousel />
 
         <Switch onChange={this.onSwitchChange} />
@@ -60,17 +54,19 @@ class Demo extends React.Component <{}> {
 
         <br />
         <div>
-          {this.data.map((datum: any) => (
-            <>
-              <Card key={datum.id} title={datum.title}>
-                <Button type='primary' value={datum.title} onClick={this.onProductSelect}>Add to cart</Button>
-                <br/>
-                <br/>
-                <p >{datum.description}</p>
-              </Card>
-              <br/>
-            </>
-          ))}
+          {chunk(this.data, 4).map((rowItems: any, idx: number) => (
+              <Row type='flex' justify='space-around' align='top' key={idx}>
+                {rowItems.map((rowItem: any) => {
+                  const src = rowItem.images.length && rowItem.images[0].src;
+                  return (
+                    <Col key={src}>
+                      <ItemSelector name={rowItem.title} description={rowItem.description} image={src} />
+                    </Col>
+                  );
+                })}
+              </Row>
+            ))
+          }}
         </div>
       </div>
     );

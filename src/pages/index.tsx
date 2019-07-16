@@ -7,6 +7,8 @@ import { FormModal } from '@mighty-justice/fields-ant';
 import SmartBool from '@mighty-justice/smart-bool';
 import { observable } from 'mobx';
 import Button from '../components/common/Button';
+import { Col, Row } from 'antd';
+import ItemSelector from '../components/ItemSelector';
 
 const fieldSets = [
   {
@@ -67,6 +69,23 @@ class Index extends Component <{}> {
             {`${key} => ${this.submittedData[key]}`}
           </p>
         ))}
+
+        <div>
+          <Row type='flex' justify='space-around' align='middle'>
+            <Col span={4} >
+              <ItemSelector name='Apple π Oatmeal' description='short description here'/>
+            </Col>
+            <Col span={4} >
+              <ItemSelector name='Baby Burrito Bowl' description='short description here'/>
+            </Col>
+            <Col span={4} >
+              <ItemSelector name='Bananas Foster' description='short description here'/>
+            </Col>
+            <Col span={4} >
+              <ItemSelector name='Coconut Curry' description='short description here'/>
+            </Col>
+          </Row>
+        </div>
       </Layout>
     );
   }

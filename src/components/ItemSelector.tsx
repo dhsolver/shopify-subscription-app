@@ -53,14 +53,17 @@ class ItemSelector extends Component <IProps> {
   }
 
   public render () {
-    const { name, description } = this.props;
+    const { name, description, image } = this.props;
 
     return (
       <div style={{ width: '100px' }}>
-        <div style={{ height: '100px', width: '100px', backgroundColor: 'blue' }} />
+        {image
+          ? <img src={image} style={{ height: '100px', width: '100px'}} alt={name}/>
+          : <div style={{ height: '100px', width: '100px', backgroundColor: 'blue' }} />
+        }
         <div style={{ textAlign: 'center' }}>
           <h4>{name}</h4>
-          <h5>{description}</h5>
+          {/*<h5>{description}</h5>*/}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {this.renderButtons()}
