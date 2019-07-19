@@ -3,6 +3,8 @@ import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
 import SubscriptionSelector from '../components/SubscriptionSelector';
 import { Row } from 'antd';
+import Link from 'next/link';
+import Button from '../components/common/Button';
 
 const steps = [
   {title: 'Plan Details'},
@@ -26,6 +28,11 @@ export default () => (
 
     <Row type='flex' justify='center'>
       <SubscriptionSelector />
+    </Row>
+    <Row type='flex' justify='end'>
+      <Link href='/recipe-selection'>
+        <Button>Next</Button>
+      </Link>
     </Row>
   </Layout>
 );
