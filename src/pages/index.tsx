@@ -11,16 +11,18 @@ class Index extends Component <{}> {
     return (
       <Layout>
         <h2>Hello World</h2>
+        <br/>
         <Link href='/antd'>
           <a>Ant Design Demo Page</a>
         </Link>
+        <br/>
         <Link href='/frequency-selection'>
           <a>Quantity/Frequency Selection</a>
         </Link>
+        <br/>
         <Link href='/recipe-selection'>
           <a>Recipe Selection</a>
         </Link>
-        <br/>
       </Layout>
     );
   }

@@ -62,10 +62,6 @@ class Demo extends React.Component <{}> {
 
         <Tabs />
 
-        <Steps/>
-
-        <SubscriptionSelector />
-
         <ReferralLink />
 
         <Button type='primary' onClick={this.isVisible.setTrue}>CLICK ME</Button>
@@ -83,7 +79,6 @@ class Demo extends React.Component <{}> {
             {`${key} => ${this.submittedData[key]}`}
           </p>
         ))}
-
       </div>
     );
   }

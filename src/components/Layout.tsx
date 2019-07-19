@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import '../public/assets/styles/app.css';
+import Link from 'next/link';
 
 interface IProps {
   title?: string;
@@ -25,7 +26,12 @@ export default ({ title, children }: IProps) => (
       }
     `}</style>
     <LocaleProvider locale={enUS}>
-      <div>{children}</div>
+      <>
+        <Link href='/'>
+          <a>Home</a>
+        </Link>
+        <div>{children}</div>
+      </>
     </LocaleProvider>
   </div>
 );
