@@ -8,6 +8,7 @@ interface IProps {
   image?: string; // TODO: require this
   name: string;
   description: string;
+  onChange: (quantity: number) => any;
 }
 
 @autoBindMethods
@@ -17,6 +18,7 @@ class ItemSelector extends Component <IProps> {
 
   private onQuantityChange (event: any) {
     this.quantity += Number(event.target.value);
+    this.props.onChange(Number(event.target.value));
   }
 
   private renderButtons () {

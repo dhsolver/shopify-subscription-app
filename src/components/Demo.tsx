@@ -1,33 +1,54 @@
 import React from 'react';
-import { Col, message, Row } from 'antd';
-import { observable, toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import Axios from 'axios';
+import { noop } from 'lodash';
+import dynamic from 'next/dynamic';
+
 import Carousel from './common/Carousel';
 import Switch from './common/Switch';
 import Tabs from './common/Tabs';
 import Steps from './common/Steps';
-import ItemSelector from './ItemSelector';
 import SubscriptionSelector from './SubscriptionSelector';
-import dynamic from 'next/dynamic';
-const ReferralLink = dynamic(import ('./common/ReferralLink'), { ssr: false });
-import { chunk } from 'lodash';
 import PersonalInfoForm from './PersonalInfoForm';
+import { FormModal } from '@mighty-justice/fields-ant';
+import { observable } from 'mobx';
+import SmartBool from '@mighty-justice/smart-bool';
+import Button from './common/Button';
+
+const ReferralLink = dynamic(import ('./common/ReferralLink'), { ssr: false });
+
+const fieldSets = [
+  {
+    fields: [
+      {field: 'child_first_name', label: 'First Name'},
+      {field: 'child_last_name', label: 'Last Name'},
+      {field: 'birthdate', type: 'date'},
+    ],
+    legend: 'About your little one',
+  },
+  {
+    fields: [
+      {field: 'parent_first_name', label: 'First Name'},
+      {field: 'parent_last_name', label: 'Last Name'},
+      {field: 'phone_number', type: 'phone'},
+      {field: 'email'},
+    ],
+    legend: 'About you',
+  },
+  {
+    fields: [
+      {field: 'delivery_date', type: 'datepicker'},
+    ],
+    legend: 'About your order',
+  },
+];
 
 @observer
 class Demo extends React.Component <{}> {
-  @observable private data: any = [];
-  public state = {
-    size: 'default',
-  };
+  @observable private isVisible = new SmartBool();
+  @observable private submittedData: any;
 
-  public async componentDidMount (): void {
-    const response = await Axios.get('/a');
-    this.data = response.data;
-  }
-
-  private onSwitchChange (checked: boolean) {
-   // console.log(`switch to ${checked}`);
+  private onSave (data: any) {
+    this.submittedData = data;
   }
 
   public render () {
@@ -37,37 +58,32 @@ class Demo extends React.Component <{}> {
 
         <Carousel />
 
-        <Switch onChange={this.onSwitchChange} />
+        <Switch onChange={noop} />
 
         <Tabs />
 
         <Steps/>
 
-        <ItemSelector
-          name='Coconut Curry'
-          description='We love coconut curry'
-        />
-
         <SubscriptionSelector />
 
         <ReferralLink />
 
-        <br />
-        <div>
-          {chunk(this.data, 4).map((rowItems: any, idx: number) => (
-              <Row type='flex' justify='space-around' align='top' key={idx}>
-                {rowItems.map((rowItem: any) => {
-                  const src = rowItem.images.length && rowItem.images[0].src;
-                  return (
-                    <Col key={src}>
-                      <ItemSelector name={rowItem.title} description={rowItem.description} image={src} />
-                    </Col>
-                  );
-                })}
-              </Row>
-            ))
-          }}
-        </div>
+        <Button type='primary' onClick={this.isVisible.setTrue}>CLICK ME</Button>
+        <FormModal
+          cancelText='Nah, man'
+          saveText='Alrighty then!'
+          fieldSets={fieldSets}
+          isVisible={this.isVisible}
+          model={{}}
+          onSave={this.onSave}
+          title={'Let\'s fill out a form'}
+        />
+        {this.submittedData && Object.keys(this.submittedData).map(key => (
+          <p>
+            {`${key} => ${this.submittedData[key]}`}
+          </p>
+        ))}
+
       </div>
     );
   }

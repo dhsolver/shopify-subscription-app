@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
 import Button from './common/Button';
+import { Row } from 'antd';
 
 @autoBindMethods
 @observer
@@ -27,11 +28,13 @@ class SubscriptionSelector extends Component <{}> {
   public render () {
     return (
       <div>
-        <div>
+        <Row type='flex' justify='center'>
           <span>
             I want to receive <span style={{fontSize: '16px'}}>{this.selectedQuantity}</span> meals in every order
           </span>
           <br/>
+        </Row>
+        <Row type='flex' justify='center'>
           <Button
             style={
               {
@@ -60,12 +63,14 @@ class SubscriptionSelector extends Component <{}> {
           >
             24
           </Button>
-        </div>
-        <div>
+        </Row>
+        <Row type='flex' justify='center'>
           <span>
             I want to receive an order every<span style={{fontSize: '16px'}}>{this.selectedSchedule}</span> Weeks
           </span>
           <br/>
+        </Row>
+        <Row type='flex' justify='center'>
           <Button
             style={
               {
@@ -94,7 +99,7 @@ class SubscriptionSelector extends Component <{}> {
           >
             4
           </Button>
-        </div>
+        </Row>
       </div>
     );
   }

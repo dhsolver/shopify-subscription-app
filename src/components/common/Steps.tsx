@@ -2,14 +2,26 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
+import { omit } from 'lodash';
 
 import { Steps as AntSteps } from 'antd';
+import { StepsProps } from 'antd/es/steps';
 
 const { Step } = AntSteps;
 
+const defaultSteps = [
+  {title: 'Finished'},
+  {title: 'In Progress'},
+  {title: 'Waiting'},
+];
+
+interface IProps extends StepsProps {
+  steps?: Array<{[key: string]: any}>;
+}
+
 @autoBindMethods
 @observer
-class Steps extends Component <{}> {
+class Steps extends Component <IProps> {
   @observable private currentStep = 2;
 
   private onStepChange (step: number) {
@@ -18,11 +30,10 @@ class Steps extends Component <{}> {
   }
 
   public render () {
+    const { steps } = this.props;
     return (
-      <AntSteps size='small' current={this.currentStep} onChange={this.onStepChange}>
-        <Step title='Finished'/>
-        <Step title='In Progress'/>
-        <Step title='Waiting'/>
+      <AntSteps size='small' current={this.currentStep} onChange={this.onStepChange} {...omit(this.props, 'steps')} >
+        {(steps || defaultSteps).map((step, idx) => <Step key={`step-${idx}`} {...step}/>)}
       </AntSteps>
     );
   }

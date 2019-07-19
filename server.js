@@ -33,13 +33,15 @@ app.prepare().then(() => {
     const parsedUrl = parse(req.url, true)
       , { pathname, query } = parsedUrl
 
-    if (pathname === '/a') {
+    if (pathname === '/products/') {
       const response = await client.product.fetchAll();
-      res.end(JSON.stringify(response))
-
-    } else if (pathname === '/b') {
-      app.render(req, res, '/a', query)
-    } else {
+      res.end(JSON.stringify(response));
+    }
+    else if (pathname === '/collections/with-products/') {
+      const response = await client.collection.fetchAllWithProducts();
+      res.end(JSON.stringify(response));
+    }
+    else {
       handle(req, res, parsedUrl)
     }
   }).listen(port, async () => {
