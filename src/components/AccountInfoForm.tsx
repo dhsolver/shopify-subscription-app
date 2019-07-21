@@ -26,12 +26,17 @@ class AccountInfoForm extends Component <{}> {
       legend: 'Payment Info',
     };
 
-    const insertBillingIf = (model: any) => model.billing_address.is_same_as_shipping;
+    const insertBillingIf = (model: any) => model.billing_address && !model.billing_address.is_same_as_shipping;
 
     const billingAddressFieldSet = {
       colProps,
       fields: [
-        { field: 'billing_address.is_same_as_shipping', type: 'checkbox' },
+        {
+          editProps: {defaultChecked: true},
+          field: 'billing_address.is_same_as_shipping',
+          type: 'checkbox',
+          value: true,
+        },
         { field: 'billing_address', type: 'address', insertIf: insertBillingIf },
       ],
       legend: 'Billing Address',
