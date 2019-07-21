@@ -66,8 +66,7 @@ export const accountDetailsFieldSet = {
   fields: [
     {field: 'email'},
     {field: 'password'},
-    {field: 're_password'},
-    { field: 'newsletter_signup', type: 'checkbox' },
+    {field: 're_password', writeOnly: true, label: 'Confirm Password'},
   ],
   legend: 'Account Details',
 };

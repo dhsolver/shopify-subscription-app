@@ -4,7 +4,6 @@ import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
 import { Icon } from 'antd';
-import { noop } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 
@@ -38,7 +37,7 @@ class PersonalInfoForm extends Component<IProps> {
       <div>
         {
           this.isEditing.isTrue
-            ? <FormCard onSave={noop} fieldSets={[fieldSet]} showControls={false} renderTopRight={this.renderEditIcon}/>
+            ? <FormCard model={{}} fieldSets={[fieldSet]} showControls={false} renderTopRight={this.renderEditIcon}/>
             : <Card fieldSets={[fieldSet]} renderTopRight={this.renderEditIcon}/>
         }
       </div>

@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'antd';
-import { fillInFieldSet, Form } from '@mighty-justice/fields-ant';
-import Button, {
+import { fillInFieldSet } from '@mighty-justice/fields-ant';
+import {
   accountDetailsFieldSet,
-  billingAddressFieldSet,
   paymentInfoFieldSet,
   personalInfoFieldSet,
   shippingAddressFieldSet,
 } from './AccountInfoForm';
+
+const billingAddressFieldSet = {
+  fields: [{field: 'billing_address', type: 'address'}],
+  legend: 'Billing Address',
+};
 
 import PersonalInfoForm from './PersonalInfoForm';
 import SubscriptionSelector from './SubscriptionSelector';
@@ -36,7 +40,7 @@ class Account extends Component<{}> {
               <PersonalInfoForm fieldSet={fillInFieldSet(shippingAddressFieldSet)} />
             </Row>
             <Row>
-              {/*<PersonalInfoForm fieldSet={fillInFieldSet(billingAddressFieldSet)} />*/}
+              <PersonalInfoForm fieldSet={fillInFieldSet(billingAddressFieldSet)} />
             </Row>
           </Col>
           <Col span={12}>
