@@ -4,11 +4,13 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import Button from './Button';
 
-const referralLink = 'https://some.link?id=123q0w98rysd0h';
+interface IProps {
+  referralLink: string;
+}
 
 @autoBindMethods
 @observer
-class ReferralLink extends Component <{}> {
+class ReferralLink extends Component <IProps> {
   private input: any;
   private onCopy (e: any) {
     this.input.select();
@@ -27,6 +29,8 @@ class ReferralLink extends Component <{}> {
   }
 
   public render () {
+    const { referralLink } = this.props;
+
     return (
       <Input addonAfter={this.renderCopyButton()} value={referralLink} ref={(input: any) => this.input = input} />
     );

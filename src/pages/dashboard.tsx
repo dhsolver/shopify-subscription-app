@@ -3,11 +3,12 @@ import Layout from '../components/Layout';
 import { Row } from 'antd';
 import Tabs from '../components/common/Tabs';
 import Account from '../components/Account';
+import FreeMeals from '../components/FreeMeals';
 
 const tabs = [
   { title: 'Orders', route: 'dashboard/orders', content: 'Orders' },
   { title: 'Account', route: 'dashboard/account', content: <Account /> },
-  { title: 'Free Meals', route: 'dashboard/free-meals', content: 'Free Meals' },
+  { title: 'Free Meals', route: 'dashboard/free-meals', content: <FreeMeals /> },
 ];
 
 export default () => (

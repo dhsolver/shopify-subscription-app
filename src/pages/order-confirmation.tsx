@@ -26,7 +26,7 @@ export default () => (
         </Row>
 
         <Row type='flex' justify='center'>
-          <h2>Congrats! Your order has beden placed</h2>
+          <h2>Congrats! Your order has been placed</h2>
         </Row>
 
         <Row type='flex' justify='center'>
@@ -34,7 +34,7 @@ export default () => (
         </Row>
 
         <Row type='flex' justify='center'>
-          <Link href='/'>
+          <Link href='/dashboard'>
             <Button>Dashboard</Button>
           </Link>
         </Row>
