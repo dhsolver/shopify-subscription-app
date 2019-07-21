@@ -3,7 +3,7 @@ import { Col, Row } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
-import { chunk, find } from 'lodash';
+import { chunk, fill, find } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 
 import ItemSelector from './ItemSelector';
@@ -21,6 +21,12 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
   private onChange (value: number) { this.total += value; }
 
+  private getRowItems (rowItems) {
+    const length = rowItems.length;
+    if (length === 4) { return rowItems; }
+    return fill(rowItems.concat(new Array(4 - rowItems.length)), null, length, 4);
+  }
+
   public render () {
     return (
       <div>
@@ -35,7 +41,9 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <div>
           {chunk(this.data, 4).map((rowItems: any, idx: number) => (
               <Row type='flex' justify='space-around' align='top' key={idx}>
-                {rowItems.map((rowItem: any) => {
+                {this.getRowItems(rowItems).map((rowItem: any) => {
+                  if (!rowItem) { return <Col><div style={{height: 100, width: 100}} /></Col>; }
+
                   const src = rowItem.images.length && rowItem.images[0].src;
                   return (
                     <Col key={src}>

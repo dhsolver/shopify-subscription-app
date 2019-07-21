@@ -2,7 +2,8 @@ import React from 'react';
 import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
 import { Row } from 'antd';
-import AccountInfoForm from '../components/AccountInfoForm';
+import Link from 'next/link';
+import Button from '../components/common/Button';
 import { Provider } from 'mobx-react';
 
 const steps = [
@@ -25,8 +26,19 @@ export default () => (
         </Row>
 
         <Row type='flex' justify='center'>
-          <AccountInfoForm />
+          <h2>Congrats! Your order has beden placed</h2>
         </Row>
+
+        <Row type='flex' justify='center'>
+          <h3>You Can manage and view your orders in your account page :)</h3>
+        </Row>
+
+        <Row type='flex' justify='center'>
+          <Link href='/'>
+            <Button>Dashboard</Button>
+          </Link>
+        </Row>
+
       </>
     </Provider>
   </Layout>

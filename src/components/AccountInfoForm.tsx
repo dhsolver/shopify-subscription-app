@@ -4,6 +4,7 @@ import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
 import { Col, Row } from 'antd';
 import Button from './common/Button';
+import Router from 'next/router';
 
 const colProps = { span: 12 };
 const GUTTER = 48;
@@ -80,33 +81,37 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private onSave (model: any) {
-    // tslint:disable-next-line
-    console.log(model);
+    model.preventDefault();
+    Router.push('/order-confirmation');
   }
 
   public render () {
     return (
       <Row>
-        <form onSubmit={this.onSave}>
-          <Row type='flex' justify='center'>
-            <h2>Finalize Your Subscription!</h2>
-          </Row>
-          <Row>
-            <br/>
-          </Row>
-          <Row type='flex' gutter={GUTTER} justify='space-between'>
-            <Col span={12}>
-              <Form fieldSets={this.fieldSets.fieldSetsLeft} onSave={this.onSave} showControls={false} />
-            </Col>
-            <Col span={12}>
-              <Form fieldSets={this.fieldSets.fieldSetsRight} onSave={this.onSave} showControls={false} />
-            </Col>
-          </Row>
-          <Row type='flex' justify='center'>
-            <Button>Submit</Button>
-          </Row>
-        </form>
-      </Row>
+        <Row type='flex' justify='center'>
+          <h2>Finalize Your Subscription!</h2>
+        </Row>
+        <Row>
+          <br/>
+        </Row>
+        <Row type='flex' gutter={GUTTER} justify='space-between'>
+          <Col span={12}>
+            <Form
+              fieldSets={this.fieldSets.fieldSetsLeft}
+              showControls={false}
+            />
+          </Col>
+          <Col span={12}>
+            <Form
+              fieldSets={this.fieldSets.fieldSetsRight}
+              showControls={false}
+            />
+          </Col>
+        </Row>
+        <Row type='flex' justify='center'>
+          <Button onClick={this.onSave}>Submit</Button>
+        </Row>
+    </Row>
     );
   }
 }
