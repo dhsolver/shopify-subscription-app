@@ -9,79 +9,85 @@ import Router from 'next/router';
 const colProps = { span: 12 };
 const GUTTER = 48;
 
+export const personalInfoFieldSet = {
+  fields: [
+    { field: 'first_name' },
+    { field: 'last_name' },
+  ],
+  legend: 'Personal Info',
+};
+
+export const paymentInfoFieldSet = {
+  colProps,
+  fields: [
+    { field: 'payment_info.credit_card_number' },
+    { field: 'payment_info.expiration_date' },
+    { field: 'payment_info.cvv,', label: 'CVV' },
+  ],
+  legend: 'Payment Info',
+};
+
+export const insertBillingIf = (model: any) => model.billing_address && !model.billing_address.is_same_as_shipping;
+
+export const billingAddressFieldSet = {
+  colProps,
+  fields: [
+    {
+      editProps: {defaultChecked: true},
+      field: 'billing_address.is_same_as_shipping',
+      type: 'checkbox',
+      value: true,
+    },
+    { field: 'billing_address', type: 'address', insertIf: insertBillingIf },
+  ],
+  legend: 'Billing Address',
+};
+
+export const discountCodeFieldSet = {
+  colProps,
+  fields: [
+    { field: 'discount_code' },
+  ],
+  legend: 'Apply Discount',
+};
+
+export const shippingAddressFieldSet = {
+  colProps,
+  fields: [
+    {field: 'first_name'},
+    {field: 'last_name'},
+    {field: 'shipping_address', type: 'address'},
+  ],
+  legend: 'Shipping Address',
+};
+
+export const accountDetailsFieldSet = {
+  colProps,
+  fields: [
+    {field: 'email'},
+    {field: 'password'},
+    {field: 're_password'},
+    { field: 'newsletter_signup', type: 'checkbox' },
+  ],
+  legend: 'Account Details',
+};
+
+const fieldSetsLeft = [
+  paymentInfoFieldSet,
+  billingAddressFieldSet,
+  discountCodeFieldSet,
+];
+
+const fieldSetsRight = [
+  shippingAddressFieldSet,
+  accountDetailsFieldSet,
+];
+
 @inject('getOptions')
 @autoBindMethods
 @observer
 class AccountInfoForm extends Component <{}> {
   private get fieldSets () {
-    const paymentInfoFieldSet = {
-      colProps,
-      fields: [
-        { field: 'payment_info.first_name' },
-        { field: 'payment_info.last_name' },
-        { field: 'payment_info.credit_card_number' },
-        { field: 'payment_info.expiration_date' },
-        { field: 'payment_info.cvv,', label: 'CVV' },
-      ],
-      legend: 'Payment Info',
-    };
-
-    const insertBillingIf = (model: any) => model.billing_address && !model.billing_address.is_same_as_shipping;
-
-    const billingAddressFieldSet = {
-      colProps,
-      fields: [
-        {
-          editProps: {defaultChecked: true},
-          field: 'billing_address.is_same_as_shipping',
-          type: 'checkbox',
-          value: true,
-        },
-        { field: 'billing_address', type: 'address', insertIf: insertBillingIf },
-      ],
-      legend: 'Billing Address',
-    };
-
-    const discountCodeFieldSet = {
-      colProps,
-      fields: [
-        { field: 'discount_code' },
-      ],
-      legend: 'Apply Discount',
-    };
-
-    const shippingAddressFieldSet = {
-      colProps,
-      fields: [
-        {field: 'first_name'},
-        {field: 'last_name'},
-        {field: 'shipping_address', type: 'address'},
-      ],
-      legend: 'Shipping Address',
-    };
-
-    const accountDetailsFieldSet = {
-      colProps,
-      fields: [
-        {field: 'email'},
-        {field: 'password'},
-        {field: 're_password'},
-        { field: 'newsletter_signup', type: 'checkbox' },
-      ],
-      legend: 'Account Details',
-    };
-
-    const fieldSetsLeft = [
-      paymentInfoFieldSet,
-      billingAddressFieldSet,
-      discountCodeFieldSet,
-    ];
-
-    const fieldSetsRight = [
-      shippingAddressFieldSet,
-      accountDetailsFieldSet,
-    ];
-
     return {fieldSetsLeft, fieldSetsRight};
   }
 

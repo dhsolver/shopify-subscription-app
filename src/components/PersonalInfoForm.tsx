@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, FormCard } from '@mighty-justice/fields-ant';
+import { Card, FormCard, IFieldSet } from '@mighty-justice/fields-ant';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
@@ -8,14 +8,13 @@ import { noop } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 
-const fieldSets = [[
-  { field: 'first_name' },
-  { field: 'last_name' },
-]];
+interface IProps {
+  fieldSet: IFieldSet;
+}
 
 @autoBindMethods
 @observer
-class PersonalInfoForm extends Component {
+class PersonalInfoForm extends Component<IProps> {
   @observable private isEditing = new SmartBool();
   private renderEditIcon () {
     return (
@@ -33,12 +32,14 @@ class PersonalInfoForm extends Component {
   private get pencil () { return () => <Icon type='edit' />; }
 
   public render () {
+    const { fieldSet } = this.props;
+
     return (
-      <div style={{width: '50%'}}>
+      <div>
         {
           this.isEditing.isTrue
-            ? <FormCard onSave={noop} fieldSets={fieldSets} showControls={false} renderTopRight={this.renderEditIcon} />
-            : <Card fieldSets={fieldSets} renderTopRight={this.renderEditIcon}/>
+            ? <FormCard onSave={noop} fieldSets={[fieldSet]} showControls={false} renderTopRight={this.renderEditIcon}/>
+            : <Card fieldSets={[fieldSet]} renderTopRight={this.renderEditIcon}/>
         }
       </div>
     );

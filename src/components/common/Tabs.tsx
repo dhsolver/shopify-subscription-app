@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 
-import { Tabs as AntTabs, Button } from 'antd';
+import { Tabs as AntTabs } from 'antd';
 
 const { TabPane } = AntTabs;
 
-const operations = <Button>Extra Action</Button>;
-class Tabs extends Component <{}> {
+interface IProps {
+  tabs: Array<{title: string, route: string, content: any}>;
+}
+
+class Tabs extends Component <IProps> {
   public render () {
     return (
-      <AntTabs tabBarExtraContent={operations}>
-        <TabPane tab='Tab 1' key='1'>
-          Content of tab 1
-        </TabPane>
-        <TabPane tab='Tab 2' key='2'>
-          Content of tab 2
-        </TabPane>
-        <TabPane tab='Tab 3' key='3'>
-          Content of tab 3
-        </TabPane>
+      <AntTabs>
+        {this.props.tabs.map((tab, idx) => (
+          <TabPane tab={tab.title} key={`tab.title-${idx}`}>
+            {tab.content}
+          </TabPane>
+        ))}
       </AntTabs>
     );
   }
