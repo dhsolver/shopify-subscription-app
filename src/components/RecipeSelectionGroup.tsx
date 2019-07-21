@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
@@ -7,16 +7,20 @@ import { chunk, fill, find } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 
 import ItemSelector from './ItemSelector';
+import SmartBool from '@mighty-justice/smart-bool';
+import AddOnStatic from './AddOnStatic';
 
 @autoBindMethods
 @observer
 class RecipeSelectionGroup extends React.Component <{}> {
   @observable private data: any = [];
   @observable public total = 0;
+  @observable private isLoading = new SmartBool(true);
 
   public async componentDidMount () {
     const response = await Axios.get('/collections/with-products/');
     this.data = find(response.data, { handle: 'menu' }).products;
+    this.isLoading.setFalse();
   }
 
   private onChange (value: number) { this.total += value; }
@@ -28,6 +32,14 @@ class RecipeSelectionGroup extends React.Component <{}> {
   }
 
   public render () {
+    if (this.isLoading.isTrue) {
+      return (
+        <Row type='flex' justify='center'>
+          <Spin size='large' />
+        </Row>
+      );
+    }
+
     return (
       <div>
         <Row type='flex' justify='center'>
@@ -60,6 +72,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
             ))
           }
         </div>
+        <AddOnStatic />
       </div>
     );
   }

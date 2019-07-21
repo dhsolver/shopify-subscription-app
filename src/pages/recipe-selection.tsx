@@ -4,7 +4,6 @@ import { Row } from 'antd';
 
 import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
-import AddOnStatic from '../components/AddOnStatic';
 import RecipeSelectionGroup from '../components/RecipeSelectionGroup';
 import Link from 'next/link';
 import Button from '../components/common/Button';
@@ -21,7 +20,6 @@ export default () => (
       <Steps steps={steps} current={1} />
     </Row>
     <RecipeSelectionGroup />
-    <AddOnStatic />
     <br/>
     <Row type='flex' justify='end'>
       <Link href='/checkout'>
