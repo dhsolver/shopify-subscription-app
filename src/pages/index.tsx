@@ -23,6 +23,9 @@ class Index extends Component <{}> {
         <Link href='/recipe-selection'>
           <a>Recipe Selection</a>
         </Link>
+        <Link href='/checkout'>
+          <a>Checkout</a>
+        </Link>
       </Layout>
     );
   }

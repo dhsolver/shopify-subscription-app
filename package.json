@@ -24,7 +24,7 @@
   "homepage": "https://github.com/tiny-organics/subscription-app#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@mighty-justice/fields-ant": "^1.0.0",
+    "@mighty-justice/fields-ant": "1.0.1",
     "@mighty-justice/smart-bool": "^1.0.0",
     "@shopify/koa-shopify-auth": "^3.1.29",
     "@zeit/next-css": "^1.0.1",
