@@ -58,7 +58,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
                 })}
               </Row>
             ))
-          }}
+          }
         </div>
       </div>
     );

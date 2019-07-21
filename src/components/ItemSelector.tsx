@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
-import Button from './common/Button';
+import SelectionButtons from './SelectionButtons';
 
 interface IProps {
   image?: string; // TODO: require this
@@ -16,46 +16,8 @@ interface IProps {
 class ItemSelector extends Component <IProps> {
   @observable private quantity = 0;
 
-  private onQuantityChange (event: any) {
-    this.quantity += Number(event.target.value);
-    this.props.onChange(Number(event.target.value));
-  }
-
-  private renderButtons () {
-    if (this.quantity === 0) {
-      return (
-        <Button
-          value={1}
-          style={{borderRadius: '100%'}}
-          onClick={this.onQuantityChange}
-        >
-          +
-        </Button>
-      );
-    }
-    return (
-      <>
-        <Button
-          value={-1}
-          style={{borderRadius: '100%'}}
-          onClick={this.onQuantityChange}
-        >
-          -
-        </Button>
-        {this.quantity}
-        <Button
-          value={1}
-          style={{borderRadius: '100%'}}
-          onClick={this.onQuantityChange}
-        >
-          +
-        </Button>
-      </>
-    );
-  }
-
   public render () {
-    const { name, description, image } = this.props;
+    const { name, description, image, onChange } = this.props;
 
     return (
       <div style={{ width: '100px' }}>
@@ -68,7 +30,7 @@ class ItemSelector extends Component <IProps> {
           {/*<h5>{description}</h5>*/}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {this.renderButtons()}
+          <SelectionButtons onChange={onChange} />
         </div>
       </div>
     );
