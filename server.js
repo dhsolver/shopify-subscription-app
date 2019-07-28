@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const mobxReact = require('mobx-react');
 const Client = require('shopify-buy');
 const { parse } = require('url');
+const Axios = require('axios');
 
 dotenv.config();
 
@@ -14,11 +15,35 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({dev, dir: 'src'});
 const handle = app.getRequestHandler();
 
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, SHOPIFY_STOREFRONT_KEY } = process.env;
+const {
+  RECHARGE_API_KEY,
+  SHOPIFY_API_SECRET_KEY,
+  SHOPIFY_API_KEY,
+  SHOPIFY_STOREFRONT_KEY,
+  SHOPIFY_DOMAIN,
+  SHOPIFY_PASSWORD,
+} = process.env;
 
-const client = Client.buildClient({
+const storefrontClient = Client.buildClient({
   storefrontAccessToken: SHOPIFY_STOREFRONT_KEY,
-  domain: 'tiny-organics.myshopify.com'
+  domain: SHOPIFY_DOMAIN,
+});
+
+const adminClient = Axios.create({
+  baseURL: `https://${SHOPIFY_API_KEY}:${SHOPIFY_PASSWORD}@${SHOPIFY_DOMAIN}/admin/api/2019-07`,
+  headers: {
+    'Accept': 'application/json; charset=utf-8;',
+    'Content-Type': 'application/json',
+  },
+});
+
+const rechargeClient = Axios.create({
+  baseURL: 'https://api.rechargeapps.com/',
+  headers: {
+    'Accept': 'application/json; charset=utf-8;',
+    'Content-Type': 'application/json',
+    'X-Recharge-Access-Token': RECHARGE_API_KEY,
+  }
 });
 
 mobxReact.useStaticRendering(true);
@@ -32,17 +57,28 @@ app.prepare().then(() => {
     // This tells it to parse the query portion of the URL.
     const parsedUrl = parse(req.url, true)
       , { pathname, query } = parsedUrl
+      ;
 
-    if (pathname === '/products/') {
-      const response = await client.product.fetchAll();
-      res.end(JSON.stringify(response));
-    }
-    else if (pathname === '/collections/with-products/') {
-      const response = await client.collection.fetchAllWithProducts();
-      res.end(JSON.stringify(response));
-    }
-    else {
-      handle(req, res, parsedUrl)
+    if (req.method === 'GET') {
+      if (pathname === '/products/') {
+        const response = await storefrontClient.product.fetchAll();
+        res.end(JSON.stringify(response));
+      }
+      else if (pathname === '/collections/with-products/') {
+        const response = await storefrontClient.collection.fetchAllWithProducts();
+        res.end(JSON.stringify(response));
+      }
+      else if (pathname === '/orders/') {
+        const response = await adminClient.get('orders.json');
+        res.end(JSON.stringify(response.data));
+      }
+      else if (pathname === '/recharge-customers/') {
+        const response = await rechargeClient.get('customers');
+        res.end(JSON.stringify(response.data));
+      }
+      else {
+        handle(req, res, parsedUrl)
+      }
     }
   }).listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);

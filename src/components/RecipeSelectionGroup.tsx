@@ -19,6 +19,13 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
   public async componentDidMount () {
     const response = await Axios.get('/collections/with-products/');
+
+    // *************************************************************
+    // testing the recharge and admin API's the following will be removed
+    Axios.get('/orders/');
+    Axios.get('/recharge-customers/');
+    // *************************************************************
+
     this.data = find(response.data, { handle: 'menu' }).products;
     this.isLoading.setFalse();
   }
