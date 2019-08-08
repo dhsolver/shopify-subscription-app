@@ -1,0 +1,22 @@
+/*
+  ANTD COMPONENT: INPUT
+*/
+
+:global {
+  
+  // Manually define the border color since it's different from the @outline-color one.
+  .@{ant-prefix}-input {
+    border-radius: 0;
+  }
+
+  // Fix input affix padding too tight.
+  // Left
+  .@{ant-prefix}-input-affix-wrapper .@{ant-prefix}-input:not(:first-child) {
+    padding-left: @input-padding-horizontal-base + @input-affix-width + 4px;
+  }
+  // Right
+  .@{ant-prefix}-input-affix-wrapper .@{ant-prefix}-input:not(:last-child) {
+    padding-right: @input-padding-horizontal-base + @input-affix-width + 4px;
+  }
+
+}

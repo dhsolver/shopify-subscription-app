@@ -1,0 +1,51 @@
+/*
+  ANTD COMPONENT: FORM
+*/
+
+:global {
+  .@{form-prefix-cls} {
+    label { font-size: @font-size-base - 1px; }
+  }
+
+  .@{form-prefix-cls}-explain {
+    font-size: @font-size-sm;
+  }
+
+  // Form items
+  .@{form-prefix-cls}-item {
+    // Labels
+    &-label {
+      label { font-weight: 500; }
+    }
+
+    // Calculate height with @font-size-sm instead of -base.
+    &-with-help {
+      margin-bottom: @form-item-margin-bottom - @font-size-sm * @line-height-base - @form-help-margin-top;
+    }
+  }
+
+  // Vertical layout forms
+  .@{form-prefix-cls}-vertical {
+    .@{form-prefix-cls}-item {
+
+      // Labels
+      &-label { padding: 0 0 4px; }
+
+      // Calculate height with @font-size-sm instead of -base. Also add 1.5px since our text is smaller.
+      &-with-help {
+        margin-bottom: @form-item-margin-bottom - @font-size-sm * @line-height-base - @form-help-margin-top + 1.5px;
+      }
+    }
+  }
+
+  // Copied and flipped from .ant-form-item-required
+  .form-item-required:after {
+    color: #f5222d;
+    content: '*';
+    display: inline-block;
+    font-family: SimSun;
+    font-size: 12px;
+    line-height: 1;
+    margin-left: 4px;
+  }
+}

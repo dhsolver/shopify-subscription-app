@@ -15,21 +15,24 @@ interface IProps {
 @observer
 class ItemSelector extends Component <IProps> {
   @observable private quantity = 0;
+  private clsPrefix = 'item-selector';
 
   public render () {
     const { name, description, image, onChange } = this.props;
 
     return (
-      <div style={{ width: '100px' }}>
-        {image
-          ? <img src={image} style={{ height: '100px', width: '100px'}} alt={name}/>
-          : <div style={{ height: '100px', width: '100px', backgroundColor: 'blue' }} />
-        }
-        <div style={{ textAlign: 'center' }}>
+      <div className={this.clsPrefix}>
+        <div className={`${this.clsPrefix}-image`}>
+          {image
+            ? <img src={image} alt={name}/>
+            : <div className={`${this.clsPrefix}-image-empty`} />
+          }
+        </div>
+        <div className={`${this.clsPrefix}-info`}>
           <h4>{name}</h4>
           {/*<h5>{description}</h5>*/}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className={`${this.clsPrefix}-buttons`}>
           <SelectionButtons onChange={onChange} />
         </div>
       </div>

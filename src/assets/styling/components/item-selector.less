@@ -1,0 +1,32 @@
+/*
+  COMPONENT: ITEM SELECTOR
+*/
+
+.item-selector {
+  width: 200px;
+  height: 320px;
+  padding-bottom: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &-image {
+    width: 200px;
+    height: 200px;
+
+    img { width: 200px; }
+    &-empty {
+      width: 200px;
+      height: 200px;
+      background-color: blue;
+    }
+  }
+
+  &-info { text-align: center; }
+
+  &-buttons {
+    flex: 1 0 25px;
+    display: flex;
+    align-items: flex-end;
+  }
+}

@@ -4,8 +4,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
-import Button from './common/Button';
-import { Row } from 'antd';
+import { Radio, Row } from 'antd';
 
 @autoBindMethods
 @observer
@@ -35,70 +34,22 @@ class SubscriptionSelector extends Component <{}> {
           <br/>
         </Row>
         <Row type='flex' justify='center'>
-          <Button
-            style={
-              {
-                backgroundColor: this.selectedQuantity === 12 ? 'blue' : 'white',
-                border: '0',
-                borderRadius: '0',
-                margin: '0',
-              }
-            }
-            value={12}
-            onClick={this.onChangeQuantity}
-          >
-            12
-          </Button>
-          <Button
-            style={
-              {
-                backgroundColor: this.selectedQuantity === 24 ? 'blue' : 'white',
-                border: '0',
-                borderRadius: '0',
-                margin: '0',
-              }
-            }
-            value={24}
-            onClick={this.onChangeQuantity}
-          >
-            24
-          </Button>
+          <Radio.Group defaultValue='12' size='large' value={this.selectedQuantity} onChange={this.onChangeQuantity}>
+            <Radio.Button value={12}>12</Radio.Button>
+            <Radio.Button value={24}>24</Radio.Button>
+          </Radio.Group>
         </Row>
         <Row type='flex' justify='center'>
           <span>
-            I want to receive an order every<span style={{fontSize: '16px'}}>{this.selectedSchedule}</span> Weeks
+            I want to receive an order every <span style={{fontSize: '16px'}}>{this.selectedSchedule}</span> Weeks
           </span>
           <br/>
         </Row>
         <Row type='flex' justify='center'>
-          <Button
-            style={
-              {
-                backgroundColor: this.selectedSchedule === 2 ? 'blue' : 'white',
-                border: '0',
-                borderRadius: '0',
-                margin: '0',
-              }
-            }
-            value={2}
-            onClick={this.onChangeSchedule}
-          >
-            2
-          </Button>
-          <Button
-            style={
-              {
-                backgroundColor: this.selectedSchedule === 4 ? 'blue' : 'white',
-                border: '0',
-                borderRadius: '0',
-                margin: '0',
-              }
-            }
-            value={4}
-            onClick={this.onChangeSchedule}
-          >
-            4
-          </Button>
+          <Radio.Group defaultValue='2' size='large' value={this.selectedSchedule} onChange={this.onChangeSchedule}>
+            <Radio.Button value={2}>2</Radio.Button>
+            <Radio.Button value={4}>4</Radio.Button>
+          </Radio.Group>
         </Row>
       </div>
     );

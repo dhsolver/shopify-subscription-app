@@ -29,9 +29,9 @@ export default () => (
     <Row type='flex' justify='center'>
       <SubscriptionSelector />
     </Row>
-    <Row type='flex' justify='end'>
+    <Row type='flex' justify='center'>
       <Link href='/recipe-selection'>
-        <Button>Next</Button>
+        <Button size='large' type='primary'>Next</Button>
       </Link>
     </Row>
   </Layout>

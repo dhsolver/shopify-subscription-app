@@ -32,7 +32,13 @@ class Steps extends Component <IProps> {
   public render () {
     const { steps } = this.props;
     return (
-      <AntSteps size='small' current={this.currentStep} onChange={this.onStepChange} {...omit(this.props, 'steps')} >
+      <AntSteps
+        current={this.currentStep}
+        labelPlacement='vertical'
+        onChange={this.onStepChange}
+        style={{maxWidth: 600}}
+        {...omit(this.props, 'steps')}
+      >
         {(steps || defaultSteps).map((step, idx) => <Step key={`step-${idx}`} {...step}/>)}
       </AntSteps>
     );

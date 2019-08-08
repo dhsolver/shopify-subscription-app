@@ -1,0 +1,36 @@
+/*
+  Layout.less
+  Core styling file the the app styling.
+*/
+
+/*
+  Right now, we're loading antd from .less directly (not through webpack) so that we can
+  use hot-reload changes for the theming.
+
+  Once we're done w/ theming, we should move back to loading styling + theming through webpack
+*/
+
+//@import '~antd/lib/style/themes/default.less'; // !! config-overrides only
+@import '~antd/dist/antd.less'; // !! Less only
+
+// Add component variables that are missing from the global scope
+@checkbox-prefix-cls: ~'@{ant-prefix}-checkbox';
+
+// Configuration
+@import 'variables.less';
+@import 'theme.less';
+@import 'browser-fixes.less';
+
+// Helpers
+@import 'flex.less';
+@import 'text.less';
+
+// Components
+// Antd
+@import 'components/button.less';
+@import 'components/form.less';
+@import 'components/input.less';
+@import 'components/steps.less';
+// Tiny Organics
+@import 'components/item-selector.less';
+@import 'components/selection-buttons.less';

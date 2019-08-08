@@ -1,0 +1,16 @@
+/*
+  Webkit
+*/
+
+/* Change the white to any color ;) */
+@-webkit-keyframes autofill {
+  to {
+    color: @text-color;
+    background: @white;
+  }
+}
+
+input:-webkit-autofill {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}

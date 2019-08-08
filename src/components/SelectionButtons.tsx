@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
 import Button from './common/Button';
+import { ButtonProps } from 'antd/lib/button';
 
 interface IProps {
   onChange: (quantity: number) => any;
@@ -18,37 +19,45 @@ class SelectionButtons extends Component <IProps> {
     this.props.onChange(Number(event.target.value));
   }
 
-  public render () {
+  private renderButtons () {
+    const buttonProps: ButtonProps = {
+      shape: 'circle',
+      size: 'small',
+      type: 'default',
+    };
+
     if (this.quantity === 0) {
       return (
         <Button
+          {...buttonProps}
+          type='primary'
+          icon='plus'
           value={1}
-          style={{borderRadius: '100%'}}
           onClick={this.onQuantityChange}
-        >
-          +
-        </Button>
+        />
       );
     }
     return (
       <>
         <Button
+          {...buttonProps}
+          icon='minus'
           value={-1}
-          style={{borderRadius: '100%'}}
           onClick={this.onQuantityChange}
-        >
-          -
-        </Button>
-        {this.quantity}
+        />
+        <span className='selection-buttons-quantity'>{this.quantity}</span>
         <Button
+          {...buttonProps}
+          icon='plus'
           value={1}
-          style={{borderRadius: '100%'}}
           onClick={this.onQuantityChange}
-        >
-          +
-        </Button>
+        />
       </>
     );
+  }
+
+  public render () {
+    return <div className='selection-buttons'>{this.renderButtons()}</div>;
   }
 }
 

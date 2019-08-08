@@ -1,9 +1,20 @@
+// tslint:disable no-magic-numbers
 import '@babel/polyfill';
 import Head from 'next/head';
-import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
-import '../public/assets/styles/app.css';
 import Link from 'next/link';
+
+import {
+  Col,
+  Layout,
+  LocaleProvider,
+  Row,
+} from 'antd';
+
+// Core app styling
+import '../assets/styling/layout.less';
+
+const { Header, Content } = Layout;
 
 interface IProps {
   title?: string;
@@ -13,7 +24,7 @@ interface IProps {
 export default ({ title, children }: IProps) => (
   <div style={{background: '#faf6f0', height: '100%', width: '100%'}}>
     <Head>
-      <title>{title}</title>
+      {title && <title>{title}</title>}
       <meta name='viewport' content='width=device-width, initial-scale=1' />
       <meta charSet='utf-8' />
       <link
@@ -26,12 +37,22 @@ export default ({ title, children }: IProps) => (
       }
     `}</style>
     <LocaleProvider locale={enUS}>
-      <>
-        <Link href='/'>
-          <a>Home</a>
-        </Link>
-        <div>{children}</div>
-      </>
+      <Layout>
+        <Header>
+          <Link href='/'>
+            <a>Home</a>
+          </Link>
+        </Header>
+        <Content style={{padding: '100px 0 50px'}}>
+          <Row type='flex'>
+            <Col xs={1} sm={2} lg={3} xl={5} />
+            <Col xs={22} sm={20} lg={18} xl={14}>
+              {children}
+            </Col>
+            <Col xs={1} sm={2} lg={3} xl={5} />
+          </Row>
+        </Content>
+      </Layout>
     </LocaleProvider>
   </div>
 );

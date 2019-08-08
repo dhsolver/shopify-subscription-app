@@ -54,18 +54,18 @@ class RecipeSelectionGroup extends React.Component <{}> {
         </Row>
 
         <Row type='flex' justify='center'>
-          <p>{this.total} / 12</p>
+          <p>{this.total} / 12 selected</p>
         </Row>
 
         <div>
           {chunk(this.data, 4).map((rowItems: any, idx: number) => (
-              <Row type='flex' justify='space-around' align='top' key={idx}>
-                {this.getRowItems(rowItems).map((rowItem: any) => {
-                  if (!rowItem) { return <Col><div style={{height: 100, width: 100}} /></Col>; }
+              <Row type='flex' justify='space-around' align='top' key={idx} gutter={16}>
+                {this.getRowItems(rowItems).map((rowItem: any, itemIdx: number) => {
+                  if (!rowItem) { return <Col key={itemIdx}><div style={{height: 100, width: 100}} /></Col>; }
 
                   const src = rowItem.images.length && rowItem.images[0].src;
                   return (
-                    <Col key={src}>
+                    <Col key={itemIdx}>
                       <ItemSelector
                         name={rowItem.title}
                         description={rowItem.description}

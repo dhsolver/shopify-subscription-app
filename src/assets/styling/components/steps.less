@@ -1,0 +1,70 @@
+/*
+  ANTD COMPONENT: STEPS
+  Steps aren't configurable w/ the theme variables, so we're doing it all here.
+*/
+
+// Overwrite vars from antd/components/steps/style/index.less
+@process-icon-text-color: @white;
+
+@process-icon-color: @white;
+@process-title-color: @text-color;
+@process-description-color: @text-color;
+@process-tail-color: #E9DDD2;
+@wait-icon-color: #C1B0A0;
+@wait-title-color: @text-color;
+@wait-description-color: @wait-title-color;
+@wait-tail-color: #E9DDD2;
+@finish-icon-color: #C1B0A0;
+@finish-title-color: @text-color;
+@finish-description-color: @text-color-secondary;
+@finish-tail-color: #E9DDD2;
+//@error-icon-color: @error-color;
+//@error-title-color: @error-color;
+//@error-description-color: @error-color;
+//@error-tail-color: @wait-tail-color;
+@steps-background: @white;
+
+@steps-icon-size: 44px;
+@steps-small-icon-size: 24px;
+@steps-dot-size: 8px;
+@steps-current-dot-size: 10px;
+@steps-desciption-max-width: 140px;
+
+:global {
+  .@{steps-prefix-cls}-item {
+    &-icon {
+      font-weight: 600;
+      .@{icon-prefix-cls} { font-size: @steps-icon-size; }
+    }
+
+    &-tail { top: 18px; }
+
+    // Statuses overwrites
+    &-finish {
+      .@{steps-prefix-cls}-item-icon {
+        background: #E9DDD2;
+        border-color: #E9DDD2;
+      }
+    }
+    &-process {
+      .@{steps-prefix-cls}-item-icon {
+        background: #C1B0A0;
+        border-color: #C1B0A0;
+      }
+    }
+
+  }
+
+  .@{steps-prefix-cls}-small {
+    .@{icon-prefix-cls} { font-size: @steps-small-icon-size; }
+  }
+
+  .@{steps-prefix-cls}-label-vertical {
+    .@{steps-prefix-cls}-item {
+      &-tail {
+        margin-left: 58px;
+        padding: 3.5px 34px;
+      }
+    }
+  }
+}

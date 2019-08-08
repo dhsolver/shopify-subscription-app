@@ -21,9 +21,9 @@ export default () => (
     </Row>
     <RecipeSelectionGroup />
     <br/>
-    <Row type='flex' justify='end'>
+    <Row type='flex' justify='center'>
       <Link href='/checkout'>
-        <Button type='primary'>Next</Button>
+        <Button type='primary' size='large'>Next</Button>
       </Link>
     </Row>
   </Layout>
