@@ -1,5 +1,6 @@
 // tslint:disable no-magic-numbers
 import '@babel/polyfill';
+
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Link from 'next/link';
