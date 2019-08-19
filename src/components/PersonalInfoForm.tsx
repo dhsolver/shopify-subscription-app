@@ -8,7 +8,8 @@ import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 
 interface IProps {
-  fieldSet: IFieldSet;
+  //fieldSet: IFieldSet;
+  fieldSet: any;
 }
 
 const FieldsFormCard = FormCard as any;
@@ -33,19 +34,27 @@ class PersonalInfoForm extends Component<IProps> {
   private get pencil () { return () => <Icon type='edit' />; }
 
   public render () {
-    const { fieldSet } = this.props;
+    const { fieldSet } = this.props
+      , simpleFieldSet = {...fieldSet, legend: null};
 
     return (
       <div>
         {
           this.isEditing.isTrue
             ? <FieldsFormCard
-              model={{}}
-              fieldSets={[fieldSet]}
-              showControls={false}
-              renderTopRight={this.renderEditIcon}
+                className='ant-card-ghost'
+                fieldSets={[simpleFieldSet]}
+                model={{}}
+                renderTopRight={this.renderEditIcon}
+                showControls={false}
+                title={fieldSet.legend}
             />
-            : <Card fieldSets={[fieldSet]} renderTopRight={this.renderEditIcon}/>
+            : <Card
+                className='ant-card-ghost'
+                fieldSets={[simpleFieldSet]}
+                renderTopRight={this.renderEditIcon}
+                title={fieldSet.legend}
+            />
         }
       </div>
     );

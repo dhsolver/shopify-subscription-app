@@ -11,7 +11,7 @@ interface IProps {
 class Tabs extends Component <IProps> {
   public render () {
     return (
-      <Antd.Tabs>
+      <Antd.Tabs size='large'>
         {this.props.tabs.map((tab, idx) => (
           <TabPane tab={tab.title} key={`tab.title-${idx}`}>
             {tab.content}

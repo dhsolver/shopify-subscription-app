@@ -5,6 +5,7 @@ import SubscriptionSelector from '../components/SubscriptionSelector';
 import { Row } from 'antd';
 import Link from 'next/link';
 import Button from '../components/common/Button';
+import Spacer from '../components/common/Spacer';
 
 const steps = [
   {title: 'Plan Details'},
@@ -18,21 +19,22 @@ export default () => (
       <Steps steps={steps} current={0} />
     </Row>
 
-    <Row type='flex' justify='center'>
-      <h2>Select Quantity and Frequency</h2>
-    </Row>
+    <div style={{textAlign: 'center'}}>
+      <Row style={{padding: '30px 0'}}>
+        <h2>Select Quantity and Frequency</h2>
+        <p>$4.99 per meal</p>
+      </Row>
 
-    <Row type='flex' justify='center'>
-      <p>$4.99 per meal</p>
-    </Row>
-
-    <Row type='flex' justify='center'>
-      <SubscriptionSelector />
-    </Row>
-    <Row type='flex' justify='center'>
-      <Link href='/recipe-selection'>
-        <Button size='large' type='primary'>Next</Button>
-      </Link>
-    </Row>
+      <Row type='flex' justify='center'>
+        <SubscriptionSelector />
+      </Row>
+      <Spacer />
+      <div style={{height: 100}} />
+      <Row type='flex' justify='center'>
+        <Link href='/recipe-selection'>
+          <Button size='large' type='primary'>Next</Button>
+        </Link>
+      </Row>
+    </div>
   </Layout>
 );

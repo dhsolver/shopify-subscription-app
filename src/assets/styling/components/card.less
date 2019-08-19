@@ -1,0 +1,21 @@
+/*
+  ANTD COMPONENT: CARD
+*/
+
+:global {
+  .@{card-prefix-cls} {
+    margin-bottom: 15px;
+
+    &-head {
+      color: #323F4B;
+      font-size: @font-size-base + 7;
+      font-weight: 400;
+    }
+
+    &-ghost {
+      background-color: transparent;
+
+      &:hover { background-color: fade(@white, 50); }
+    }
+  }
+}

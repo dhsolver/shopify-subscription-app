@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
+import cx from 'classnames';
+import { Card } from 'antd';
 import SelectionButtons from './SelectionButtons';
 
 interface IProps {
@@ -21,7 +23,7 @@ class ItemSelector extends Component <IProps> {
     const { name, description, image, onChange } = this.props;
 
     return (
-      <div className={this.clsPrefix}>
+      <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false}>
         <div className={`${this.clsPrefix}-image`}>
           {image
             ? <img src={image} alt={name}/>
@@ -35,7 +37,7 @@ class ItemSelector extends Component <IProps> {
         <div className={`${this.clsPrefix}-buttons`}>
           <SelectionButtons onChange={onChange} />
         </div>
-      </div>
+      </Card>
     );
   }
 }

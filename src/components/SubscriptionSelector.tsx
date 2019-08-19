@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
-import { Radio, Row } from 'antd';
+import { Row } from 'antd';
+import QuantitySelector from './common/QuantitySelector';
+import Spacer from '../components/common/Spacer';
 
 @autoBindMethods
 @observer
@@ -28,29 +30,40 @@ class SubscriptionSelector extends Component <{}> {
     return (
       <div>
         <Row type='flex' justify='center'>
-          <span>
+          <p>
             I want to receive <span style={{fontSize: '16px'}}>{this.selectedQuantity}</span> meals in every order
-          </span>
+          </p>
           <br/>
         </Row>
         <Row type='flex' justify='center'>
-          <Radio.Group defaultValue='12' size='large' value={this.selectedQuantity} onChange={this.onChangeQuantity}>
-            <Radio.Button value={12}>12</Radio.Button>
-            <Radio.Button value={24}>24</Radio.Button>
-          </Radio.Group>
+          <QuantitySelector
+            defaultValue='12'
+            size='large'
+            value={this.selectedQuantity}
+            onChange={this.onChangeQuantity}
+          >
+            <QuantitySelector.Button value={12}>12</QuantitySelector.Button>
+            <QuantitySelector.Button value={24}>24</QuantitySelector.Button>
+          </QuantitySelector>
         </Row>
+        <Spacer />
         <Row type='flex' justify='center'>
-          <span>
+          <p>
             I want to receive an order every <span style={{fontSize: '16px'}}>{this.selectedSchedule}</span> Weeks
-          </span>
-          <br/>
+          </p>
         </Row>
         <Row type='flex' justify='center'>
-          <Radio.Group defaultValue='2' size='large' value={this.selectedSchedule} onChange={this.onChangeSchedule}>
-            <Radio.Button value={2}>2</Radio.Button>
-            <Radio.Button value={4}>4</Radio.Button>
-          </Radio.Group>
+          <QuantitySelector
+            defaultValue='2'
+            size='large'
+            value={this.selectedSchedule}
+            onChange={this.onChangeSchedule}
+          >
+            <QuantitySelector.Button value={2}>2</QuantitySelector.Button>
+            <QuantitySelector.Button value={4}>4</QuantitySelector.Button>
+          </QuantitySelector>
         </Row>
+        <Spacer />
       </div>
     );
   }

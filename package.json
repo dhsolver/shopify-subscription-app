@@ -24,7 +24,7 @@
   "homepage": "https://github.com/tiny-organics/subscription-app#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@mighty-justice/fields-ant": "1.0.1",
+    "@mighty-justice/fields-ant": "1.0.4",
     "@mighty-justice/smart-bool": "^1.0.0",
     "@types/classnames": "^2.2.9",
     "@zeit/next-css": "^1.0.1",
@@ -58,10 +58,12 @@
     "@types/react-intl": "^2.3.18",
     "@types/styled-jsx": "^2.2.8",
     "babel-plugin-import": "^1.12.0",
+    "file-loader": "^4.2.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.18.2",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "url-loader": "^2.1.0"
   },
   "pre-commit": [
     "lint"

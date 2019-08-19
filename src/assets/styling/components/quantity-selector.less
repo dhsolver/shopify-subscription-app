@@ -1,0 +1,62 @@
+/*
+  COMPONENT: QUANTITY SELECTOR
+  EXTENDS: Antd Radio.Group
+*/
+
+:global {
+  .ant-quantity-selector {
+    &.@{radio-group-prefix-cls} {
+      &-large {
+        // .ant-radio-group-large .ant-radio-button-wrapper
+        .@{radio-prefix-cls}-button-wrapper {
+          width: 74px;
+          height: 66px;
+          font-size: @font-size-lg + 2px;
+          line-height: 66px;
+          padding: 0 10px;
+        }
+      }
+
+      .@{radio-prefix-cls}-button-wrapper {
+        color: @text-color;
+        background: transparent;
+        border-color: @tiny-blue;
+        text-align: center;
+      }
+
+      .@{radio-prefix-cls}-button-wrapper-checked:not(.@{radio-prefix-cls}-button-wrapper-disabled) {
+        color: @white;
+        background: @tiny-blue;
+        border-color: @tiny-blue;
+        box-shadow: -1px 0 0 0 @tiny-blue;
+
+        &::before {
+          background-color: @tiny-blue !important;
+          opacity: 0.1;
+        }
+
+        &:first-child {
+          border-color: @tiny-blue;
+          box-shadow: none !important;
+        }
+
+        &:hover {
+          color: @white;
+          border-color: @tiny-blue;
+          box-shadow: -1px 0 0 0 @tiny-blue;
+        }
+
+        &:active {
+          color: @tiny-blue;
+          border-color: @tiny-blue;
+          box-shadow: -1px 0 0 0 @tiny-blue;
+        }
+
+        &:focus-within {
+          outline: @radio-focused-outline;
+        }
+      }
+
+    }
+  }
+}

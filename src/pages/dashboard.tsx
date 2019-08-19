@@ -20,9 +20,7 @@ const getStateOptions = () => [
 export default () => (
   <Layout title='Ant Design Page!'>
     <Provider getOptions={getStateOptions}>
-      <Row type='flex' justify='center'>
-        <Tabs tabs={tabs} />
-      </Row>
+      <Tabs tabs={tabs} />
     </Provider>
   </Layout>
 );

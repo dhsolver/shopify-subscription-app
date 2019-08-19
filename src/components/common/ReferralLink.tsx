@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, message } from 'antd';
+import { Col, Input, message, Row } from 'antd';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import Button from './Button';
@@ -21,18 +21,17 @@ class ReferralLink extends Component <IProps> {
 
   public renderCopyButton () {
     if (!document || !document.queryCommandSupported('copy')) { return null; }
-    return (
-      <Button onClick={this.onCopy}>
-        Copy
-      </Button>
-    );
+    return <Button onClick={this.onCopy}>Copy</Button>;
   }
 
   public render () {
     const { referralLink } = this.props;
 
     return (
-      <Input addonAfter={this.renderCopyButton()} value={referralLink} ref={(input: any) => this.input = input} />
+      <Row className='referal-link'>
+        <Col xs={12}><Input value={referralLink} ref={(input: any) => this.input = input} /></Col>
+        <Col xs={12}>{this.renderCopyButton()}</Col>
+      </Row>
     );
   }
 }

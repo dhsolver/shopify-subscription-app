@@ -28,13 +28,15 @@ class SelectionButtons extends Component <IProps> {
 
     if (this.quantity === 0) {
       return (
-        <Button
-          {...buttonProps}
-          type='primary'
-          icon='plus'
-          value={1}
-          onClick={this.onQuantityChange}
-        />
+        <>
+          <Button
+            {...buttonProps}
+            type='primary'
+            icon='plus'
+            value={1}
+            onClick={this.onQuantityChange}
+          />
+        </>
       );
     }
     return (
