@@ -9,7 +9,6 @@
     "importHelpers": true,
     "inlineSourceMap": false,
     "inlineSources": false,
-    "isolatedModules": true,
     "jsx": "preserve",
     "lib": [
       "dom",
@@ -24,25 +23,24 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noStrictGenericChecks": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "outDir": "build",
     "preserveConstEnums": true,
     "resolveJsonModule": true,
     "skipLibCheck": false,
     "sourceMap": true,
-    "strict": true,
-    "target": "es5"
+    "target": "es5",
+    "isolatedModules": true,
+    "strict": false
   },
   "exclude": [
-    "node_modules",
-    "build",
-    "coverage",
-    "src/__tests__/**",
-    "src/__testutils__/**",
-    "src/setupTests.ts"
+    ".next",
+    "__tests__/**",
+    "__testutils__/**",
+    "setupTests.ts"
   ],
   "include": [
-    "src"
+    "."
   ]
 }

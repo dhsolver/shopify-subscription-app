@@ -10,7 +10,7 @@ import { observer } from 'mobx-react';
 @autoBindMethods
 @observer
 class Carousel extends Component <{}> {
-  private onChange (a: any) {
+  private onChange (_a: any) {
     // console.log(a);
   }
 

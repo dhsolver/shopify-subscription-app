@@ -11,6 +11,8 @@ interface IProps {
   fieldSet: IFieldSet;
 }
 
+const FieldsFormCard = FormCard as any;
+
 @autoBindMethods
 @observer
 class PersonalInfoForm extends Component<IProps> {
@@ -37,7 +39,12 @@ class PersonalInfoForm extends Component<IProps> {
       <div>
         {
           this.isEditing.isTrue
-            ? <FormCard model={{}} fieldSets={[fieldSet]} showControls={false} renderTopRight={this.renderEditIcon}/>
+            ? <FieldsFormCard
+              model={{}}
+              fieldSets={[fieldSet]}
+              showControls={false}
+              renderTopRight={this.renderEditIcon}
+            />
             : <Card fieldSets={[fieldSet]} renderTopRight={this.renderEditIcon}/>
         }
       </div>
