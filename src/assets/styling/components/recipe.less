@@ -1,0 +1,28 @@
+/*
+  COMPONENT: RECIPE
+*/
+
+@recipe-image-size: 140px;
+
+.recipe {
+  // width: @recipe-image-size;
+  height: @recipe-image-size + 50px;
+  padding-bottom: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &-image {
+    width: @recipe-image-size;
+    height: @recipe-image-size;
+
+    img { width: @recipe-image-size; }
+    &-empty {
+      width: @recipe-image-size;
+      height: @recipe-image-size;
+      background-color: blue;
+    }
+  }
+
+  &-info { text-align: center; }
+}

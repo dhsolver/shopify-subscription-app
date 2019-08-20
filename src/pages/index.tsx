@@ -12,10 +12,6 @@ class Index extends Component <{}> {
       <Layout>
         <h2>Hello World</h2>
         <br/>
-        <Link href='/antd'>
-          <a>Ant Design Demo Page</a>
-        </Link>
-        <br/>
         <Link href='/frequency-selection'>
           <a>Quantity/Frequency Selection</a>
         </Link>

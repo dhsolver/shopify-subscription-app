@@ -15,7 +15,7 @@ import {
 // Core app styling
 import '../assets/styling/layout.less';
 
-const { Header, Content } = Layout;
+const { Content, Footer } = Layout;
 
 interface IProps {
   title?: string;
@@ -36,11 +36,6 @@ export default ({ title, children }: IProps) => (
     `}</style>
     <LocaleProvider locale={enUS}>
       <Layout>
-        <Header>
-          <Link href='/'>
-            <a>Home</a>
-          </Link>
-        </Header>
         <Content style={{padding: '100px 0 50px'}}>
           <Row type='flex'>
             <Col xs={1} sm={2} lg={3} xl={5} />
@@ -50,6 +45,9 @@ export default ({ title, children }: IProps) => (
             <Col xs={1} sm={2} lg={3} xl={5} />
           </Row>
         </Content>
+        <Footer>
+          <Link href='/'><a>Home</a></Link><br />
+        </Footer>
       </Layout>
     </LocaleProvider>
   </div>

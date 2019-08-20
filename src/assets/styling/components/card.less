@@ -4,7 +4,12 @@
 
 :global {
   .@{card-prefix-cls} {
+    background-color: fade(@white, 50%);
     margin-bottom: 15px;
+
+    &-bordered {
+      border: @border-width-base @border-style-base #ECECEB;
+    }
 
     &-head {
       color: #323F4B;
