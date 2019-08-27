@@ -45,7 +45,8 @@
     "next": "^9.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "shopify-buy": "^2.6.1"
+    "shopify-buy": "^2.6.1",
+    "store": "^2.0.12"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.0",

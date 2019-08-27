@@ -3,13 +3,17 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import Link from 'next/link';
 import Layout from '../components/Layout';
+import Button from '../components/common/Button';
 
 @autoBindMethods
 @observer
-class Index extends Component <{}> {
+export default class Index extends Component <{}> {
   public render () {
     return (
       <Layout>
+        <Link href='/onboarding-name'>
+          <Button>Get Started!</Button>
+        </Link>
         <h2>Hello World</h2>
         <br/>
         <Link href='/frequency-selection'>
@@ -31,5 +35,3 @@ class Index extends Component <{}> {
     );
   }
 }
-
-export default Index;
