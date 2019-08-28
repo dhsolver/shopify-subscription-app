@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormCard, OptionSelect, RadioGroup } from '@mighty-justice/fields-ant';
+import { FormCard, OptionSelect } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer, Provider } from 'mobx-react';
 import store from 'store';
@@ -52,6 +52,7 @@ const getOptions = () => ({
 @observer
 class OnboardingBabyInfoForm extends Component<{}> {
   @observable private name = '';
+
   public componentDidMount () {
     this.name = get(JSON.parse(store.get('nameInfo')), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
@@ -64,31 +65,33 @@ class OnboardingBabyInfoForm extends Component<{}> {
 
   public render () {
     const EatsMeatInput = (props) => (
-      <span>
+      <h2>
         {this.name}{' '}
         <OptionSelect
           {...props}
           showSearch
+          size='large'
           fieldConfig={
             {field: 'eats_meat', options: EATS_MEAT_OPTIONS}
           }
         />
         {' '}
         eat meat
-      </span>
+      </h2>
     );
 
     const EatingStyleInput = (props) => (
-      <span>
+      <h2>
         {this.name}'s eating style is{' '}
         <OptionSelect
           {...props}
           showSearch
+          size='large'
           fieldConfig={
             {field: 'eating_style', options: EATING_STYLE_OPTIONS}
           }
         />
-      </span>
+      </h2>
     );
 
     const insertAllergiesIf = (model: any) => model.has_allergies;
@@ -96,10 +99,11 @@ class OnboardingBabyInfoForm extends Component<{}> {
     const babyInfoFieldSet = [
       {
         field: 'birthdate',
-        label: `${this.name}'s birthdate is:`,
+        label: `${this.name}'s birthdate is...`,
         type: 'date',
       },
       {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'has_allergies',
         label: `Does ${this.name} have any allergies?`,
         options: ALLERGIES_OPTIONS,
@@ -112,25 +116,29 @@ class OnboardingBabyInfoForm extends Component<{}> {
         type: 'text',
       },
       {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'stage_of_eating',
         label: `What is ${this.name}'s stage of eating?`,
         options: STAGE_OF_EATING_OPTIONS,
         type: 'radio',
       },
       {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'current_diet',
-        label: `What is ${this.name}'s current diet?`,
+        label: `${this.name}'s current diet consists of...`,
         options: CURRENT_DIET_OPTIONS,
         type: 'radio',
       },
       {
         editComponent: EatsMeatInput,
+        editProps: { className: 'ant-select-inline' },
         field: 'eats_meat',
         label: '',
         options: EATS_MEAT_OPTIONS,
       },
       {
         editComponent: EatingStyleInput,
+        editProps: { className: 'ant-select-inline' },
         field: 'eating_style',
         label: '',
         options: EATING_STYLE_OPTIONS,
@@ -145,6 +153,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
             title={`About ${this.name}`}
             model={{}}
             fieldSets={[babyInfoFieldSet]}
+            saveText='Next'
           />
         </Provider>
       </div>

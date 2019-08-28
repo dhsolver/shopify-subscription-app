@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { FormCard, OptionSelect } from '@mighty-justice/fields-ant';
+import { Form, RadioGroup } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer, Provider } from 'mobx-react';
-import { Input } from 'antd';
+import { Card, Col, Input, Row } from 'antd';
 import store from 'store';
 import Router from 'next/router';
 
@@ -29,26 +29,29 @@ const getOptions = () => ({
   relationship_to_child: RELATIONSHIP_OPTIONS,
 });
 
-const RelationshipOptionSelect = (props) => (
-  <div>
-    I am{' '}
-    <OptionSelect
+const RelationshipRadioGroup = (props) => (
+  <div style={{width: 120, margin: '0 auto'}}>
+    <h2>I am...</h2>
+    <RadioGroup
+      className='ant-radio-group-vertical'
       {...props}
-      showSearch
       fieldConfig={
-        {editComponent: RelationshipOptionSelect, field: 'relationship_to_child', options: RELATIONSHIP_OPTIONS}
+        {editComponent: RelationshipRadioGroup, field: 'relationship_to_child', options: RELATIONSHIP_OPTIONS}
       }
     />
   </div>
 );
 
 const ChildNameInput = (props) => (
-  <div>My child's name is <Input {...props}/></div>
+  <div style={{textAlign: 'center'}}>
+    <h2>My child's name is...</h2>
+    <Input {...props} className='ant-input-inline ant-input-center' />
+  </div>
 );
 
 const fieldSet = [
   {
-    editComponent: RelationshipOptionSelect,
+    editComponent: RelationshipRadioGroup,
     field: 'relationship_to_child',
     label: '',
     options: RELATIONSHIP_OPTIONS,
@@ -59,6 +62,12 @@ const fieldSet = [
     label: '',
   },
 ];
+
+const FORM_COLS = {
+  lg: {span: 12, offset: 6},
+  sm: {span: 16, offset: 4},
+  xs: 24,
+};
 
 @autoBindMethods
 @observer
@@ -73,7 +82,13 @@ class OnboardingNameForm extends Component<{}> {
     return (
       <div>
         <Provider getOptions={getOptions}>
-          <FormCard onSave={this.onSave} model={{}} fieldSets={[fieldSet]} saveText='Next'/>
+          <Card>
+            <Row>
+              <Col {...FORM_COLS}>
+                <Form onSave={this.onSave} model={{}} fieldSets={[fieldSet]} saveText='Next' />
+              </Col>
+            </Row>
+          </Card>
         </Provider>
       </div>
     );

@@ -5,14 +5,16 @@ import store from 'store';
 import { get } from 'lodash';
 import { observable } from 'mobx';
 import Router from 'next/router';
-import { Icon, Upload } from 'antd';
+import { Card, Icon, Upload } from 'antd';
 import Button from './common/Button';
+import Spacer from './common/Spacer';
 import { Form } from '@mighty-justice/fields-ant';
 
 const fieldSets = [[{
-  editProps: {defaultChecked: true},
+  editProps: {defaultChecked: true, description: 'I would like to share my data with Tuft\'s School of Nutrition'},
   field: 'share_with_tufts',
   label: 'I would like to share my data with Tuft\'s School of Nutrition',
+  showLabel: false,
   type: 'checkbox',
 }]];
 
@@ -32,15 +34,19 @@ class OnboardingFinalSteps extends Component<{}> {
 
   public render () {
     return (
-      <div>
-        <h2>Upload a picture of {this.name}</h2>
-         <Upload>
-          <Button>
-            <Icon type='upload' /> Click to Upload
-          </Button>
-        </Upload>
-        <Form fieldSets={fieldSets} onSave={this.onSave} saveText={'Next'}/>
-      </div>
+      <Card style={{textAlign: 'center'}}>
+        <Spacer />>
+        <h2>
+          Upload a picture of {this.name}
+          <Upload>
+            <Button>
+              <Icon type='upload' /> Click to Upload
+            </Button>
+          </Upload>
+        </h2>
+        <Spacer large />
+        <Form fieldSets={fieldSets} onSave={this.onSave} saveText='Submit' />
+      </Card>
     );
   }
 }

@@ -19,4 +19,27 @@
     padding-right: @input-padding-horizontal-base + @input-affix-width + 4px;
   }
 
+  .@{ant-prefix}-input-center {
+    text-align: center;
+  }
+
+  .@{ant-prefix}-input-inline {
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    background-color: transparent;
+
+    &:hover {
+      border-color: @primary-color;
+      border-right-width: 0 !important;
+    }
+
+    &:focus {
+      border-color: @primary-color;
+      border-right-width: 0 !important;
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
 }

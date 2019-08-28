@@ -9,6 +9,8 @@ import OnboardingBabyInfoForm from '../components/OnboardingBabyInfoForm';
 
 export default () => (
   <Layout title='Ant Design Page!'>
-    <OnboardingBabyInfoForm />
+    <div className='page-onboarding'>
+      <OnboardingBabyInfoForm />
+    </div>
   </Layout>
 );

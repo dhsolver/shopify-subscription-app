@@ -5,6 +5,8 @@ import OnboardingFinalSteps from '../components/OnboardingFinalSteps';
 
 export default () => (
   <Layout title='Ant Design Page!'>
-    <OnboardingFinalSteps/>
+    <div className='page-onboarding'>
+      <OnboardingFinalSteps />
+    </div>
   </Layout>
 );
