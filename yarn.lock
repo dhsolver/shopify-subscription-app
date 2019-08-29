@@ -908,10 +908,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@mighty-justice/fields-ant@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@mighty-justice/fields-ant/-/fields-ant-1.0.4.tgz#d83866d6b6a265f435fd31592120e5df75dbacf3"
-  integrity sha512-8zNgshvL7ubeF70+faafw/76pCGmCTjuunxcbaoflIsh2aUAQOPZG5/E41NgG2uGkcrNthOYpIFMfRsXkzyezw==
+"@mighty-justice/fields-ant@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@mighty-justice/fields-ant/-/fields-ant-1.0.5.tgz#b539b8a40d2b9af02addff0fd159a2e699171177"
+  integrity sha512-hmD0/lJfbw67nzPqtIeGk4PamqOwhi0QAP4+DlWtsbU/5AmCuKNROXAXkZxyiiG6phgagGUZr8X2yCgH0wve+w==
   dependencies:
     "@mighty-justice/smart-bool" "^1.0.0"
     "@mighty-justice/utils" "1.3.4"

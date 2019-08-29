@@ -9,6 +9,9 @@ import { Card, Icon, Upload } from 'antd';
 import Button from './common/Button';
 import Spacer from './common/Spacer';
 import { Form } from '@mighty-justice/fields-ant';
+import SmartBool from '@mighty-justice/smart-bool';
+import { sleep } from '../utils/utils';
+import cx from 'classnames';
 
 const fieldSets = [[{
   editProps: {defaultChecked: true, description: 'I would like to share my data with Tuft\'s School of Nutrition'},
@@ -18,23 +21,29 @@ const fieldSets = [[{
   type: 'checkbox',
 }]];
 
+const SUBMIT_SLEEP = 1500;
+
 @autoBindMethods
 @observer
 class OnboardingFinalSteps extends Component<{}> {
+  @observable private isSaving = new SmartBool();
   @observable private name = '';
+
   public componentDidMount () {
     this.name = get(JSON.parse(store.get('nameInfo')), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
   }
 
-  private onSave (_model) {
+  private async onSave (_model) {
+    this.isSaving.setTrue();
     // console.log(_model);
-    Router.push('/frequency-selection');
+    await sleep(SUBMIT_SLEEP);
+    await Router.push('/frequency-selection');
   }
 
   public render () {
     return (
-      <Card style={{textAlign: 'center'}}>
+      <Card className={cx({'ant-card-saving': this.isSaving.isTrue})} style={{textAlign: 'center'}}>
         <Spacer />
         <h2>
           Upload a picture of {this.name}

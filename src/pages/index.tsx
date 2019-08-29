@@ -4,6 +4,7 @@ import autoBindMethods from 'class-autobind-decorator';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import Button from '../components/common/Button';
+import Spacer from '../components/common/Spacer';
 
 @autoBindMethods
 @observer
@@ -12,10 +13,9 @@ export default class Index extends Component <{}> {
     return (
       <Layout>
         <Link href='/onboarding-name'>
-          <Button>Get Started!</Button>
+          <Button type='primary'>Get Started!</Button>
         </Link>
-        <h2>Hello World</h2>
-        <br/>
+        <Spacer />
         <Link href='/frequency-selection'>
           <a>Quantity/Frequency Selection</a>
         </Link>

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { FormCard, OptionSelect } from '@mighty-justice/fields-ant';
+import { Date, Form, OptionSelect } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer, Provider } from 'mobx-react';
 import store from 'store';
 import Router from 'next/router';
 import { observable } from 'mobx';
 import { get } from 'lodash';
+import SmartBool from '@mighty-justice/smart-bool';
+import { sleep } from '../utils/utils';
+import cx from 'classnames';
+import { Card, Col, Row } from 'antd';
 
 const RELATIONSHIP_OPTIONS = [
   {value: 'parent', name: 'a parent'},
@@ -32,7 +36,7 @@ const CURRENT_DIET_OPTIONS = [
   {name: 'Finger foods', value: 'finger_food'},
 ];
 
-const EATS_MEAT_OPTIONS = [{name: 'Does', value: true}, {name: 'Does not', value: false}];
+const EATS_MEAT_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
 
 const EATING_STYLE_OPTIONS = [
   {name: 'Picky', value: 'picky'},
@@ -48,9 +52,18 @@ const getOptions = () => ({
   relationship_to_child: RELATIONSHIP_OPTIONS,
 });
 
+const FORM_COLS = {
+  lg: {span: 14, offset: 5},
+  sm: {span: 18, offset: 3},
+  xs: 24,
+};
+
+const SUBMIT_SLEEP = 1500;
+
 @autoBindMethods
 @observer
 class OnboardingBabyInfoForm extends Component<{}> {
+  @observable private isSaving = new SmartBool();
   @observable private name = '';
 
   public componentDidMount () {
@@ -58,46 +71,28 @@ class OnboardingBabyInfoForm extends Component<{}> {
     if (!this.name) { Router.push('/onboarding-name'); }
   }
 
-  private onSave (data) {
-    store.set('babyInfo', data);
-    Router.push('/onboarding-finish');
+  private async onSave (data) {
+    this.isSaving.setTrue();
+    await store.set('babyInfo', data);
+    await sleep(SUBMIT_SLEEP);
+    await Router.push('/onboarding-finish');
   }
 
   public render () {
-    const EatsMeatInput = (props) => (
-      <h2>
-        {this.name}{' '}
-        <OptionSelect
+    const InlineDateInput = (props) => (
+      <div className='ant-date-inline' style={{width: 300}}>
+        <Date
           {...props}
-          showSearch
-          size='large'
-          fieldConfig={
-            {field: 'eats_meat', options: EATS_MEAT_OPTIONS}
-          }
         />
-        {' '}
-        eat meat
-      </h2>
-    );
-
-    const EatingStyleInput = (props) => (
-      <h2>
-        {this.name}'s eating style is{' '}
-        <OptionSelect
-          {...props}
-          showSearch
-          size='large'
-          fieldConfig={
-            {field: 'eating_style', options: EATING_STYLE_OPTIONS}
-          }
-        />
-      </h2>
+      </div>
     );
 
     const insertAllergiesIf = (model: any) => model.has_allergies;
 
     const babyInfoFieldSet = [
       {
+        editComponent: InlineDateInput,
+        editProps: { className: 'ant-date-inline', size: 'large' },
         field: 'birthdate',
         label: `${this.name}'s birthdate is...`,
         type: 'date',
@@ -130,31 +125,38 @@ class OnboardingBabyInfoForm extends Component<{}> {
         type: 'radio',
       },
       {
-        editComponent: EatsMeatInput,
-        editProps: { className: 'ant-select-inline' },
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eats_meat',
-        label: '',
+        label: `Does ${this.name} eat meat?`,
         options: EATS_MEAT_OPTIONS,
+        type: 'radio',
       },
       {
-        editComponent: EatingStyleInput,
-        editProps: { className: 'ant-select-inline' },
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_style',
-        label: '',
+        label: `${this.name}'s eating style is...`,
         options: EATING_STYLE_OPTIONS,
+        type: 'radio',
       },
     ];
 
     return (
       <div>
         <Provider getOptions={getOptions}>
-          <FormCard
-            onSave={this.onSave}
-            title={`About ${this.name}`}
-            model={{}}
-            fieldSets={[babyInfoFieldSet]}
-            saveText='Next'
-          />
+          <Card className={cx({'ant-card-saving': this.isSaving.isTrue})}>
+            <Row>
+              <Col {...FORM_COLS}>
+                <Form
+                  className={cx({'ant-card-saving': this.isSaving.isTrue})}
+                  onSave={this.onSave}
+                  //title={`About ${this.name}`}
+                  model={{}}
+                  fieldSets={[babyInfoFieldSet]}
+                  saveText='Next'
+                />
+              </Col>
+            </Row>
+          </Card>
         </Provider>
       </div>
     );

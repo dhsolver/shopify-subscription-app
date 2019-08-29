@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import OnboardingFinalSteps from '../components/OnboardingFinalSteps';
 
 export default () => (
-  <Layout title='Ant Design Page!'>
+  <Layout title='Onboarding - photo'>
     <div className='page-onboarding'>
       <OnboardingFinalSteps />
     </div>

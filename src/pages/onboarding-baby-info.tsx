@@ -8,7 +8,7 @@ import Button from '../components/common/Button';
 import OnboardingBabyInfoForm from '../components/OnboardingBabyInfoForm';
 
 export default () => (
-  <Layout title='Ant Design Page!'>
+  <Layout title='Onboarding - informations'>
     <div className='page-onboarding'>
       <OnboardingBabyInfoForm />
     </div>
