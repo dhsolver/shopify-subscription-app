@@ -10,6 +10,7 @@ interface IProps {
   image?: string; // TODO: require this
   name: string;
   description: string;
+  disabled: boolean;
   onChange: (quantity: number) => any;
 }
 
@@ -20,7 +21,7 @@ class ItemSelector extends Component <IProps> {
   private clsPrefix = 'item-selector';
 
   public render () {
-    const { name, description, image, onChange } = this.props;
+    const { name, description, disabled, image, onChange } = this.props;
 
     return (
       <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false}>
@@ -32,10 +33,9 @@ class ItemSelector extends Component <IProps> {
         </div>
         <div className={`${this.clsPrefix}-info`}>
           <h4>{name}</h4>
-          {/*<h5>{description}</h5>*/}
         </div>
         <div className={`${this.clsPrefix}-buttons`}>
-          <SelectionButtons onChange={onChange} />
+          <SelectionButtons disabled={disabled} onChange={onChange} />
         </div>
       </Card>
     );

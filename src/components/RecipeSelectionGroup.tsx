@@ -5,11 +5,14 @@ import Axios from 'axios';
 import { find } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 import { Col, List, Row, Spin } from 'antd';
+import store from 'store';
 
 import ItemSelector from './ItemSelector';
 import SmartBool from '@mighty-justice/smart-bool';
 import AddOnStatic from './AddOnStatic';
 import Spacer from './common/Spacer';
+import Link from 'next/link';
+import Button from '../components/common/Button';
 
 const ITEM_COLS = {xs: 24, sm: 12, lg: 8};
 
@@ -19,31 +22,42 @@ class RecipeSelectionGroup extends React.Component <{}> {
   @observable private data: any = [];
   @observable public total = 0;
   @observable private isLoading = new SmartBool(true);
+  private boxItems = {};
+  private subscriptionInfo = store.get('subscriptionInfo');
+  private maxItems = 12;
 
   public async componentDidMount () {
+    this.maxItems = this.subscriptionInfo.quantity;
     const response = await Axios.get('/collections/with-products/');
-
-    // *************************************************************
-    // testing the recharge and admin API's the following will be removed
-    Axios.get('/orders/');
-    Axios.get('/recharge-customers/');
-    // *************************************************************
-
     this.data = find(response.data, { handle: 'menu' }).products;
     this.isLoading.setFalse();
   }
 
-  private onChange (value: number) { this.total += value; }
+  private onChange (id, value: number) {
+    this.total += value;
+    if (!this.boxItems[id]) {
+      this.boxItems[id] = 0;
+    }
+    this.boxItems[id] += value;
+  }
+
+  private save () { store.set('boxItems', this.boxItems); }
 
   private renderItem (item: any, itemIdx: number) {
+    const decodedURL = atob(item.id)
+      , splitURL = decodedURL.split('/')
+      , id = splitURL[splitURL.length - 1]
+      ;
+
     const src = item.images.length && item.images[0].src;
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
         <ItemSelector
+          disabled={this.total === this.maxItems}
           name={item.title}
           description={item.description}
           image={src}
-          onChange={this.onChange}
+          onChange={this.onChange.bind(this, id)}
         />
       </Col>
     );
@@ -66,7 +80,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
         </Row>
 
         <Row type='flex' justify='center'>
-          <p>{this.total} / 12 selected</p>
+          <p>{this.total} / {this.maxItems} selected</p>
         </Row>
 
         <List
@@ -75,6 +89,14 @@ class RecipeSelectionGroup extends React.Component <{}> {
           renderItem={this.renderItem}
         />
         <AddOnStatic />
+        <br/>
+        <Row type='flex' justify='center'>
+          <Link href='/checkout'>
+            <Button disabled={this.maxItems !== this.total} onClick={this.save} type='primary' size='large'>
+              Next
+            </Button>
+          </Link>
+        </Row>
       </div>
     );
   }

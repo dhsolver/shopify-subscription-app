@@ -6,6 +6,7 @@ import Button from './common/Button';
 import { ButtonProps } from 'antd/lib/button';
 
 interface IProps {
+  disabled?: boolean;
   onChange: (quantity: number) => any;
 }
 
@@ -31,10 +32,11 @@ class SelectionButtons extends Component <IProps> {
         <>
           <Button
             {...buttonProps}
-            type='primary'
+            disabled={this.props.disabled}
             icon='plus'
-            value={1}
             onClick={this.onQuantityChange}
+            type='primary'
+            value={1}
           />
         </>
       );
@@ -44,15 +46,16 @@ class SelectionButtons extends Component <IProps> {
         <Button
           {...buttonProps}
           icon='minus'
-          value={-1}
           onClick={this.onQuantityChange}
+          value={-1}
         />
         <span className='selection-buttons-quantity'>{this.quantity}</span>
         <Button
           {...buttonProps}
+          disabled={this.props.disabled}
           icon='plus'
-          value={1}
           onClick={this.onQuantityChange}
+          value={1}
         />
       </>
     );

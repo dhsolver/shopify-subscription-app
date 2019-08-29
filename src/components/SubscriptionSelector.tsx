@@ -7,6 +7,10 @@ import autoBindMethods from 'class-autobind-decorator';
 import { Row } from 'antd';
 import QuantitySelector from './common/QuantitySelector';
 import Spacer from '../components/common/Spacer';
+import { PRICING } from '../constants';
+import Link from 'next/link';
+import Button from '../components/common/Button';
+import store from 'store';
 
 @autoBindMethods
 @observer
@@ -26,9 +30,17 @@ class SubscriptionSelector extends Component <{}> {
     this.selectedSchedule = Number(value);
   }
 
+  private save () {
+    store.set('subscriptionInfo', {quantity: this.selectedQuantity, frequency: this.selectedSchedule});
+  }
+
   public render () {
     return (
       <div>
+        <Row style={{padding: '30px 0'}}>
+          <h2>Select Quantity and Frequency</h2>
+          <p>${PRICING[this.selectedQuantity]} per meal</p>
+        </Row>
         <Row type='flex' justify='center'>
           <p>
             I want to receive <span style={{fontSize: '16px'}}>{this.selectedQuantity}</span> meals in every order
@@ -64,6 +76,13 @@ class SubscriptionSelector extends Component <{}> {
           </QuantitySelector>
         </Row>
         <Spacer />
+        <Spacer />
+          <div style={{height: 100}} />
+          <Row type='flex' justify='center'>
+            <Link href='/recipe-selection'>
+              <Button size='large' type='primary' onClick={this.save}>Next</Button>
+            </Link>
+          </Row>
       </div>
     );
   }
