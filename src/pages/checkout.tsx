@@ -12,8 +12,8 @@ const steps = [
 ];
 
 const getStateOptions = () => [
-  {value: 'NJ', name: 'New Jersey'},
-  {value: 'NY', name: 'New York'},
+  {value: 'New Jersey', name: 'New Jersey'},
+  {value: 'New York', name: 'New York'},
 ];
 
 export default () => (

@@ -30,7 +30,7 @@ export default () => (
         </Row>
 
         <Row type='flex' justify='center'>
-          <h3>You Can manage and view your orders in your account page :)</h3>
+          <h3>You can manage and view your orders in your account page :)</h3>
         </Row>
 
         <Row type='flex' justify='center'>

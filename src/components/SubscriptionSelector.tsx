@@ -4,13 +4,15 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
+
 import { Row } from 'antd';
+
 import QuantitySelector from './common/QuantitySelector';
-import Spacer from '../components/common/Spacer';
 import { PRICING } from '../constants';
 import Link from 'next/link';
 import Button from '../components/common/Button';
 import store from 'store';
+import Spacer from './common/Spacer';
 
 @autoBindMethods
 @observer
@@ -71,6 +73,7 @@ class SubscriptionSelector extends Component <{}> {
             value={this.selectedSchedule}
             onChange={this.onChangeSchedule}
           >
+            <QuantitySelector.Button value={1}>1</QuantitySelector.Button>
             <QuantitySelector.Button value={2}>2</QuantitySelector.Button>
             <QuantitySelector.Button value={4}>4</QuantitySelector.Button>
           </QuantitySelector>
