@@ -35,7 +35,7 @@ class OnboardingFinalSteps extends Component<{}> {
   public render () {
     return (
       <Card style={{textAlign: 'center'}}>
-        <Spacer />>
+        <Spacer />
         <h2>
           Upload a picture of {this.name}
           <Upload>
