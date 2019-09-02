@@ -123,6 +123,64 @@ app.prepare().then(() => {
 
   /* CREATE ORDER */
 
+  server.post('/recharge-checkouts/', async (req, res) => {
+    try {
+      const response = await rechargeClient.post('checkouts', req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e.response.data.errors)
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
+  server.post('/recharge-charges/:id/', async (req, res) => {
+    try {
+      console.log(`/checkouts/${req.params.id}/charge`, req.body)
+      const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e.response.data.errors)
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
+  server.put('/recharge-checkouts/:id/', async (req, res) => {
+    try {
+      console.log(`/checkouts/${req.params.id}/charge`, req.body)
+      const response = await rechargeClient.put(`checkouts/${req.params.id}/`, req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e.response.data.errors)
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
+  server.get('/recharge-checkouts/:token/shipping-rates', async (req, res) => {
+    try {
+      const response = await rechargeClient.get(`checkouts/${req.params.token}/shipping_rates/`, req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e.response.data.errors)
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
+  server.put('/recharge-charges/:id/', async (req, res) => {
+    try {
+      console.log(`/checkouts/${req.params.id}`, req.body)
+      const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e.response.data.errors)
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
   server.post('/subscriptions/', async (req, res) => {
     const response = await rechargeClient.post('subscriptions', req.body);
     return res.end(JSON.stringify(response.data));

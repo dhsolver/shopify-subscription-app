@@ -15,6 +15,7 @@ import * as Antd from 'antd';
 
 // Core app styling
 import '../assets/styling/layout.less';
+import Router from 'next/router';
 
 const { Content, Footer } = Antd.Layout;
 
@@ -28,7 +29,10 @@ interface IProps {
 export default class Layout extends Component<IProps> {
   public componentDidMount () {
     const { user_id } = URI.parseQuery(window.location.search) as {user_id?: string};
-    store.set('customerInfo', {id: user_id});
+    if (user_id) {
+      store.set('customerInfo', {id: user_id});
+      Router.push('/dashboard');
+    }
   }
 
   public render () {
@@ -41,6 +45,7 @@ export default class Layout extends Component<IProps> {
           <meta name='viewport' content='width=device-width, initial-scale=1' />
           <meta charSet='utf-8' />
           <link rel='stylesheet' href='https://use.typekit.net/kqf1wnp.css' />
+          <script src='https://js.stripe.com/v3/' />
         </Head>
         <Antd.LocaleProvider locale={enUS}>
           <Antd.Layout>

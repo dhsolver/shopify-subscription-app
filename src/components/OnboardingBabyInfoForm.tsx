@@ -58,6 +58,15 @@ const FORM_COLS = {
   xs: 24,
 };
 
+const AllergiesBlurb = () => (
+  <i>
+    {'* Tiny Organics products are manufactured in a facility that also processes allergens. '}
+    {'We recommend you exercise caution if your child has a history of allergic reaction due to cross contamination. '}
+    {'It is extremely important to us that we practice strict health and safety standard '}
+    {'and there is always a thorough clean of equipment between runs.'}
+  </i>
+);
+
 const SUBMIT_SLEEP = 1500;
 
 @autoBindMethods
@@ -110,6 +119,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         label: `Please list ${this.name}'s allergies below`,
         type: 'text',
       },
+      {field: 'allergies_blurb', editComponent: AllergiesBlurb, label: '', writeOnly: true},
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'stage_of_eating',

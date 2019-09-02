@@ -47,9 +47,11 @@
     "next": "^9.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-stripe-elements": "^5.0.0",
     "shopify-api-node": "^2.23.0",
     "shopify-buy": "^2.6.1",
     "store": "^2.0.12",
+    "stripe": "^7.8.0",
     "urijs": "^1.19.1"
   },
   "devDependencies": {

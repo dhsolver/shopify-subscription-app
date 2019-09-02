@@ -8,7 +8,7 @@ import autoBindMethods from 'class-autobind-decorator';
 import { Row } from 'antd';
 
 import QuantitySelector from './common/QuantitySelector';
-import { PRICING } from '../constants';
+import { PRICING, PRODUCT_ID, VARIANT_ID } from '../constants';
 import Link from 'next/link';
 import Button from '../components/common/Button';
 import store from 'store';
@@ -34,6 +34,8 @@ class SubscriptionSelector extends Component <{}> {
 
   private save () {
     store.set('subscriptionInfo', {quantity: this.selectedQuantity, frequency: this.selectedSchedule});
+    store.set('product_id', PRODUCT_ID[this.selectedQuantity]);
+    store.set('variant_id', VARIANT_ID[this.selectedQuantity]);
   }
 
   public render () {

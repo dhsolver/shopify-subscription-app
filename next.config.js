@@ -10,30 +10,42 @@ if (typeof require !== 'undefined') {
   require.extensions['.less'] = file => {}
 }
 
-module.exports = withCss(
-  withLess({
-    lessLoaderOptions: {
-      javascriptEnabled: true,
-      /*
-      Re-enable once theming is complete.
+module.exports = {
+  ...withCss(
+    withLess({
+      lessLoaderOptions: {
+        javascriptEnabled: true,
+        /*
+        Re-enable once theming is complete.
 
-      modifyVars: lessToJS(
-        fs.readFileSync(path.resolve(__dirname, './src/assets/antd-tiny.less'), 'utf8'),
-      ),
-      */
-    },
-    webpack: (config, options) => {
-      config.module.rules.push({
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 100000
+        modifyVars: lessToJS(
+          fs.readFileSync(path.resolve(__dirname, './src/assets/antd-tiny.less'), 'utf8'),
+        ),
+        */
+      },
+      webpack: (config, options) => {
+        config.module.rules.push({
+          test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+          use: {
+            loader: 'url-loader',
+            options: {
+              limit: 100000
+            }
           }
-        }
-      })
+        });
 
-      return config
-    }
-  })
-);
+        return config
+      }
+    }),
+  ),
+  env: {
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+  },
+  publicRuntimeConfig: {
+    // Will be available on both server and client
+    staticFolder: '/static',
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+  },
+};

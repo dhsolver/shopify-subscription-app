@@ -5,6 +5,18 @@ import { inject, observer } from 'mobx-react';
 import { Col, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
+import store from 'store';
+import { get, noop } from 'lodash';
+import getConfig from 'next/config';
+
+import dynamic from 'next/dynamic';
+
+const DynamicComponentWithNoSSR = dynamic(
+  () => import('./StripeForm'),
+  { ssr: false },
+);
+
+const { publicRuntimeConfig } = getConfig();
 
 const colProps = { span: 12 };
 const GUTTER = 48;
@@ -73,7 +85,7 @@ export const accountDetailsFieldSet = {
 };
 
 const fieldSetsLeft = [
-  paymentInfoFieldSet,
+  // paymentInfoFieldSet,
   billingAddressFieldSet,
   discountCodeFieldSet,
 ];
@@ -87,6 +99,14 @@ const fieldSetsRight = [
 @autoBindMethods
 @observer
 class AccountInfoForm extends Component <{}> {
+  private stripeToken;
+  public componentDidMount () {
+    if (!store.get('product_id') || !store.get('variant_id')) {
+      Router.push('/frequency-selection');
+    }
+  }
+
+  private stripeFormRef;
   private get fieldSets () {
     return {fieldSetsLeft, fieldSetsRight};
   }
@@ -149,14 +169,58 @@ class AccountInfoForm extends Component <{}> {
     };
   }
 
+  private serializeRechargeCheckoutInfo (model: any) {
+    const { frequency } = store.get('subscriptionInfo');
+
+    return {
+      checkout: {
+        discount_code: model.discount_code,
+        email: model.email,
+        line_items: [
+          {
+            charge_interval_frequency: frequency,
+            order_interval_frequency: frequency,
+            order_interval_unit: 'week',
+            product_id: store.get('product_id'),
+            quantity: 1,
+            variant_id: store.get('variant_id'),
+          },
+        ],
+        shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
+      },
+    };
+  }
+
+  private getStripeFormRef (form: any) {
+    this.stripeFormRef = form;
+  }
+
   private async onSave (model: any) {
+    await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     const {data: {id}} = await Axios.post('/shopify-customers/', this.serializeShopifyCustomerInfo(model))
       , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
       , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
+      , rechargeCheckoutResponse = await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model))
+      , { checkout: { token } } = rechargeCheckoutResponse.data
+      , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
       ;
+
+    await Axios.put(`/recharge-checkouts/${token}/`, {
+      checkout: {
+        shipping_line: {handle: get(shippingRates, 'data.shipping_rates[0].handle') || 'shopify-Free%20Shipping-0.00' },
+      },
+    });
+
+    await Axios.post(`/recharge-charges/${token}/`, {
+      checkout_charge: { payment_processor: 'stripe', payment_token: this.stripeToken },
+    });
 
     Router.push('/order-confirmation');
     return rechargeCustomerResponse;
+  }
+
+  public handleResult ({token}: any) {
+    this.stripeToken = token.id;
   }
 
   public render () {
@@ -170,6 +234,11 @@ class AccountInfoForm extends Component <{}> {
         </Row>
         <Row type='flex' gutter={GUTTER} justify='space-between'>
           <Col span={12}>
+            <DynamicComponentWithNoSSR
+              getStripeFormRef={this.getStripeFormRef}
+              stripePublicKey={publicRuntimeConfig.STRIPE_PUBLIC_KEY}
+              handleResult={this.handleResult}
+            />
             <Form
               fieldSets={[...this.fieldSets.fieldSetsLeft, ...this.fieldSets.fieldSetsRight]}
               onSave={this.onSave}
