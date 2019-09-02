@@ -7,7 +7,6 @@ import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
 import { get, noop } from 'lodash';
-import getConfig from 'next/config';
 
 import dynamic from 'next/dynamic';
 
@@ -15,8 +14,6 @@ const DynamicComponentWithNoSSR = dynamic(
   () => import('./StripeForm'),
   { ssr: false },
 );
-
-const { publicRuntimeConfig } = getConfig();
 
 const colProps = { span: 12 };
 const GUTTER = 48;
@@ -236,7 +233,7 @@ class AccountInfoForm extends Component <{}> {
           <Col span={12}>
             <DynamicComponentWithNoSSR
               getStripeFormRef={this.getStripeFormRef}
-              stripePublicKey={publicRuntimeConfig.STRIPE_PUBLIC_KEY}
+              stripePublicKey='pk_test_gxEKMtkVdWvm3LArf1ipX5TX'
               handleResult={this.handleResult}
             />
             <Form
