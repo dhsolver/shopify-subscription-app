@@ -12,12 +12,8 @@ interface IProps {
 @observer
 class Switch extends Component <IProps> {
   public render () {
-    const { defaultChecked, onChange } = this.props;
     return (
-      <Antd.Switch
-        defaultChecked={defaultChecked || true}
-        onChange={onChange}
-      />
+      <Antd.Switch {...this.props} />
     );
   }
 }

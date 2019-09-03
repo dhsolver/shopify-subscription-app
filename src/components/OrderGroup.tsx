@@ -15,6 +15,8 @@ import { formatDate } from '@mighty-justice/utils';
 import Spacer from './common/Spacer';
 import Switch from './common/Switch';
 import { IconButton } from './common/Button';
+import { observable } from 'mobx';
+import SmartBool from '@mighty-justice/smart-bool';
 
 interface IProps {
   charge: any;
@@ -30,8 +32,10 @@ const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
 @autoBindMethods
 @observer
 class Orders extends Component<IProps> {
+  @observable private isSkipped = new SmartBool();
+
   private onSkipOrder () {
-    return;
+    this.isSkipped.toggle();
   }
 
   private renderItem (item: any, itemIdx: number) {
@@ -60,7 +64,8 @@ class Orders extends Component<IProps> {
                 <a><IconButton icon={editIcon} /> Edit</a>
               </Col>
               <Col>
-                <Switch onChange={this.onSkipOrder} defaultChecked /> Skip
+                <Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}
+                {this.isSkipped.isTrue ? 'Skipped' : 'Skip'}
               </Col>
             </Row>
           </Col>
