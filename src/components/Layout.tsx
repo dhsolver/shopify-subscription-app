@@ -6,6 +6,7 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import URI from 'urijs';
 import store from 'store';
+import { get } from 'lodash';
 
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
@@ -31,7 +32,7 @@ export default class Layout extends Component<IProps> {
     const query = URI.parseQuery(window.location.search) as {user_id?: string}
       , queryUserID = query.user_id
       , storedUserInfo = store.get('customerInfo')
-      , userId = queryUserID || storedUserInfo.id
+      , userId = queryUserID || get(storedUserInfo, 'id')
       ;
     if (userId) {
       store.set('customerInfo', {id: userId, rechargeId: storedUserInfo.rechargeId});
