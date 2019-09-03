@@ -202,6 +202,8 @@ class AccountInfoForm extends Component <{}> {
       , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
       ;
 
+    store.set('customerInfo', {id, rechargeId: rechargeCustomerResponse.data.id});
+
     await Axios.put(`/recharge-checkouts/${token}/`, {
       checkout: {
         shipping_line: {handle: get(shippingRates, 'data.shipping_rates[0].handle') || 'shopify-Free%20Shipping-0.00' },

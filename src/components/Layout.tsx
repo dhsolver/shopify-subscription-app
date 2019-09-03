@@ -28,9 +28,13 @@ interface IProps {
 @observer
 export default class Layout extends Component<IProps> {
   public componentDidMount () {
-    const { user_id } = URI.parseQuery(window.location.search) as {user_id?: string};
-    if (user_id) {
-      store.set('customerInfo', {id: user_id});
+    const query = URI.parseQuery(window.location.search) as {user_id?: string}
+      , queryUserID = query.user_id
+      , storedUserInfo = store.get('customerInfo')
+      , userId = queryUserID || storedUserInfo.id
+      ;
+    if (userId) {
+      store.set('customerInfo', {id: userId, rechargeId: storedUserInfo.rechargeId});
       Router.push('/dashboard');
     }
   }

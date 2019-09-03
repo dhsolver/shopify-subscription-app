@@ -136,7 +136,6 @@ app.prepare().then(() => {
 
   server.post('/recharge-charges/:id/', async (req, res) => {
     try {
-      console.log(`/checkouts/${req.params.id}/charge`, req.body)
       const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
       return res.end(JSON.stringify(response.data));
     }
@@ -148,7 +147,6 @@ app.prepare().then(() => {
 
   server.put('/recharge-checkouts/:id/', async (req, res) => {
     try {
-      console.log(`/checkouts/${req.params.id}/charge`, req.body)
       const response = await rechargeClient.put(`checkouts/${req.params.id}/`, req.body);
       return res.end(JSON.stringify(response.data));
     }
@@ -171,7 +169,6 @@ app.prepare().then(() => {
 
   server.put('/recharge-charges/:id/', async (req, res) => {
     try {
-      console.log(`/checkouts/${req.params.id}`, req.body)
       const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
       return res.end(JSON.stringify(response.data));
     }
@@ -179,6 +176,14 @@ app.prepare().then(() => {
       console.error(e.response.data.errors)
       res.status(e.statusCode).json({message: e.message});
     }
+  });
+
+  // FETCH CHARGES
+
+  server.get('/recharge-queued-charges/', async (req, res) => {
+    console.log(req.query.customer_id)
+    const response = await rechargeClient.get(`charges?status=QUEUED&customer_id=${req.query.customer_id}`);
+    return res.end(JSON.stringify(response.data));
   });
 
   server.post('/subscriptions/', async (req, res) => {

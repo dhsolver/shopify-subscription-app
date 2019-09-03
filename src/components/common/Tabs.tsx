@@ -9,6 +9,7 @@ interface IProps {
 }
 
 class Tabs extends Component <IProps> {
+
   public render () {
     return (
       <Antd.Tabs size='large'>

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import autoBindMethods from 'class-autobind-decorator';
+import { observer } from 'mobx-react';
+
 import {
   Card,
   Col,
@@ -7,28 +10,37 @@ import {
   Row,
 } from 'antd';
 
+import { formatDate } from '@mighty-justice/utils';
+
 import Spacer from './common/Spacer';
 import Switch from './common/Switch';
+import { IconButton } from './common/Button';
+
+interface IProps {
+  charge: any;
+  products: any[];
+}
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
   , COL_SHIPPING_DATE = 18
-  , GUTTER_ACTIONS = 32;
+  , GUTTER_ACTIONS = 32
+  , editIcon = () => <Icon type='edit' />
+  ;
 
-  // tslint:disable max-line-length
-const DUMMY_DATA = Array(8).fill({name: 'Coconut Curry', image: 'https://cdn.shopify.com/s/files/1/0018/4650/9667/products/5D8A9682-2_225ef853-73b2-4c32-8384-6be8ab27dccd.png?v=1563585424'});
-
-class Orders extends Component<{}> {
-
+@autoBindMethods
+@observer
+class Orders extends Component<IProps> {
   private onSkipOrder () {
     return;
   }
 
   private renderItem (item: any, itemIdx: number) {
+    const src = item.images.length && item.images[0].src;
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
         <div className='recipe'>
-          <img className='recipe-image' src={item.image} alt={item.name} />
-          <h4>{item.name}</h4>
+          <img className='recipe-image' src={src} alt={item.title} />
+          <h4>{item.title}</h4>
         </div>
       </Col>
     );
@@ -39,16 +51,16 @@ class Orders extends Component<{}> {
       <Card className='order-group'>
         <Row type='flex' justify='space-between'>
           <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-            Shipping on: <span>07/24/2019</span> <a>Modify Schedule</a>
+            Shipping on: <span>{formatDate(new Date().toDateString())}</span> <a>Modify Schedule</a>
             <div className='last-date'>Last date to ship this modify this order is <span>7/20/2019</span></div>
           </Col>
           <Col xs={6} className='actions'>
             <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>
               <Col>
-                <a><Icon type='edit' /> Edit</a>
+                <a><IconButton icon={editIcon} /> Edit</a>
               </Col>
               <Col>
-                <Switch onChange={this.onSkipOrder} /> Skip
+                <Switch onChange={this.onSkipOrder} defaultChecked /> Skip
               </Col>
             </Row>
           </Col>
@@ -58,7 +70,7 @@ class Orders extends Component<{}> {
 
         <List
           grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 6, xxl: 3}}
-          dataSource={DUMMY_DATA}
+          dataSource={this.props.products}
           renderItem={this.renderItem}
         />
       </Card>

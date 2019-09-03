@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { times } from 'lodash';
+import autoBindMethods from 'class-autobind-decorator';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import { find, times } from 'lodash';
+import store from 'store';
+import Axios from 'axios';
+
 import {
   Button,
   Row,
@@ -10,7 +16,23 @@ import Spacer from './common/Spacer';
 
 import OrderGroup from './OrderGroup';
 
+@autoBindMethods
+@observer
 class Orders extends Component<{}> {
+  @observable private products = [];
+  @observable private charges = [];
+
+  public async componentDidMount () {
+    const { id, rechargeId } = store.get('customerInfo')
+      , [charges, products] = await Promise.all([
+        Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`),
+        Axios.get('/collections/with-products/'),
+      ])
+      ;
+
+    this.charges = charges.data.charges;
+    this.products = find(products.data, { handle: 'menu' }).products;
+  }
 
   public render () {
     return (
@@ -27,7 +49,7 @@ class Orders extends Component<{}> {
 
         <Spacer />
 
-        {times(3, () => <OrderGroup />)}
+        {this.charges.map(charge => <OrderGroup key={charge.id} charge={charge} products={this.products} />)}
       </Row>
     );
   }
