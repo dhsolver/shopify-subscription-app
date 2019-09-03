@@ -3,12 +3,11 @@ import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
 import SubscriptionSelector from '../components/SubscriptionSelector';
 import { Row } from 'antd';
-import Spacer from '../components/common/Spacer';
 
 const steps = [
-  {title: 'Plan Details'},
-  {title: 'Select Recipes'},
-  {title: 'Checkout'},
+  {title: 'Plan Details', url: '/frequency-selection'},
+  {title: 'Select Recipes', url: '/recipe-selection'},
+  {title: 'Checkout', url: '/checkout'},
 ];
 
 export default class FrequencySelectionPage extends Component<{}> {

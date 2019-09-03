@@ -6,9 +6,9 @@ import AccountInfoForm from '../components/AccountInfoForm';
 import { Provider } from 'mobx-react';
 
 const steps = [
-  {title: 'Plan Details'},
-  {title: 'Select Recipes'},
-  {title: 'Checkout'},
+  {title: 'Plan Details', url: '/frequency-selection'},
+  {title: 'Select Recipes', url: '/recipe-selection'},
+  {title: 'Checkout', url: '/checkout'},
 ];
 
 const getStateOptions = () => [

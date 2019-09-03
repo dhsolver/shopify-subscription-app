@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import Axios from 'axios';
 import { find } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
-import { Col, List, Row, Spin } from 'antd';
+import { Col, List, Radio, Row, Spin } from 'antd';
 import store from 'store';
 
 import ItemSelector from './ItemSelector';
@@ -82,6 +82,17 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <Row type='flex' justify='center'>
           <p>{this.total} / {this.maxItems} selected</p>
         </Row>
+
+        <Spacer />
+
+        <Row type='flex' justify='center'>
+          <Radio.Group defaultValue='a' size='large'>
+            <Radio.Button value='a'>Build Your Own</Radio.Button>
+            <Radio.Button value='b'>Recommended</Radio.Button>
+          </Radio.Group>
+        </Row>
+
+        <Spacer />
 
         <List
           grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 6, xxl: 3}}

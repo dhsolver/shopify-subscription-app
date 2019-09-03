@@ -9,9 +9,9 @@ import RecipeSelectionGroup from '../components/RecipeSelectionGroup';
 import Router from 'next/router';
 
 const steps = [
-  {title: 'Plan Details'},
-  {title: 'Select Recipes'},
-  {title: 'Checkout'},
+  {title: 'Plan Details', url: '/frequency-selection'},
+  {title: 'Select Recipes', url: '/recipe-selection'},
+  {title: 'Checkout', url: '/checkout'},
 ];
 
 export default class RecipeSelection extends Component<{}> {
