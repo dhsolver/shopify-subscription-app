@@ -74,6 +74,11 @@ app.prepare().then(() => {
     return res.send(JSON.stringify(response.data));
   });
 
+  server.get('/shopify-menu-products/', async (req, res) => {
+    const response = await adminClient.get('/products.json?product_type=recipe');
+    return res.send(JSON.stringify(response.data));
+  })
+
   server.get('/collections/with-products/', async (req, res) => {
     const response = await storefrontClient.collection.fetchAllWithProducts();
     return res.send(JSON.stringify(response));

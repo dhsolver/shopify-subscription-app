@@ -20,7 +20,8 @@ const ITEM_COLS = {xs: 24, sm: 12, lg: 8};
 @autoBindMethods
 @observer
 class RecipeSelectionGroup extends React.Component <{}> {
-  @observable private data: any = [];
+  @observable private rechargeProductData: any = [];
+  @observable private shopifyProductData: any = [];
   @observable public total = 0;
   @observable private isLoading = new SmartBool(true);
   @observable private isRecommended = false;
@@ -30,8 +31,12 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
   public async componentDidMount () {
     this.maxItems = get(this.subscriptionInfo, 'quantity', 12);
-    const response = await Axios.get('/recharge-products/');
-    this.data = response.data.products;
+    const [rechargeResponse, shopifyResponse] = await Promise.all([
+      Axios.get('/recharge-products/'),
+      Axios.get('/shopify-menu-products/'),
+    ]);
+    this.rechargeProductData = rechargeResponse.data.products;
+    this.shopifyProductData = shopifyResponse.data.products;
     this.isLoading.setFalse();
   }
 
@@ -45,6 +50,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
   private onChangeRecomended (event) {
     this.isLoading.setTrue();
+    this.total = 0;
     this.isRecommended = event.target.value;
     this.isLoading.setFalse();
   }
@@ -52,11 +58,13 @@ class RecipeSelectionGroup extends React.Component <{}> {
   private save () { store.set('boxItems', this.boxItems); }
 
   private renderItem (item: any, itemIdx: number) {
-    const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems];
+    const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems]
+      , shopifyProduct = this.shopifyProductData.find(shopifyItem => shopifyItem.id === item.shopify_product_id);
 
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
         <ItemSelector
+          description={shopifyProduct.body_html}
           disabled={this.total === this.maxItems}
           name={item.title}
           image={item.images.original}
@@ -100,7 +108,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
         <List
           grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 6, xxl: 3}}
-          dataSource={this.data}
+          dataSource={this.rechargeProductData}
           renderItem={this.renderItem}
         />
         <AddOnStatic />
