@@ -8,12 +8,20 @@ import { ButtonProps } from 'antd/lib/button';
 interface IProps {
   disabled?: boolean;
   onChange: (quantity: number) => any;
+  quantity?: number;
 }
 
 @autoBindMethods
 @observer
 class SelectionButtons extends Component <IProps> {
   @observable private quantity = 0;
+
+  public componentWillReceiveProps (nextProps: Readonly<IProps>) {
+    if (nextProps.quantity !== this.quantity) {
+      this.quantity = 0;
+      this.onQuantityChange({target: {value: nextProps.quantity || 0}});
+    }
+  }
 
   private onQuantityChange (event: any) {
     this.quantity += Number(event.target.value);
@@ -22,10 +30,11 @@ class SelectionButtons extends Component <IProps> {
 
   private renderButtons () {
     const buttonProps: ButtonProps = {
-      shape: 'circle',
-      size: 'small',
-      type: 'default',
-    };
+        shape: 'circle',
+        size: 'small',
+        type: 'default',
+      }
+      ;
 
     if (this.quantity === 0) {
       return (

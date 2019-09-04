@@ -69,6 +69,11 @@ app.prepare().then(() => {
 
   /* FETCH PRODUCTS */
 
+  server.get('/recharge-products/', async (req, res) => {
+    const response = await rechargeClient.get('/products/');
+    return res.send(JSON.stringify(response.data));
+  });
+
   server.get('/collections/with-products/', async (req, res) => {
     const response = await storefrontClient.collection.fetchAllWithProducts();
     return res.send(JSON.stringify(response));

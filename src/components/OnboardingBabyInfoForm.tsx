@@ -30,9 +30,9 @@ const STAGE_OF_EATING_OPTIONS = [
 
 const CURRENT_DIET_OPTIONS = [
   {name: 'Only breast milk and/or formula', value: 'breast_milk_formula'},
-  {name: 'A combination of breast milk and/or formula and purees', value: 'breast_milk_formula__purees'},
+  {name: 'A combo of breast milk/formula and purees', value: 'breast_milk_formula__purees'},
   {name: 'Only purees', value: 'purees'},
-  {name: 'a combination of purees and finger food', value: 'purees__finger_food'},
+  {name: 'a combo of purees and finger food', value: 'purees__finger_food'},
   {name: 'Finger foods', value: 'finger_food'},
 ];
 
@@ -42,6 +42,27 @@ const EATING_STYLE_OPTIONS = [
   {name: 'Picky', value: 'picky'},
   {name: 'Adventurous', value: 'adventurous'},
   {name: 'Both', value: 'both'},
+];
+
+const DIET_RESEMBLES_OPTIONS = [
+  {name: 'Vegan', value: 'vegan'},
+  {name: 'Gluten Free', value: 'gluten_free'},
+  {name: 'Vegetarian', value: 'vegetarian'},
+  {name: 'Omnivore', value: 'omnivore'},
+  {name: 'Dairy Free', value: 'dairy_free'},
+];
+
+const FEEDS_ORGANIC_FOOD_OPTIONS = [
+  {name: 'All the time', value: 'all_the_time'},
+  {name: 'Most of the time', value: 'most_of_the_time'},
+  {name: 'Sometimes', value: 'sometimes'},
+  {name: 'Doesn\'t matter', value: 'does_not_matter'},
+];
+
+const DOING_AWESOME_OPTIONS = [
+  {name: 'I know that, duh.', value: '1'},
+  {name: 'That\'s so nice!!!', value: '2'},
+  {name: 'If you say so...', value: '3'},
 ];
 
 const getOptions = () => ({
@@ -96,7 +117,16 @@ class OnboardingBabyInfoForm extends Component<{}> {
       </div>
     );
 
-    const insertAllergiesIf = (model: any) => model.has_allergies;
+    const insertAllergiesIf = (model: any) => model.has_allergies
+      , eatingConcernOptions = [
+        {name: `Getting ${this.name} to Eat!`, value: 'getting_to_eat'},
+        {name: 'Adding variety', value: 'adding_variety'},
+        {name: `Is ${this.name} full?`, value: 'is_full'},
+        {name: `Is ${this.name} getting enough nutrition?`, value: 'is_getting_enough_nutrition'},
+        {name: 'Meal planning', value: 'meal_planning'},
+        {name: 'Feeding on the go', value: 'feeding_on_the_go'},
+        {name: 'Feeding when I\'m not home', value: 'feeding_when_not_home'},
+      ];
 
     const babyInfoFieldSet = [
       {
@@ -104,6 +134,14 @@ class OnboardingBabyInfoForm extends Component<{}> {
         editProps: { className: 'ant-date-inline', size: 'large' },
         field: 'birthdate',
         label: `${this.name}'s birthdate is...`,
+        required: true,
+        type: 'date',
+      },
+      {
+        editComponent: InlineDateInput,
+        editProps: { className: 'ant-date-inline', size: 'large' },
+        field: 'parent_birthdate',
+        label: 'My birthdate is...',
         type: 'date',
       },
       {
@@ -141,11 +179,41 @@ class OnboardingBabyInfoForm extends Component<{}> {
         options: EATS_MEAT_OPTIONS,
         type: 'radio',
       },
+      // should be a checkbox group, not supported by fields-ant yet
+      {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+        field: 'diet_resembles',
+        label: `${this.name}'s eating style most closely resembles....`,
+        options: DIET_RESEMBLES_OPTIONS,
+        type: 'radio',
+      },
+      {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+        field: 'organic_food',
+        label: `I fee ${this.name} organic food....`,
+        options: FEEDS_ORGANIC_FOOD_OPTIONS,
+        type: 'radio',
+      },
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_style',
-        label: `${this.name}'s eating style is...`,
+        label: `${this.name}'s eating style is....`,
         options: EATING_STYLE_OPTIONS,
+        type: 'radio',
+      },
+      // should be a checkbox group, not supported by fields-ant yet
+      {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+        field: 'eating_concerns',
+        label: `My biggest eating concern for ${this.name} is....`,
+        options: eatingConcernOptions,
+        type: 'radio',
+      },
+      {
+        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+        field: 'doing_awesome',
+        label: 'Reminder.... YOU. ARE. DOING. AWESOME!',
+        options: DOING_AWESOME_OPTIONS,
         type: 'radio',
       },
     ];

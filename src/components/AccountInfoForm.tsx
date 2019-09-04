@@ -20,8 +20,8 @@ const GUTTER = 48;
 
 export const personalInfoFieldSet = {
   fields: [
-    { field: 'first_name' },
-    { field: 'last_name' },
+    { field: 'first_name', required: true },
+    { field: 'last_name', required: true },
   ],
   legend: 'Personal Info',
 };
@@ -36,7 +36,7 @@ export const paymentInfoFieldSet = {
   legend: 'Payment Info',
 };
 
-export const insertBillingIf = (model: any) => model.billing_address && !model.billing_address.is_same_as_shipping;
+export const insertBillingIf = (model: any) => model.billing && !model.billing.is_same_as_shipping;
 
 export const billingAddressFieldSet = {
   colProps,
@@ -63,9 +63,9 @@ export const discountCodeFieldSet = {
 export const shippingAddressFieldSet = {
   colProps,
   fields: [
-    {field: 'first_name'},
-    {field: 'last_name'},
-    {field: 'shipping', type: 'address'},
+    {field: 'first_name', required: true },
+    {field: 'last_name', required: true },
+    {field: 'shipping', type: 'address', required: true },
   ],
   legend: 'Shipping Address',
 };
@@ -73,10 +73,10 @@ export const shippingAddressFieldSet = {
 export const accountDetailsFieldSet = {
   colProps,
   fields: [
-    {field: 'email'},
-    {field: 'phone'},
-    {field: 'password'},
-    {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password'},
+    {field: 'email', required: true},
+    {field: 'phone', required: true},
+    {field: 'password', required: true},
+    {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password', required: true },
   ],
   legend: 'Account Details',
 };

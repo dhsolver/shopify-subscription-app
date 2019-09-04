@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
 import cx from 'classnames';
 import { Card } from 'antd';
@@ -9,19 +8,18 @@ import SelectionButtons from './SelectionButtons';
 interface IProps {
   image?: string; // TODO: require this
   name: string;
-  description: string;
   disabled: boolean;
   onChange: (quantity: number) => any;
+  quantity?: number;
 }
 
 @autoBindMethods
 @observer
 class ItemSelector extends Component <IProps> {
-  @observable private quantity = 0;
   private clsPrefix = 'item-selector';
 
   public render () {
-    const { name, description, disabled, image, onChange } = this.props;
+    const { name, disabled, image, onChange, quantity } = this.props;
 
     return (
       <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false}>
@@ -35,7 +33,7 @@ class ItemSelector extends Component <IProps> {
           <h4>{name}</h4>
         </div>
         <div className={`${this.clsPrefix}-buttons`}>
-          <SelectionButtons disabled={disabled} onChange={onChange} />
+          <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} />
         </div>
       </Card>
     );

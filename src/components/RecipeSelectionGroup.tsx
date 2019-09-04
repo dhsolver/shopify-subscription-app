@@ -2,7 +2,7 @@ import React from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Axios from 'axios';
-import { find } from 'lodash';
+import { get } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 import { Col, List, Radio, Row, Spin } from 'antd';
 import store from 'store';
@@ -13,6 +13,7 @@ import AddOnStatic from './AddOnStatic';
 import Spacer from './common/Spacer';
 import Link from 'next/link';
 import Button from '../components/common/Button';
+import { PRODUCT_RECOMMENDATIONS } from '../constants';
 
 const ITEM_COLS = {xs: 24, sm: 12, lg: 8};
 
@@ -22,42 +23,45 @@ class RecipeSelectionGroup extends React.Component <{}> {
   @observable private data: any = [];
   @observable public total = 0;
   @observable private isLoading = new SmartBool(true);
+  @observable private isRecommended = false;
   private boxItems = {};
   private subscriptionInfo = store.get('subscriptionInfo');
   private maxItems = 12;
 
   public async componentDidMount () {
-    this.maxItems = this.subscriptionInfo.quantity;
-    const response = await Axios.get('/collections/with-products/');
-    this.data = find(response.data, { handle: 'menu' }).products;
+    this.maxItems = get(this.subscriptionInfo, 'quantity', 12);
+    const response = await Axios.get('/recharge-products/');
+    this.data = response.data.products;
     this.isLoading.setFalse();
   }
 
-  private onChange (id, value: number) {
+  private onChange (item, value: number) {
     this.total += value;
-    if (!this.boxItems[id]) {
-      this.boxItems[id] = 0;
+    if (!this.boxItems[item.id]) {
+      this.boxItems[item.id] = {...item, quantity: 0};
     }
-    this.boxItems[id] += value;
+    this.boxItems[item.id].quantity += value;
+  }
+
+  private onChangeRecomended (event) {
+    this.isLoading.setTrue();
+    this.isRecommended = event.target.value;
+    this.isLoading.setFalse();
   }
 
   private save () { store.set('boxItems', this.boxItems); }
 
   private renderItem (item: any, itemIdx: number) {
-    const decodedURL = atob(item.id)
-      , splitURL = decodedURL.split('/')
-      , id = splitURL[splitURL.length - 1]
-      ;
+    const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems];
 
-    const src = item.images.length && item.images[0].src;
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
         <ItemSelector
           disabled={this.total === this.maxItems}
           name={item.title}
-          description={item.description}
-          image={src}
-          onChange={this.onChange.bind(this, id)}
+          image={item.images.original}
+          onChange={this.onChange.bind(this, item)}
+          quantity={this.isRecommended ? recommendedQuantity : null}
         />
       </Col>
     );
@@ -86,9 +90,9 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <Spacer />
 
         <Row type='flex' justify='center'>
-          <Radio.Group defaultValue='a' size='large'>
-            <Radio.Button value='a'>Build Your Own</Radio.Button>
-            <Radio.Button value='b'>Recommended</Radio.Button>
+          <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecomended}>
+            <Radio.Button value={false}>Build Your Own</Radio.Button>
+            <Radio.Button value={true}>Recommended</Radio.Button>
           </Radio.Group>
         </Row>
 
