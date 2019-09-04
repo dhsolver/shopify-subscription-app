@@ -35,13 +35,13 @@ class ItemSelector extends Component <IProps> {
               : <div className={`${this.clsPrefix}-image-empty`} />
             }
           </div>
-          <div className={`${this.clsPrefix}-info`}>
-            <h4>{name}</h4>
-          </div>
-          <div className={`${this.clsPrefix}-buttons`}>
-            <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} />
-          </div>
         </a>
+        <div className={`${this.clsPrefix}-info`}>
+          <h4>{name}</h4>
+        </div>
+        <div className={`${this.clsPrefix}-buttons`}>
+          <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} />
+        </div>
         <ProductDescriptionModal isVisible={this.isModalVisible} description={description} />
       </Card>
     );
