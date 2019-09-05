@@ -198,7 +198,7 @@ class AccountInfoForm extends Component <{}> {
       , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
       ;
 
-    store.set('customerInfo', {id, rechargeId: rechargeCustomerResponse.data.id});
+    store.set('customerInfo', {id, rechargeId: rechargeCustomerResponse.data.customer.id});
 
     await Axios.put(`/recharge-checkouts/${token}/`, {
       checkout: {

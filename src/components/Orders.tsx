@@ -23,15 +23,11 @@ class Orders extends Component<{}> {
   @observable private charges = [];
 
   public async componentDidMount () {
-    const { id, rechargeId } = store.get('customerInfo')
-      , [charges, products] = await Promise.all([
-        Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`),
-        Axios.get('/collections/with-products/'),
-      ])
+    const { rechargeId } = store.get('customerInfo')
+      , {data} = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
       ;
 
-    this.charges = charges.data.charges;
-    this.products = find(products.data, { handle: 'menu' }).products;
+    this.charges = data.charges;
   }
 
   public render () {
@@ -49,7 +45,9 @@ class Orders extends Component<{}> {
 
         <Spacer />
 
-        {this.charges.map(charge => <OrderGroup key={charge.id} charge={charge} products={this.products} />)}
+        {this.charges.map(
+          charge => <OrderGroup key={charge.id} charge={charge} products={charge.line_items} />,
+        )}
       </Row>
     );
   }

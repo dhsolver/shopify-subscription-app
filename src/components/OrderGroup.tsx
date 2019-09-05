@@ -39,12 +39,13 @@ class Orders extends Component<IProps> {
   }
 
   private renderItem (item: any, itemIdx: number) {
-    const src = item.images.length && item.images[0].src;
+    const src = item.images.medium;
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
         <div className='recipe'>
           <img className='recipe-image' src={src} alt={item.title} />
           <h4>{item.title}</h4>
+          <p>{item.quantity}</p>
         </div>
       </Col>
     );
