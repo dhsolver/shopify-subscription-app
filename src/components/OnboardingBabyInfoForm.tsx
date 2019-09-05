@@ -80,7 +80,7 @@ const FORM_COLS = {
 };
 
 const AllergiesBlurb = () => (
-  <i>
+  <i style={{fontSize: 11}}>
     {'* Tiny Organics products are manufactured in a facility that also processes allergens. '}
     {'We recommend you exercise caution if your child has a history of allergic reaction due to cross contamination. '}
     {'It is extremely important to us that we practice strict health and safety standard '}

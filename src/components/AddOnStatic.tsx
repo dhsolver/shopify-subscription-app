@@ -10,12 +10,10 @@ class AddOnStatic extends Component<{}> {
         <Row>
           <Col span={8}>
             <div className='tmp-img' />
-            {/*
               <img
-                src="/static/organic-toddler-adult-wine-salad-baby-food.jpg"
-                alt="organic toddler adult wine salad baby food"
+                src='https://cdn.shopify.com/s/files/1/0018/4650/9667/files/family-time-banner-image.jpg?40232'
+                alt='organic toddler adult wine salad baby food'
               />
-            */}
           </Col>
           <Col span={16}>
             <div className='info'>

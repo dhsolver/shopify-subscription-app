@@ -3,6 +3,12 @@
 */
 
 :global {
+  .@{radio-prefix-cls} {
+    &-inner {
+      border-color: @radio-dot-color;
+    }
+  }
+
   .@{radio-group-prefix-cls} {
     &-vertical {
 
@@ -10,6 +16,7 @@
         display: block;
         height: 30px;
         line-height: 30px;
+        margin-bottom: 8px;
       }
 
     }

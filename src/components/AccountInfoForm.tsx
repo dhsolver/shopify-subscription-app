@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
-import { Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
@@ -221,30 +221,29 @@ class AccountInfoForm extends Component <{}> {
   public render () {
     return (
       <div>
+        <Spacer />
         <Row type='flex' justify='center'>
           <h2>Finalize Your Subscription</h2>
         </Row>
         <Spacer />
         <Row type='flex' justify='center'>
-          <h3>Order sumary</h3>
+          <h3>Payment &amp; Account Info</h3>
         </Row>
         <Row type='flex' gutter={GUTTER} justify='space-between'>
-          <Col span={12} push={6}>
-            <p className='large'>12 meal subscription plan</p>
-            <p className='large'>every 4 weeks</p>
-            <p className='large'>$6.66</p>
-          </Col>
-        </Row>
-        <Row type='flex' justify='center'>
-          <h2>Payment &amp; Account Info</h2>
-        </Row>
-        <Row type='flex' gutter={GUTTER} justify='space-between'>
-          <Col span={12} push={6}>
+          <Col span={11} push={1}>
             <DynamicComponentWithNoSSR
               getStripeFormRef={this.getStripeFormRef}
               stripePublicKey='pk_test_gxEKMtkVdWvm3LArf1ipX5TX'
               handleResult={this.handleResult}
             />
+          </Col>
+          <Col span={11} pull={1}>
+            <Card style={{marginTop: '21px'}}>
+              <h3>Order sumary</h3>
+              <p className='large'>12 meal subscription plan</p>
+              <p className='large'>every 4 weeks</p>
+              <p className='large'>$6.66</p>
+            </Card>
           </Col>
         </Row>
         <Spacer />
