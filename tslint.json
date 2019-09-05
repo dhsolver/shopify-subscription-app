@@ -1,3 +1,6 @@
 {
-  "extends": "@mighty-justice/tslint-config"
+  "extends": "@mighty-justice/tslint-config",
+  "rules": {
+    "no-magic-numbers": false
+  }
 }

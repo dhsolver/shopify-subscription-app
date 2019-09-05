@@ -51,10 +51,13 @@ class SelectionButtons extends Component <IProps> {
         </>
       );
     }
+
+    // TODO: change disabled state handling
     return (
       <>
         <Button
           {...buttonProps}
+          disabled={this.props.isRecommended}
           icon='minus'
           onClick={this.onQuantityChange}
           value={-1}
