@@ -19,15 +19,13 @@ const getStateOptions = () => [
 export default () => (
   <Layout title='Checkout Page'>
     <Provider getOptions={getStateOptions}>
-      <>
+      <div className='page-checkout'>
         <Row type='flex' justify='center'>
           <Steps steps={steps} current={2} />
         </Row>
 
-        <Row type='flex' justify='center'>
-          <AccountInfoForm />
-        </Row>
-      </>
+        <AccountInfoForm />
+      </div>
     </Provider>
   </Layout>
 );

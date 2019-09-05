@@ -6,4 +6,12 @@
   .@{btn-prefix-cls}:not(.@{btn-prefix-cls}-icon-only) {
     min-width: 115px;
   }
+
+  .@{btn-prefix-cls}-primary {
+    &[disabled],
+    &[disabled]:hover {
+      background-color: fade(@primary-color, 80%);
+      color: fade(@btn-primary-color, 80%);
+    }
+  }
 }

@@ -10,6 +10,8 @@ import { get, noop } from 'lodash';
 
 import dynamic from 'next/dynamic';
 
+import Spacer from './common/Spacer';
+
 const DynamicComponentWithNoSSR = dynamic(
   () => import('./StripeForm'),
   { ssr: false },
@@ -42,8 +44,9 @@ export const billingAddressFieldSet = {
   colProps,
   fields: [
     {
-      editProps: {defaultChecked: true},
+      editProps: {description: 'Is same as shipping', defaultChecked: true},
       field: 'billing.is_same_as_shipping',
+      label: '',
       type: 'checkbox',
       value: true,
     },
@@ -81,15 +84,11 @@ export const accountDetailsFieldSet = {
   legend: 'Account Details',
 };
 
-const fieldSetsLeft = [
-  // paymentInfoFieldSet,
-  billingAddressFieldSet,
-  discountCodeFieldSet,
-];
-
-const fieldSetsRight = [
+const fieldSets = [
   shippingAddressFieldSet,
   accountDetailsFieldSet,
+  billingAddressFieldSet,
+  discountCodeFieldSet,
 ];
 
 @inject('getOptions')
@@ -104,9 +103,6 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private stripeFormRef;
-  private get fieldSets () {
-    return {fieldSetsLeft, fieldSetsRight};
-  }
 
   private serializeShopifyCustomerInfo (model: any) {
     const data = {
@@ -224,37 +220,48 @@ class AccountInfoForm extends Component <{}> {
 
   public render () {
     return (
-      <Row>
+      <div>
         <Row type='flex' justify='center'>
-          <h2>Finalize Your Subscription!</h2>
+          <h2>Finalize Your Subscription</h2>
         </Row>
-        <Row>
-          <br/>
+        <Spacer />
+        <Row type='flex' justify='center'>
+          <h3>Order sumary</h3>
         </Row>
         <Row type='flex' gutter={GUTTER} justify='space-between'>
-          <Col span={12}>
+          <Col span={12} push={6}>
+            <p className='large'>12 meal subscription plan</p>
+            <p className='large'>every 4 weeks</p>
+            <p className='large'>$6.66</p>
+          </Col>
+        </Row>
+        <Row type='flex' justify='center'>
+          <h2>Payment &amp; Account Info</h2>
+        </Row>
+        <Row type='flex' gutter={GUTTER} justify='space-between'>
+          <Col span={12} push={6}>
             <DynamicComponentWithNoSSR
               getStripeFormRef={this.getStripeFormRef}
               stripePublicKey='pk_test_gxEKMtkVdWvm3LArf1ipX5TX'
               handleResult={this.handleResult}
             />
-            <Form
-              fieldSets={[...this.fieldSets.fieldSetsLeft, ...this.fieldSets.fieldSetsRight]}
-              onSave={this.onSave}
-            />
           </Col>
-          {/*<Col span={12}>*/}
-            {/*<Form*/}
-              {/*fieldSets={this.fieldSets.fieldSetsRight}*/}
-              {/*showControls={false}*/}
-              {/*onSave={this.onSave}*/}
-            {/*/>*/}
-          {/*</Col>*/}
+        </Row>
+        <Spacer />
+        <Row type='flex' gutter={GUTTER} justify='space-between'>
+          <Col span={24}>
+            <div className='form-account-info'>
+              <Form
+                fieldSets={fieldSets}
+                onSave={this.onSave}
+              />
+            </div>
+          </Col>
         </Row>
         {/*<Row type='flex' justify='center'>*/}
           {/*<Button type='primary' size='large' onClick={this.onSave}>Submit</Button>*/}
         {/*</Row>*/}
-      </Row>
+      </div>
     );
   }
 }
