@@ -28,7 +28,7 @@ class ItemSelector extends Component <IProps> {
     const { name, description, disabled, image, onChange, quantity, isRecommended } = this.props;
 
     return (
-      <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false} hoverable>
+      <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false}>
         <a onClick={this.isModalVisible.setTrue}>
           <div className={`${this.clsPrefix}-image`}>
             {image
