@@ -3,17 +3,15 @@ import { noop } from 'lodash';
 import { Col, Row } from 'antd';
 import SelectionButtons from './SelectionButtons';
 
+const ADD_ON_STATIC_PHOTO = 'https://cdn.shopify.com/s/files/1/0018/4650/9667/files/family-time-banner-image.jpg?40232';
+
 class AddOnStatic extends Component<{}> {
   public render () {
     return (
       <div className='add-on-static'>
-        <Row>
-          <Col span={8}>
-            <div className='tmp-img' />
-              <img
-                src='https://cdn.shopify.com/s/files/1/0018/4650/9667/files/family-time-banner-image.jpg?40232'
-                alt='organic toddler adult wine salad baby food'
-              />
+        <Row type='flex'>
+          <Col span={8} className='col-photo'>
+            <div className='photo' style={{backgroundImage: `url(${ADD_ON_STATIC_PHOTO}`}} />
           </Col>
           <Col span={16}>
             <div className='info'>

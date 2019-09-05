@@ -20,12 +20,14 @@ class ProductDescriptionModal extends Component<IProps> {
 
     return (
       <Modal
+        className='modal-product-description'
         closable
         footer={null}
         onCancel={isVisible.setFalse}
         visible={isVisible.isTrue}
+        width={748}
       >
-        {parser(preserveNewLines(description))}
+        {parser(description)}
       </Modal>
     );
   }

@@ -10,10 +10,15 @@
   }
 
   /* Temporary image placeholder since /static/ doesn't work for the moment. */
-  img {
+  .col-photo {
     background: @white;
-    display: block;
-    width: 250px;
-    height: 250px;
+    display: flex;
+    align-items: stretch;
+
+    .photo {
+      background: no-repeat center center;
+      background-size: cover;
+      flex: 1 0 0;
+    }
   }
 }

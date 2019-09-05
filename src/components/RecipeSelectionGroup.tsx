@@ -64,8 +64,10 @@ class RecipeSelectionGroup extends React.Component <{}> {
   }
 
   private renderItem (item: any, itemIdx: number) {
-    const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems]
+    const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id] ? PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems] : 0
       , shopifyProduct = this.shopifyProductData.find(shopifyItem => shopifyItem.id === item.shopify_product_id);
+
+    if (!shopifyProduct) return <div />;
 
     return (
       <Col key={itemIdx} {...ITEM_COLS}>
