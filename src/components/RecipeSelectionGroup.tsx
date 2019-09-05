@@ -48,14 +48,20 @@ class RecipeSelectionGroup extends React.Component <{}> {
     this.boxItems[item.id].quantity += value;
   }
 
-  private onChangeRecomended (event) {
+  private onChangeRecommended (event) {
     this.isLoading.setTrue();
     this.total = 0;
     this.isRecommended = event.target.value;
     this.isLoading.setFalse();
   }
 
-  private save () { store.set('boxItems', this.boxItems); }
+  private save () {
+    Object.keys(this.boxItems).forEach(id => {
+      const item = this.shopifyProductData.find(product => product.id === this.boxItems[id].shopify_product_id);
+      this.boxItems[id].variant_id = item.variants[0].id;
+    });
+    store.set('boxItems', this.boxItems);
+  }
 
   private renderItem (item: any, itemIdx: number) {
     const recommendedQuantity = PRODUCT_RECOMMENDATIONS[item.id].quantity[this.maxItems]
@@ -98,7 +104,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <Spacer />
 
         <Row type='flex' justify='center'>
-          <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecomended}>
+          <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecommended}>
             <Radio.Button value={false}>Build Your Own</Radio.Button>
             <Radio.Button value={true}>Recommended</Radio.Button>
           </Radio.Group>

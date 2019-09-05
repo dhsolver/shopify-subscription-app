@@ -163,22 +163,22 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private serializeRechargeCheckoutInfo (model: any) {
-    const { frequency } = store.get('subscriptionInfo');
+    const { frequency } = store.get('subscriptionInfo')
+      , boxItems = store.get('boxItems')
+      , lineItems = Object.keys(boxItems).map(id => ({
+        charge_interval_frequency: frequency,
+        order_interval_frequency: frequency,
+        order_interval_unit: 'week',
+        product_id: id,
+        quantity: boxItems[id].quantity,
+        variant_id: boxItems[id].variant_id,
+      }));
 
     return {
       checkout: {
         discount_code: model.discount_code,
         email: model.email,
-        line_items: [
-          {
-            charge_interval_frequency: frequency,
-            order_interval_frequency: frequency,
-            order_interval_unit: 'week',
-            product_id: store.get('product_id'),
-            quantity: 1,
-            variant_id: store.get('variant_id'),
-          },
-        ],
+        line_items: lineItems,
         shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
       },
     };
@@ -249,6 +249,7 @@ class AccountInfoForm extends Component <{}> {
         </Row>
         <Spacer />
         <Row type='flex' gutter={GUTTER} justify='space-between'>
+          {/* tslint:disable-next-line no-magic-numbers */}
           <Col span={24}>
             <div className='form-account-info'>
               <Form
