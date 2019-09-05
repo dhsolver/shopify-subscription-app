@@ -178,7 +178,7 @@ class AccountInfoForm extends Component <{}> {
       checkout: {
         discount_code: model.discount_code,
         email: model.email,
-        line_items: lineItems,
+        line_items: lineItems.filter(lineItem => lineItem.quantity),
         shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
       },
     };
