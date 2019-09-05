@@ -50,8 +50,8 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
   private onChangeRecommended (event) {
     this.isLoading.setTrue();
-    this.total = 0;
     this.isRecommended = event.target.value;
+    if (this.isRecommended) { this.total = 0; }
     this.isLoading.setFalse();
   }
 
@@ -74,6 +74,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
           disabled={this.total === this.maxItems}
           name={item.title}
           image={item.images.original}
+          isRecommended={this.isRecommended}
           onChange={this.onChange.bind(this, item)}
           quantity={this.isRecommended ? recommendedQuantity : null}
         />

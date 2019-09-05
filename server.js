@@ -70,7 +70,7 @@ app.prepare().then(() => {
   /* FETCH PRODUCTS */
 
   server.get('/recharge-products/', async (req, res) => {
-    const response = await rechargeClient.get('/products/');
+    const response = await rechargeClient.get('/products?collection_id=212146');
     return res.send(JSON.stringify(response.data));
   });
 

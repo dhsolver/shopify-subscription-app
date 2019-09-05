@@ -7,6 +7,7 @@ import { ButtonProps } from 'antd/lib/button';
 
 interface IProps {
   disabled?: boolean;
+  isRecommended?: boolean;
   onChange: (quantity: number) => any;
   quantity?: number;
 }
@@ -17,7 +18,7 @@ class SelectionButtons extends Component <IProps> {
   @observable private quantity = 0;
 
   public componentWillReceiveProps (nextProps: Readonly<IProps>) {
-    if (nextProps.quantity !== this.quantity) {
+    if (nextProps.isRecommended && !this.props.isRecommended) {
       this.quantity = 0;
       this.onQuantityChange({target: {value: nextProps.quantity || 0}});
     }

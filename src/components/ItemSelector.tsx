@@ -13,6 +13,7 @@ interface IProps {
   name: string;
   description: string;
   disabled: boolean;
+  isRecommended?: boolean;
   onChange: (quantity: number) => any;
   quantity?: number;
 }
@@ -24,7 +25,7 @@ class ItemSelector extends Component <IProps> {
   @observable private isModalVisible = new SmartBool();
 
   public render () {
-    const { name, description, disabled, image, onChange, quantity } = this.props;
+    const { name, description, disabled, image, onChange, quantity, isRecommended } = this.props;
 
     return (
       <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false} hoverable>
@@ -40,7 +41,7 @@ class ItemSelector extends Component <IProps> {
           <h4>{name}</h4>
         </div>
         <div className={`${this.clsPrefix}-buttons`}>
-          <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} />
+          <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} isRecommended={isRecommended} />
         </div>
         <ProductDescriptionModal isVisible={this.isModalVisible} description={description} />
       </Card>
