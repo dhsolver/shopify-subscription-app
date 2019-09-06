@@ -38,7 +38,7 @@ export const billingAddressFieldSet = {
   colProps,
   fields: [
     {
-      editProps: {description: 'Is same as shipping', defaultChecked: true},
+      editProps: {description: 'Is Same as Shipping', defaultChecked: true},
       field: 'billing.is_same_as_shipping',
       label: '',
       type: 'checkbox',
