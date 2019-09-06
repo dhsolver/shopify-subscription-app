@@ -11,6 +11,7 @@ interface IProps {
   //fieldSet: IFieldSet;
   fieldSet: any;
   model: any;
+  onSave: (model: any) => void;
 }
 
 const FieldsFormCard = FormCard as any;
@@ -19,19 +20,27 @@ const FieldsFormCard = FormCard as any;
 @observer
 class PersonalInfoForm extends Component<IProps> {
   @observable private isEditing = new SmartBool();
+
+  private async onSave (model) {
+    await this.props.onSave(model);
+    this.isEditing.setFalse();
+  }
+
   private renderEditIcon () {
     return (
       <>
         {
           this.isEditing.isTrue
-            ? <IconButton icon={this.submit} onClick={this.isEditing.setFalse} />
+            ? null
+            // ? <IconButton icon={this.submit} onClick={this.isEditing.setFalse} />
             : <IconButton icon={this.pencil} onClick={this.isEditing.setTrue} />
         }
       </>
     );
   }
 
-  private get submit () { return () => <Icon type='check' />; }
+  // TODO: MAKE THIS DESIGN ACTUALLY WORK
+  // private get submit () { return () => <Icon type='check' />; }
   private get pencil () { return () => <Icon type='edit' />; }
 
   public render () {
@@ -46,8 +55,9 @@ class PersonalInfoForm extends Component<IProps> {
                 className='ant-card-ghost'
                 fieldSets={[simpleFieldSet]}
                 model={model || {}}
-                renderTopRight={this.renderEditIcon}
-                showControls={false}
+                onSave={this.onSave}
+                // renderTopRight={this.renderEditIcon}
+                // showControls={false}
                 title={fieldSet.legend}
             />
             : <Card

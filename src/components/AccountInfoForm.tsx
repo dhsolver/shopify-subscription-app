@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { Form } from '@mighty-justice/fields-ant';
+import { fillInFieldConfig, Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, notification, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
 import { get, noop } from 'lodash';
+import Decimal from 'decimal.js';
 
 import dynamic from 'next/dynamic';
 
 import Spacer from './common/Spacer';
+import { PRICING } from '../constants';
+import { formatMoney } from '@mighty-justice/utils';
+import { observable } from 'mobx';
 
 const DynamicComponentWithNoSSR = dynamic(
   () => import('./StripeForm'),
@@ -53,11 +57,15 @@ export const discountCodeFieldSet = {
   legend: 'Apply Discount',
 };
 
+// TODO: seriously, why?
+const emptyFieldSet = {fields: [], legend: ''};
+
 export const shippingAddressFieldSet = {
   colProps,
   fields: [
     {field: 'first_name', required: true },
     {field: 'last_name', required: true },
+    // TODO why is this not autofilling
     {field: 'shipping', type: 'address', required: true },
   ],
   legend: 'Shipping Address',
@@ -67,6 +75,7 @@ export const accountDetailsFieldSet = {
   colProps,
   fields: [
     {field: 'email', required: true},
+    // TODO: why is this not validating
     {field: 'phone', required: true},
     {field: 'password', required: true},
     {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password', required: true },
@@ -78,7 +87,7 @@ const fieldSets = [
   shippingAddressFieldSet,
   accountDetailsFieldSet,
   billingAddressFieldSet,
-  discountCodeFieldSet,
+  emptyFieldSet,
 ];
 
 @inject('getOptions')
@@ -86,10 +95,22 @@ const fieldSets = [
 @observer
 class AccountInfoForm extends Component <{}> {
   private stripeToken;
+  @observable private pricing: any = {};
+
   public componentDidMount () {
     if (!store.get('product_id') || !store.get('variant_id')) {
       Router.push('/frequency-selection');
     }
+
+    const subscriptionInfo = store.get('subscriptionInfo')
+      , quantity = get(subscriptionInfo, 'quantity')
+      , frequency = get(subscriptionInfo, 'frequency')
+      , perItemPrice = PRICING[quantity]
+      , itemDecimal = new Decimal(perItemPrice)
+      , totalPrice = itemDecimal.times(quantity).toDecimalPlaces(2).toString()
+      ;
+
+    this.pricing = {quantity, frequency, perItemPrice, totalPrice};
   }
 
   private stripeFormRef;
@@ -166,7 +187,6 @@ class AccountInfoForm extends Component <{}> {
 
     return {
       checkout: {
-        discount_code: model.discount_code,
         email: model.email,
         line_items: lineItems.filter(lineItem => lineItem.quantity),
         shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
@@ -176,6 +196,10 @@ class AccountInfoForm extends Component <{}> {
 
   private getStripeFormRef (form: any) {
     this.stripeFormRef = form;
+  }
+
+  private onAddDiscount () {
+    notification.info({message: 'TODO: add discount', description: 'check recharge API for percent/amount'});
   }
 
   private async onSave (model: any) {
@@ -209,6 +233,8 @@ class AccountInfoForm extends Component <{}> {
   }
 
   public render () {
+    const {quantity, frequency, perItemPrice, totalPrice} = this.pricing;
+
     return (
       <div>
         <Spacer />
@@ -228,12 +254,14 @@ class AccountInfoForm extends Component <{}> {
             />
           </Col>
           <Col span={11} pull={1}>
-            <Card style={{marginTop: '21px'}}>
-              <h3>Order sumary</h3>
-              <p className='large'>12 meal subscription plan</p>
-              <p className='large'>every 4 weeks</p>
-              <p className='large'>$6.66</p>
-            </Card>
+            {totalPrice &&
+              <Card style={{marginTop: '21px'}}>
+                <h3>Order summary</h3>
+                <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
+                <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
+                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
+              </Card>
+            }
           </Col>
         </Row>
         <Spacer />

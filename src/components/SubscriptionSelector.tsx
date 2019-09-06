@@ -14,9 +14,14 @@ import Button from '../components/common/Button';
 import store from 'store';
 import Spacer from './common/Spacer';
 
+interface IProps {
+  omitNext?: boolean;
+  omitQuantity?: boolean;
+}
+
 @autoBindMethods
 @observer
-class SubscriptionSelector extends Component <{}> {
+class SubscriptionSelector extends Component <IProps> {
   @observable private selectedQuantity = 12;
   @observable private selectedSchedule = 2;
 
@@ -52,15 +57,17 @@ class SubscriptionSelector extends Component <{}> {
           <br/>
         </Row>
         <Row type='flex' justify='center'>
-          <QuantitySelector
-            defaultValue='12'
-            size='large'
-            value={this.selectedQuantity}
-            onChange={this.onChangeQuantity}
-          >
-            <QuantitySelector.Button value={12}>12</QuantitySelector.Button>
-            <QuantitySelector.Button value={24}>24</QuantitySelector.Button>
-          </QuantitySelector>
+          {!this.props.omitQuantity &&
+            <QuantitySelector
+              defaultValue='12'
+              size='large'
+              value={this.selectedQuantity}
+              onChange={this.onChangeQuantity}
+            >
+              <QuantitySelector.Button value={12}>12</QuantitySelector.Button>
+              <QuantitySelector.Button value={24}>24</QuantitySelector.Button>
+            </QuantitySelector>
+          }
         </Row>
         <Spacer />
         <Row type='flex' justify='center'>
@@ -80,14 +87,18 @@ class SubscriptionSelector extends Component <{}> {
             <QuantitySelector.Button value={4}>4</QuantitySelector.Button>
           </QuantitySelector>
         </Row>
-        <Spacer />
-        <Spacer />
-          <div style={{height: 100}} />
-          <Row type='flex' justify='center'>
-            <Link href='/recipe-selection'>
-              <Button size='large' type='primary' onClick={this.save}>Next</Button>
-            </Link>
-          </Row>
+        {!this.props.omitNext && (
+          <>
+            <Spacer />
+            <Spacer />
+            <div style={{height: 100}} />
+            <Row type='flex' justify='center'>
+              <Link href='/recipe-selection'>
+                <Button size='large' type='primary' onClick={this.save}>Next</Button>
+              </Link>
+            </Row>
+          </>
+        )}
       </div>
     );
   }

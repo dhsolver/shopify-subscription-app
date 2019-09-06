@@ -12,14 +12,7 @@ import { Form } from '@mighty-justice/fields-ant';
 import SmartBool from '@mighty-justice/smart-bool';
 import { sleep } from '../utils/utils';
 import cx from 'classnames';
-
-const fieldSets = [[{
-  editProps: {defaultChecked: true, description: 'I would like to share my data with Tuft\'s School of Nutrition'},
-  field: 'share_with_tufts',
-  label: 'I would like to share my data with Tuft\'s School of Nutrition',
-  showLabel: false,
-  type: 'checkbox',
-}]];
+import Link from 'next/link';
 
 const SUBMIT_SLEEP = 1500;
 
@@ -54,7 +47,9 @@ class OnboardingFinalSteps extends Component<{}> {
           </Upload>
         </h2>
         <Spacer large />
-        <Form fieldSets={fieldSets} onSave={this.onSave} saveText='Submit' />
+        <Link href='/frequency-selection'>
+          <Button>Submit</Button>
+        </Link>
       </Card>
     );
   }

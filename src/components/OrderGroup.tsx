@@ -11,7 +11,7 @@ import {
   Col,
   DatePicker,
   Icon,
-  List,
+  List, notification,
   Row,
   Spin,
 } from 'antd';
@@ -45,6 +45,11 @@ class Orders extends Component<IProps> {
     const { charge, fetchCharges } = this.props
       , lineItems = charge.line_items.map(lineItem => lineItem.subscription_id)
       ;
+
+    notification.info({
+      description: 'figure out a way to make this take WAAAAYYY less time',
+      message: 'TODO: reconcile with recharge support',
+    });
 
     this.isLoading.setTrue();
     this.isSkipped.toggle();
@@ -115,7 +120,10 @@ class Orders extends Component<IProps> {
             <Col xs={6} className='actions'>
               <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>
                 <Col>
-                  <a><IconButton icon={editIcon} /> Edit</a>
+                  {/*
+                    // TODO: HANDLE EDITING A CART
+                    <a><IconButton icon={editIcon} /> Edit</a>
+                  */}
                 </Col>
                 <Col>
                   <Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}

@@ -117,9 +117,14 @@ app.prepare().then(() => {
     }
   });
 
-  server.post('/customers/:id/addresses/', async () => {
+  server.post('/customers/:id/addresses/', async (req, res) => {
     const response = await rechargeClient.post(`customers/${req.body.customer_id}/addresses/`, req.body);
     return res.end(JSON.stringify(response.data));
+  });
+
+  server.put('/customers/:id/', async (req, res) => {
+    const response = await rechargeClient.put(`customers/${req.params.id}/`, req.body);
+    return res.send(JSON.stringify(response.data));
   });
 
   /* CREATE ORDER */
