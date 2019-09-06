@@ -28,16 +28,6 @@ export const personalInfoFieldSet = {
   legend: 'Personal Info',
 };
 
-export const paymentInfoFieldSet = {
-  colProps,
-  fields: [
-    { field: 'payment_info.credit_card_number' },
-    { field: 'payment_info.expiration_date' },
-    { field: 'payment_info.cvv,', label: 'CVV' },
-  ],
-  legend: 'Payment Info',
-};
-
 export const insertBillingIf = (model: any) => model.billing && !model.billing.is_same_as_shipping;
 
 export const billingAddressFieldSet = {

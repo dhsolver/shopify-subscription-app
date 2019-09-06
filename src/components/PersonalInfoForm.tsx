@@ -10,6 +10,7 @@ import { observer } from 'mobx-react';
 interface IProps {
   //fieldSet: IFieldSet;
   fieldSet: any;
+  model: any;
 }
 
 const FieldsFormCard = FormCard as any;
@@ -34,7 +35,7 @@ class PersonalInfoForm extends Component<IProps> {
   private get pencil () { return () => <Icon type='edit' />; }
 
   public render () {
-    const { fieldSet } = this.props
+    const { fieldSet, model } = this.props
       , simpleFieldSet = {...fieldSet, legend: null};
 
     return (
@@ -44,7 +45,7 @@ class PersonalInfoForm extends Component<IProps> {
             ? <FieldsFormCard
                 className='ant-card-ghost'
                 fieldSets={[simpleFieldSet]}
-                model={{}}
+                model={model || {}}
                 renderTopRight={this.renderEditIcon}
                 showControls={false}
                 title={fieldSet.legend}
@@ -52,6 +53,7 @@ class PersonalInfoForm extends Component<IProps> {
             : <Card
                 className='ant-card-ghost'
                 fieldSets={[simpleFieldSet]}
+                model={model || {}}
                 renderTopRight={this.renderEditIcon}
                 title={fieldSet.legend}
             />

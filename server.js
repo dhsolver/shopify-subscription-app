@@ -7,6 +7,7 @@ const next = require('next')
   , mobxReact = require('mobx-react')
   , Client = require('shopify-buy')
   , Axios = require('axios')
+  , _ = require('lodash')
   ;
 
 dotenv.config();
@@ -84,21 +85,11 @@ app.prepare().then(() => {
     return res.send(JSON.stringify(response));
   });
 
-  server.get('/orders/', async (req, res) => {
-    const response = await adminClient.get('orders.json');
-    return res.end(JSON.stringify(response.data));
-  });
-
   /* GET CUSTOMER INFO */
 
-  server.get('/recharge-customers/', async (req, res) => {
-    const response = await rechargeClient.get('customers');
-    return res.end(JSON.stringify(response.data));
-  });
-
   server.get('/recharge-customers/:id', async (req, res) => {
-    const response = await rechargeClient.get(`customers?shopify_customer_id=${params.id}`);
-    return res.end(JSON.stringify(response.data[0]));
+    const response = await rechargeClient.get(`customers/${req.params.id}`);
+    return res.end(JSON.stringify(response.data));
   });
 
 
@@ -188,6 +179,8 @@ app.prepare().then(() => {
     }
   });
 
+  // END CREATE ORDER
+
   // FETCH CHARGES
 
   server.get('/recharge-queued-charges/', async (req, res) => {
@@ -196,15 +189,32 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
-  server.post('/subscriptions/', async (req, res) => {
-    const response = await rechargeClient.post('subscriptions', req.body);
-    return res.end(JSON.stringify(response.data));
+  // FETCH CHARGES
+
+  // Skip/Un-skip Charges
+
+  server.post('/skip-charge/:id/', async (req, res) => {
+    const response = await rechargeClient.post(`charges/${req.params.id}/skip`, req.body);
+    return res.end(JSON.stringify(response.data))
   });
 
-  server.get('/subscription-products/', async (req, res) => {
-    const response = await rechargeClient.get('products');
-    return res.send(JSON.stringify(response.data));
+  server.post('/unskip-charge/:id/', async (req, res) => {
+    const response = await rechargeClient.post(`charges/${req.params.id}/unskip`, req.body);
+    return res.end(JSON.stringify(response.data))
   });
+
+  // END Skip/Un-skip Charges
+
+  // CHANGE ORDER DATE
+
+  server.post('/change-order-date/:orderId', async (req, res) => {
+    const response = await rechargeClient.post(`/charges/${req.params.orderId}/change_next_charge_date`, req.body);
+    return res.send(JSON.stringify(response.data))
+  });
+
+  // END CHANGE ORDER DATE
+
+  // GENERIC
 
   server.get('*', (req, res) => {
     return handle(req, res);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { find, times } from 'lodash';
+import { get } from 'lodash';
 import store from 'store';
 import Axios from 'axios';
 
@@ -15,16 +15,26 @@ import Center from './common/Center';
 import Spacer from './common/Spacer';
 
 import OrderGroup from './OrderGroup';
+import Router from 'next/router';
 
 @autoBindMethods
 @observer
 class Orders extends Component<{}> {
-  @observable private products = [];
   @observable private charges = [];
 
   public async componentDidMount () {
-    const { rechargeId } = store.get('customerInfo')
-      , {data} = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
+    await this.fetchCharges();
+  }
+
+  public async fetchCharges () {
+    const rechargeId = get(store.get('customerInfo'), 'rechargeId');
+
+    if (!rechargeId) {
+      Router.push('/index');
+      return;
+    }
+
+    const {data} = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
       ;
 
     this.charges = data.charges;
@@ -46,7 +56,7 @@ class Orders extends Component<{}> {
         <Spacer />
 
         {this.charges.map(
-          charge => <OrderGroup key={charge.id} charge={charge} products={charge.line_items} />,
+          charge => <OrderGroup fetchCharges={this.fetchCharges} key={charge.id} charge={charge}/>,
         )}
       </Row>
     );
