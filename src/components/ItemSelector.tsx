@@ -11,8 +11,8 @@ import SmartBool from '@mighty-justice/smart-bool';
 interface IProps {
   image?: string; // TODO: require this
   name: string;
-  description: string;
-  disabled: boolean;
+  description?: string;
+  disabled?: boolean;
   isRecommended?: boolean;
   onChange: (quantity: number) => any;
   quantity?: number;
@@ -43,7 +43,7 @@ class ItemSelector extends Component <IProps> {
         <div className={`${this.clsPrefix}-buttons`}>
           <SelectionButtons disabled={disabled} onChange={onChange} quantity={quantity} isRecommended={isRecommended} />
         </div>
-        <ProductDescriptionModal isVisible={this.isModalVisible} description={description} />
+        {description && <ProductDescriptionModal isVisible={this.isModalVisible} description={description} />}
       </Card>
     );
   }

@@ -219,6 +219,20 @@ app.prepare().then(() => {
 
   // END CHANGE ORDER DATE
 
+  // UPDATE SUBSCRIPTION
+
+  server.put('/subscriptions/:id', async (req, res) => {
+    try {
+      const response = await rechargeClient.put(`/subscriptions/${req.params.id}`, req.body);
+      return res.send(JSON.stringify(response.data))
+    }
+    catch (e) {
+      res.json({message: e.response.data.errors});
+    }
+  });
+
+  // END UPDATE SUBSCRIPTION
+
   // GENERIC
 
   server.get('*', (req, res) => {

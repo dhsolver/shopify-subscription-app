@@ -59,11 +59,13 @@ const fieldSet = [
     field: 'relationship_to_child',
     label: '',
     options: RELATIONSHIP_OPTIONS,
+    required: true,
   },
   {
     editComponent: ChildNameInput,
     field: 'child_name',
     label: '',
+    required: true,
   },
 ];
 

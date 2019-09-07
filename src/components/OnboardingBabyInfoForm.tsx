@@ -52,19 +52,6 @@ const DIET_RESEMBLES_OPTIONS = [
   {name: 'Dairy Free', value: 'dairy_free'},
 ];
 
-const FEEDS_ORGANIC_FOOD_OPTIONS = [
-  {name: 'All the time', value: 'all_the_time'},
-  {name: 'Most of the time', value: 'most_of_the_time'},
-  {name: 'Sometimes', value: 'sometimes'},
-  {name: 'Doesn\'t matter', value: 'does_not_matter'},
-];
-
-const DOING_AWESOME_OPTIONS = [
-  {name: 'I know that, duh.', value: '1'},
-  {name: 'That\'s so nice!!!', value: '2'},
-  {name: 'If you say so...', value: '3'},
-];
-
 const getOptions = () => ({
   allergies: ALLERGIES_OPTIONS,
   current_diet: CURRENT_DIET_OPTIONS,
@@ -149,12 +136,14 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'has_allergies',
         label: `Does ${this.name} have any allergies?`,
         options: ALLERGIES_OPTIONS,
+        required: true,
         type: 'radio',
       },
       {
         field: 'allergies',
         insertIf: insertAllergiesIf,
         label: `Please list ${this.name}'s allergies below`,
+        required: true,
         type: 'text',
       },
       {
@@ -169,6 +158,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'stage_of_eating',
         label: `What is ${this.name}'s stage of eating?`,
         options: STAGE_OF_EATING_OPTIONS,
+        required: true,
         type: 'radio',
       },
       {
@@ -176,6 +166,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'current_diet',
         label: `${this.name}'s current diet consists of...`,
         options: CURRENT_DIET_OPTIONS,
+        required: true,
         type: 'radio',
       },
       {
@@ -183,6 +174,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'eats_meat',
         label: `Does ${this.name} eat meat?`,
         options: EATS_MEAT_OPTIONS,
+        required: true,
         type: 'radio',
       },
       // should be a checkbox group, not supported by fields-ant yet
@@ -191,6 +183,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'diet_resembles',
         label: `${this.name}'s eating style most closely resembles....`,
         options: DIET_RESEMBLES_OPTIONS,
+        required: true,
         type: 'radio',
       },
       {
@@ -198,6 +191,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'eating_style',
         label: `${this.name}'s eating style is....`,
         options: EATING_STYLE_OPTIONS,
+        required: true,
         type: 'radio',
       },
       // should be a checkbox group, not supported by fields-ant yet
@@ -206,6 +200,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'eating_concerns',
         label: `My biggest eating concern for ${this.name} is....`,
         options: eatingConcernOptions,
+        required: true,
         type: 'radio',
       },
     ];

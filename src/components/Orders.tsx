@@ -34,8 +34,7 @@ class Orders extends Component<{}> {
       return;
     }
 
-    const {data} = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
-      ;
+    const {data} = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`);
 
     this.charges = data.charges;
   }

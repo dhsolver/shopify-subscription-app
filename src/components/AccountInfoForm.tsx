@@ -276,9 +276,6 @@ class AccountInfoForm extends Component <{}> {
             </div>
           </Col>
         </Row>
-        {/*<Row type='flex' justify='center'>*/}
-          {/*<Button type='primary' size='large' onClick={this.onSave}>Submit</Button>*/}
-        {/*</Row>*/}
       </div>
     );
   }

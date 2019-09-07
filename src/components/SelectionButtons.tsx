@@ -17,6 +17,10 @@ interface IProps {
 class SelectionButtons extends Component <IProps> {
   @observable private quantity = 0;
 
+  public componentDidMount () {
+    this.quantity = this.props.quantity || 0;
+  }
+
   public componentWillReceiveProps (nextProps: Readonly<IProps>) {
     if (nextProps.isRecommended && !this.props.isRecommended) {
       this.quantity = 0;
