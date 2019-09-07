@@ -157,7 +157,13 @@ class OnboardingBabyInfoForm extends Component<{}> {
         label: `Please list ${this.name}'s allergies below`,
         type: 'text',
       },
-      {field: 'allergies_blurb', editComponent: AllergiesBlurb, label: '', writeOnly: true},
+      {
+        editComponent: AllergiesBlurb,
+        field: 'allergies_blurb',
+        insertIf: insertAllergiesIf,
+        label: '',
+        writeOnly: true,
+      },
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'stage_of_eating',
@@ -189,13 +195,6 @@ class OnboardingBabyInfoForm extends Component<{}> {
       },
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
-        field: 'organic_food',
-        label: `I fee ${this.name} organic food....`,
-        options: FEEDS_ORGANIC_FOOD_OPTIONS,
-        type: 'radio',
-      },
-      {
-        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_style',
         label: `${this.name}'s eating style is....`,
         options: EATING_STYLE_OPTIONS,
@@ -207,13 +206,6 @@ class OnboardingBabyInfoForm extends Component<{}> {
         field: 'eating_concerns',
         label: `My biggest eating concern for ${this.name} is....`,
         options: eatingConcernOptions,
-        type: 'radio',
-      },
-      {
-        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
-        field: 'doing_awesome',
-        label: 'Reminder.... YOU. ARE. DOING. AWESOME!',
-        options: DOING_AWESOME_OPTIONS,
         type: 'radio',
       },
     ];
