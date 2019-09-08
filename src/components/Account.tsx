@@ -169,6 +169,7 @@ class Account extends Component<{}> {
 
   public render () {
     if (this.isLoading.isTrue) { return 'loading......'; }
+    const profilePicture = store.get('profilePicture');
 
     return (
       <Row>
@@ -176,11 +177,13 @@ class Account extends Component<{}> {
         <Center>
           <h2>Sebi's Account</h2>
           <Spacer />
-          <Row gutter={GUTTER} type='flex' justify='center'>
-            <Col {...HEADER_COLS}>
-              <Avatar size={AVATAR_SIZE} src='http://placekitten.com/200/200' />
-            </Col>
-          </Row>
+          {profilePicture && (
+            <Row gutter={GUTTER} type='flex' justify='center'>
+              <Col {...HEADER_COLS}>
+                <Avatar size={AVATAR_SIZE} src={profilePicture} />
+              </Col>
+            </Row>
+          )}
         </Center>
         <Spacer large />
         <Row gutter={GUTTER}>
