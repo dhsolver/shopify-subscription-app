@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { getDay } from 'date-fns';
-import { find, sum } from 'lodash';
+import { find, get, sum } from 'lodash';
 import Axios from 'axios';
 import moment from 'moment';
 import autoBindMethods from 'class-autobind-decorator';
@@ -24,10 +24,12 @@ import Spacer from './common/Spacer';
 import Switch from './common/Switch';
 import { IconButton } from './common/Button';
 import ItemSelector from './ItemSelector';
+import PlateIcon from './icons/PlateIcon';
 
 interface IProps {
   charge: any;
   fetchCharges: () => void;
+  hasAddedFamilyTime: boolean;
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
@@ -54,9 +56,10 @@ class OrderGroup extends Component<IProps> {
 
     this.maxItems = this.total = sum(props.charge.line_items.map(lineItem => lineItem.quantity));
     props.charge.line_items.forEach(lineItem => {
+      const frequency = find(lineItem.properties, {name: 'charge_interval_frequency'});
       this.boxItems[lineItem.subscription_id] = {
         ...lineItem,
-        order_interval_frequency: find(lineItem.properties, {name: 'charge_interval_frequency'}).value,
+        order_interval_frequency: get(frequency, 'value', null),
         order_interval_unit: 'week',
       };
     });
@@ -141,9 +144,21 @@ class OrderGroup extends Component<IProps> {
   }
 
   private renderIconButton () {
-    return this.isEditingOrder.isTrue
-      ? <IconButton icon={submitIcon} disabled={this.total !== this.maxItems} onClick={this.onSave} />
-      : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />;
+    return (
+      <>
+        <Col>
+          {this.props.hasAddedFamilyTime && <IconButton icon={PlateIcon} textAfter='Family Time' />}
+          {this.isEditingOrder.isTrue
+            ? <IconButton icon={submitIcon} disabled={this.total !== this.maxItems} onClick={this.onSave} />
+            : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />
+          }
+        </Col>
+        <Col>
+          <Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}
+          {this.isSkipped.isTrue ? 'Skipped' : 'Skip'}
+        </Col>
+      </>
+    );
   }
 
   private disabledDate (current) {
@@ -184,13 +199,7 @@ class OrderGroup extends Component<IProps> {
               </Col>
               <Col xs={6} className='actions'>
                 <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>
-                  <Col>
-                    {this.renderIconButton()}
-                  </Col>
-                  <Col>
-                    <Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}
-                    {this.isSkipped.isTrue ? 'Skipped' : 'Skip'}
-                  </Col>
+                  {this.renderIconButton()}
                 </Row>
               </Col>
             </Row>

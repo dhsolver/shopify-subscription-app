@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { fillInFieldConfig, Form } from '@mighty-justice/fields-ant';
+import { Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
 import { Card, Col, notification, Row } from 'antd';
@@ -177,13 +177,13 @@ class AccountInfoForm extends Component <{}> {
     const { frequency } = store.get('subscriptionInfo')
       , boxItems = store.get('boxItems')
       , lineItems = Object.keys(boxItems).map(id => ({
-        charge_interval_frequency: frequency,
-        order_interval_frequency: frequency,
-        order_interval_unit: 'week',
-        product_id: id,
-        quantity: boxItems[id].quantity,
-        variant_id: boxItems[id].variant_id,
-      }));
+          charge_interval_frequency: frequency,
+          order_interval_frequency: frequency,
+          order_interval_unit: 'week',
+          product_id: id,
+          quantity: boxItems[id].quantity,
+          variant_id: boxItems[id].variant_id,
+        }));
 
     return {
       checkout: {
@@ -207,12 +207,17 @@ class AccountInfoForm extends Component <{}> {
     const {data: {id}} = await Axios.post('/shopify-customers/', this.serializeShopifyCustomerInfo(model))
       , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
       , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
-      , rechargeCheckoutResponse = await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model))
+      , rechargeId = rechargeCustomerResponse.data.customer.id
+      , [rechargeCheckoutResponse, { data: { addresses } }] = await Promise.all([
+          await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model)),
+          await Axios.get(`/recharge-customers/${rechargeId}/addresses`),
+        ])
       , { checkout: { token } } = rechargeCheckoutResponse.data
       , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
+      , familyTime = store.get('familyTime')
       ;
 
-    store.set('customerInfo', {id, rechargeId: rechargeCustomerResponse.data.customer.id});
+    store.set('customerInfo', {id, rechargeId});
 
     await Axios.put(`/recharge-checkouts/${token}/`, {
       checkout: {
@@ -223,6 +228,13 @@ class AccountInfoForm extends Component <{}> {
     await Axios.post(`/recharge-charges/${token}/`, {
       checkout_charge: { payment_processor: 'stripe', payment_token: this.stripeToken },
     });
+
+    if (familyTime) {
+      const { data: { charges } } = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
+        , familyTimeSubmitData = {...familyTime, next_charge_scheduled_at: charges[0].scheduled_at}
+        ;
+      await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
+    }
 
     Router.push('/order-confirmation');
     return rechargeCustomerResponse;

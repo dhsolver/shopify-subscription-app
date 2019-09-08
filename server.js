@@ -7,7 +7,6 @@ const next = require('next')
   , mobxReact = require('mobx-react')
   , Client = require('shopify-buy')
   , Axios = require('axios')
-  , _ = require('lodash')
   ;
 
 dotenv.config();
@@ -85,6 +84,8 @@ app.prepare().then(() => {
     return res.send(JSON.stringify(response));
   });
 
+  /* END FETCH PRODUCTS */
+
   /* GET CUSTOMER INFO */
 
   server.get('/recharge-customers/:id', async (req, res) => {
@@ -92,13 +93,18 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
+  server.get('/recharge-customers/:id/addresses/', async (req, res) => {
+    const response = await rechargeClient.get(`customers/${req.params.id}/addresses/`);
+    return res.end(JSON.stringify(response.data));
+  });
+
+  /* END GET CUSTOMER INFO */
 
   /* CREATE CUSTOMERS */
 
   server.post('/shopify-customers/', async (req, res) => {
     try {
       const response = await adminAPI.customer.create(req.body);
-      console.log(response.data);
       res.send(JSON.stringify(response));
     }
     catch (e) {
@@ -189,7 +195,6 @@ app.prepare().then(() => {
   // FETCH CHARGES
 
   server.get('/recharge-queued-charges/', async (req, res) => {
-    console.log(req.query.customer_id)
     const response = await rechargeClient.get(`charges?status=QUEUED&customer_id=${req.query.customer_id}`);
     return res.end(JSON.stringify(response.data));
   });
@@ -233,7 +238,32 @@ app.prepare().then(() => {
 
   // END UPDATE SUBSCRIPTION
 
-  // GENERIC
+  // ADD ONE-TIME PRODUCT TO ORDER
+
+  server.post('/onetimes/address/:address_id', async (req, res) => {
+    try {
+      const response = await rechargeClient.post(`/onetimes/address/${req.params.address_id}`, req.body);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      res.json({message: e.response.data.errors});
+    }
+  });
+
+  server.delete('/onetimes/:id', async (req, res) => {
+    try {
+      await rechargeClient.delete(`/onetimes/${req.params.id}`);
+      return res.end('deleted');
+    }
+    catch (e) {
+      console.error(e)
+      res.status(500).json({message: e.message});
+    }
+  });
+
+  // END ADD ONE-TIME PRODUCT TO ORDER
+
+  // GENERIC //
 
   server.get('*', (req, res) => {
     return handle(req, res);

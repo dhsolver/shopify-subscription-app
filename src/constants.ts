@@ -27,3 +27,7 @@ export const PRODUCT_RECOMMENDATIONS = {
   1286394: {id: 1286394, quantity: {12: 1, 24: 2}, title: 'The Wizard of Orzo'},
   1286391: {id: 1286391, quantity: {12: 1, 24: 2}, title: 'Valencian Paella'},
 };
+
+export const FAMILY_TIME_VARIANT_ID = '28208433758307';
+export const FAMILY_TIME_PRODUCT_ID = '3563244126307';
+export const FAMILY_TIME_PRICE = '14.99';

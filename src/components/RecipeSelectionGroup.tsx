@@ -9,7 +9,7 @@ import store from 'store';
 
 import ItemSelector from './ItemSelector';
 import SmartBool from '@mighty-justice/smart-bool';
-import AddOnStatic from './AddOnStatic';
+import AddOn from './AddOn';
 import Spacer from './common/Spacer';
 import Link from 'next/link';
 import Button from '../components/common/Button';
@@ -122,7 +122,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
           dataSource={this.rechargeProductData}
           renderItem={this.renderItem}
         />
-        <AddOnStatic />
+        <AddOn />
         <br/>
         <Row type='flex' justify='center'>
           <Link href='/checkout'>
