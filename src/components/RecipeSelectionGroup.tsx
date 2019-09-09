@@ -99,7 +99,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
       <div>
         <Spacer />
         <Row type='flex' justify='center'>
-          <h2>Select Recipes</h2>
+          <h1>Select Recipes</h1>
         </Row>
 
         <Row type='flex' justify='center'>

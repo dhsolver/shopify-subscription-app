@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import { FAMILY_TIME_PRICE, FAMILY_TIME_PRODUCT_ID, FAMILY_TIME_VARIANT_ID } from '../constants';
 import store from 'store';
-import { IconButton } from './common/Button';
+import Button from './common/Button';
 import PlateIcon from './icons/PlateIcon';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
@@ -39,21 +39,20 @@ class AddOn extends Component<{}> {
   private renderFamilyTimeIcon = () => {
     if (this.hasAddedFamilyTime.isTrue) {
       return (
-        <IconButton
-          icon={PlateIcon}
-          onClick={this.onRemoveFamilyTime}
-          textAfter='Yay! adult-sized versions of tiny coming your way!'
-        />
+        <div className='btn-remove'>
+          <PlateIcon />
+          <Button type='primary' onClick={this.onRemoveFamilyTime}>
+            Yay! <small>adult-sized versions of tiny coming your way!</small>
+          </Button>
+        </div>
       );
     }
 
     return (
-      <IconButton
-        onClick={this.addFamilyTime}
-        type='primary'
-        icon={this.addFamilyTimeIcon}
-        textAfter='Family Time'
-      />
+      <div className='btn-add'>
+        <Button type='primary' onClick={this.addFamilyTime} icon='plus' shape='circle' />
+        <Button type='primary' onClick={this.addFamilyTime}>Family Time</Button>
+      </div>
     );
   }
 

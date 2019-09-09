@@ -21,4 +21,22 @@
 
     }
   }
+
+  .@{radio-prefix-cls}-button-wrapper {
+    border: @border-width-base @border-style-base @primary-color;
+
+    &:not(:first-child) {
+      &::before {
+        background-color: @primary-color;
+      }
+    }
+    &:first-child {
+      border-left: @border-width-base @border-style-base @primary-color;
+    }
+  
+    &-checked:not(&-disabled) {
+      color: @btn-primary-color;
+
+    }
+  }
 }

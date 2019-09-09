@@ -25,6 +25,7 @@ Button.Group = AntdButton.Group;
 
 interface IIconProps {
   primary?: boolean;
+  style?: any;
 }
 
 interface IIconButtonProps extends HTMLProps<HTMLAnchorElement> {
