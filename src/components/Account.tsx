@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import store from 'store';
-import { get, noop } from 'lodash';
+import { get, omit } from 'lodash';
 
 import { Avatar, Col, Icon, message, notification, Row } from 'antd';
 
@@ -50,15 +50,19 @@ class Account extends Component<{}> {
   @observable private customer: any = {};
   @observable private isEditingSubscriptionDetails = new SmartBool();
   @observable private isLoading = new SmartBool(true);
+  @observable private shippingAddress: any = {};
 
   private subscriptionSelector: any;
 
   public async componentDidMount () {
     const rechargeId = get(store.get('customerInfo'), 'rechargeId')
-      , response = await Axios.get(`/recharge-customers/${rechargeId}`)
+      , shopifyId = get(store.get('customerInfo'), 'id')
+      , rechargeResponse = await Axios.get(`/recharge-customers/${rechargeId}`)
+      , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
       ;
 
-    this.customer = response.data.customer;
+    this.shippingAddress = addressesResponse.data.addresses[0];
+    this.customer = rechargeResponse.data.customer;
     this.isLoading.setFalse();
   }
 
@@ -100,23 +104,41 @@ class Account extends Component<{}> {
       'first_name': model.first_name,
       'last_name': model.last_name,
       'phone': model.billing_phone,
-      // TODO reconcile w/ shopify user info
-      'shipping': {
-        address1: model.billing_address1,
-        address2: model.billing_address2,
-        city: model.billing_city,
-        country: model.billing_country,
-        state: model.billing_province,
-        zip_code: model.billing_zip,
-      },
-      // TODO make shipping address actually shipping address
-      'shipping.address1': model.billing_address1,
-      'shipping.address2': model.billing_address2,
-      'shipping.city': model.billing_city,
-      'shipping.country': model.billing_country,
-      'shipping.state': model.billing_province,
-      'shipping.zip_code': model.billing_zip,
     };
+  }
+
+  private deserializeShippingData (model) {
+    return {
+      shipping: {
+        ...omit(model, 'state', 'zip_code'),
+        state: model.province,
+        zip_code: model.zip,
+      },
+      ...omit(model, 'state', 'zip_code'),
+      state: model.province,
+      zip_code: model.zip,
+    };
+  }
+
+  private serializeShippingData (model) {
+    return {
+      address: {
+        ...omit(model.shipping, 'state', 'zip_code'),
+        country: 'United States',
+        first_name: model.first_name,
+        id: this.shippingAddress.id,
+        last_name: model.last_name,
+        province: 'NY',
+        zip: model.shipping.zip_code,
+      },
+    };
+  }
+
+  private async updateShippingInfo (model) {
+    const endpoint = `customers/${this.customer.shopify_customer_id}/addresses/${this.shippingAddress.id}`
+      , response = await Axios.put(endpoint, this.serializeShippingData(model));
+
+    this.shippingAddress = response.data.customer_address;
   }
 
   private renderSubscriptionPlan () {
@@ -161,6 +183,7 @@ class Account extends Component<{}> {
   }
 
   private saveShippingInfo (model: any) {
+
     notification.success({
       description: JSON.stringify(model),
       message: 'TODO: MAKE THIS UPDATE SHIPPING INFO',
@@ -197,9 +220,9 @@ class Account extends Component<{}> {
             </Row>
             <Row>
               <PersonalInfoForm
-                model={this.deserializeFormData(this.customer)}
+                model={this.deserializeShippingData(this.shippingAddress)}
                 fieldSet={fillInFieldSet(shippingAddressFieldSet)}
-                onSave={this.saveShippingInfo}
+                onSave={this.updateShippingInfo}
               />
             </Row>
             <Row>

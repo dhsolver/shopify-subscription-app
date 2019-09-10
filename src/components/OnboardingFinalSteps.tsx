@@ -27,7 +27,7 @@ class OnboardingFinalSteps extends Component<{}> {
   @observable private name = '';
 
   public componentDidMount () {
-    this.name = get(JSON.parse(store.get('nameInfo')), 'child_name', '');
+    this.name = get(store.get('nameInfo'), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
   }
 

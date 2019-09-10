@@ -81,7 +81,10 @@ class OrderGroup extends Component<IProps> {
 
     // tslint:disable-next-line
     for (let i = 0; i < subscriptionIds.length; i += 1) {
-      await Axios.put(`/subscriptions/${subscriptionIds[i]}`, this.boxItems[subscriptionIds[i]]);
+      await Axios.put(
+        `/subscriptions/${subscriptionIds[i]}`,
+        {quantity: this.boxItems[subscriptionIds[i]].quantity},
+      );
     }
     await this.props.fetchCharges();
     this.isEditingOrder.setFalse();

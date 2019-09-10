@@ -24,7 +24,6 @@ const FAMILY_TIME_DATA = {
 @observer
 class AddOn extends Component<{}> {
   @observable private hasAddedFamilyTime = new SmartBool();
-  private get addFamilyTimeIcon () { return () => <Icon type='plus-circle' theme='filled' />; }
 
   private addFamilyTime () {
     store.set('familyTime', FAMILY_TIME_DATA);
@@ -36,11 +35,11 @@ class AddOn extends Component<{}> {
     this.hasAddedFamilyTime.setFalse();
   }
 
-  private renderFamilyTimeIcon = () => {
+  private renderFamilyTimeIcon () {
     if (this.hasAddedFamilyTime.isTrue) {
       return (
         <div className='btn-remove'>
-          <PlateIcon />
+          <PlateIcon/>
           <Button type='primary' onClick={this.onRemoveFamilyTime}>
             Yay! <small>adult-sized versions of tiny coming your way!</small>
           </Button>
@@ -50,7 +49,7 @@ class AddOn extends Component<{}> {
 
     return (
       <div className='btn-add'>
-        <Button type='primary' onClick={this.addFamilyTime} icon='plus' shape='circle' />
+        <Button type='primary' onClick={this.addFamilyTime} icon='plus' shape='circle'/>
         <Button type='primary' onClick={this.addFamilyTime}>Family Time</Button>
       </div>
     );
@@ -61,7 +60,7 @@ class AddOn extends Component<{}> {
       <div className='add-on-static'>
         <Row type='flex'>
           <Col span={8} className='col-photo'>
-            <div className='photo' style={{backgroundImage: `url(${ADD_ON_STATIC_PHOTO}`}} />
+            <div className='photo' style={{backgroundImage: `url(${ADD_ON_STATIC_PHOTO}`}}/>
           </Col>
           <Col span={16}>
             <div className='info'>

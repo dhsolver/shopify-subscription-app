@@ -98,17 +98,23 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
+  server.get('/customers/:id/addresses/', async (req, res) => {
+    const response = await adminClient.get(`customers/${req.params.id}/addresses.json/`);
+    return res.end(JSON.stringify(response.data));
+  });
+
   /* END GET CUSTOMER INFO */
 
   /* CREATE CUSTOMERS */
 
   server.post('/shopify-customers/', async (req, res) => {
     try {
+      console.log(req.body);
       const response = await adminAPI.customer.create(req.body);
       res.send(JSON.stringify(response));
     }
     catch (e) {
-      console.error(e)
+      console.error(e);
       res.status(e.statusCode).json({message: e.message});
     }
   });
@@ -131,6 +137,16 @@ app.prepare().then(() => {
   server.put('/customers/:id/', async (req, res) => {
     const response = await rechargeClient.put(`customers/${req.params.id}/`, req.body);
     return res.send(JSON.stringify(response.data));
+  });
+
+  server.put('/customers/:customer_id/addresses/:address_id', async (req, res) => {
+    try {
+      const response = await adminClient.put(`/customers/${req.params.customer_id}/addresses/${req.params.address_id}.json`, req.body)
+      return res.send(JSON.stringify(response.data));
+    }
+    catch (e) {
+      return res.status(400).send(e.response.data.errors);
+    }
   });
 
   /* CREATE ORDER */
@@ -264,6 +280,21 @@ app.prepare().then(() => {
   // END ADD ONE-TIME PRODUCT TO ORDER
 
   // GENERIC //
+  // METAFIELDS
+
+  server.post('/recharge-metafields/', async (req, res) => {
+    try {
+      const response = await rechargeClient.post(`/metafields?owner_resource=customer`, req.body);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch (e) {
+      res.json({message: e.message});
+    }
+  });
+
+  // END METAFIELDS
+
+  // GENERIC
 
   server.get('*', (req, res) => {
     return handle(req, res);

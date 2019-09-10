@@ -84,7 +84,7 @@ class OnboardingNameForm extends Component<{}> {
 
   private async onSave (data: any) {
     this.isSaving.setTrue();
-    await store.set('nameInfo', JSON.stringify(data));
+    await store.set('nameInfo', data);
     await sleep(SUBMIT_SLEEP);
     await Router.push('/onboarding-baby-info');
   }

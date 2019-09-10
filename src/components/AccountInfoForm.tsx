@@ -111,6 +111,7 @@ class AccountInfoForm extends Component <{}> {
       ;
 
     this.pricing = {quantity, frequency, perItemPrice, totalPrice};
+    this.serializeMetafields();
   }
 
   private stripeFormRef;
@@ -194,6 +195,22 @@ class AccountInfoForm extends Component <{}> {
     };
   }
 
+  private serializeMetafields () {
+    const nameInfo = store.get('nameInfo')
+      , babyInfo = store.get('babyInfo')
+      , combinedInfo = JSON.stringify({...nameInfo, ...babyInfo})
+      ;
+
+    return {
+      description: 'onboarding_info',
+      key: 'onboarding',
+      namespace: 'personal_info',
+      owner_resource: 'customer',
+      value: combinedInfo,
+      value_type: 'string',
+    };
+  }
+
   private getStripeFormRef (form: any) {
     this.stripeFormRef = form;
   }
@@ -208,17 +225,16 @@ class AccountInfoForm extends Component <{}> {
       , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
       , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
       , rechargeId = rechargeCustomerResponse.data.customer.id
-      , [rechargeCheckoutResponse, { data: { addresses } }] = await Promise.all([
-          await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model)),
-          await Axios.get(`/recharge-customers/${rechargeId}/addresses`),
-        ])
+      , rechargeCheckoutResponse = await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model))
       , { checkout: { token } } = rechargeCheckoutResponse.data
       , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
       , familyTime = store.get('familyTime')
+      , metafieldData = {metafield: {...this.serializeMetafields(), owner_id: rechargeId}}
       ;
 
     store.set('customerInfo', {id, rechargeId});
 
+    await Axios.post('/recharge-metafields/', metafieldData);
     await Axios.put(`/recharge-checkouts/${token}/`, {
       checkout: {
         shipping_line: {handle: get(shippingRates, 'data.shipping_rates[0].handle') || 'shopify-Free%20Shipping-0.00' },
