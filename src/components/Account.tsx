@@ -199,7 +199,7 @@ class Account extends Component<{}> {
       <Row>
         <Spacer />
         <Center>
-          <h2>Sebi's Account</h2>
+          <h2>My Account</h2>
           <Spacer />
           {profilePicture && (
             <Row gutter={GUTTER} type='flex' justify='center'>
