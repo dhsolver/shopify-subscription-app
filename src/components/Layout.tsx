@@ -63,9 +63,9 @@ export default class Layout extends Component<IProps> {
                 <Antd.Col xs={1} sm={2} lg={3} xl={5} />
               </Antd.Row>
             </Content>
-            <Footer>
-              <Link href='/'><a>Home</a></Link><br />
-            </Footer>
+            {/*<Footer>*/}
+              {/*<Link href='/'><a>Home</a></Link><br />*/}
+            {/*</Footer>*/}
           </Antd.Layout>
         </Antd.LocaleProvider>
       </div>

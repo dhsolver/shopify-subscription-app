@@ -115,7 +115,7 @@ app.prepare().then(() => {
     }
     catch (e) {
       console.error(e);
-      res.status(e.statusCode).json({message: e.message});
+      res.status(e.statusCode).json({message: 'Something went wrong! Please check your info and try again!'});
     }
   });
 
@@ -125,7 +125,7 @@ app.prepare().then(() => {
       return res.end(JSON.stringify(response.data));
     }
     catch (e) {
-      return res.status(500).send(e);
+      return res.status(500).send({message: 'Something went wrong! Please check your info and try again!'});
     }
   });
 

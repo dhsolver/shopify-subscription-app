@@ -5,6 +5,7 @@ import { Row } from 'antd';
 import Link from 'next/link';
 import Button from '../components/common/Button';
 import { Provider } from 'mobx-react';
+import { stateOptions } from '../constants';
 
 const steps = [
   {title: 'Plan Details'},
@@ -12,10 +13,7 @@ const steps = [
   {title: 'Checkout'},
 ];
 
-const getStateOptions = () => [
-  {value: 'NJ', name: 'New Jersey'},
-  {value: 'NY', name: 'New York'},
-];
+const getStateOptions = () => stateOptions;
 
 export default () => (
   <Layout title='Checkout Page'>

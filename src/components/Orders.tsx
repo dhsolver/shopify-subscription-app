@@ -37,9 +37,10 @@ class Orders extends Component<{}> {
     await this.fetchCharges();
     this.oneTime = find(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
 
-    if (some(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID})) {
-      this.hasAddedFamilyTime.setTrue();
-    }
+    const includesFamilyTime = some(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
+
+    if (includesFamilyTime) { this.hasAddedFamilyTime.setTrue(); }
+    else if (store.get('familyTime')) { await this.addFamilyTime(this.charges[0]); }
   }
 
   public async fetchCharges () {

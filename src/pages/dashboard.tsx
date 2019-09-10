@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import Tabs from '../components/common/Tabs';
 import Account from '../components/Account';
 import Orders from '../components/Orders';
+import { stateOptions } from '../constants';
 // import FamilyTime from '../components/FamilyTime';
 // import FreeMeals from '../components/FreeMeals';
 
@@ -18,10 +19,7 @@ const tabs = [
   // { title: 'Family Time', route: 'dashboard/family-time', content: <FamilyTime /> },
 ];
 
-const getStateOptions = () => [
-  {value: 'NJ', name: 'New Jersey'},
-  {value: 'NY', name: 'New York'},
-];
+const getStateOptions = () => stateOptions;
 
 export default () => (
   <Layout title='Ant Design Page!'>

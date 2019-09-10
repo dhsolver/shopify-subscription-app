@@ -4,6 +4,7 @@ import Steps from '../components/common/Steps';
 import { Row } from 'antd';
 import AccountInfoForm from '../components/AccountInfoForm';
 import { Provider } from 'mobx-react';
+import { stateOptions } from '../constants';
 
 const steps = [
   {title: 'Plan Details', url: '/frequency-selection'},
@@ -11,10 +12,7 @@ const steps = [
   {title: 'Checkout', url: '/checkout'},
 ];
 
-const getStateOptions = () => [
-  {value: 'New Jersey', name: 'New Jersey'},
-  {value: 'New York', name: 'New York'},
-];
+const getStateOptions = () => stateOptions;
 
 export default () => (
   <Layout title='Checkout Page'>

@@ -42,7 +42,7 @@ const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
 @autoBindMethods
 @observer
 class OrderGroup extends Component<IProps> {
-  @observable private isSkipped = new SmartBool();
+  // @observable private isSkipped = new SmartBool();
   @observable private isLoading = new SmartBool();
   @observable private isModifyingSchedule = new SmartBool();
   @observable private isEditingOrder = new SmartBool();
@@ -91,33 +91,33 @@ class OrderGroup extends Component<IProps> {
     this.isLoading.setFalse();
   }
 
-  private async onSkipOrder () {
-    const { charge, fetchCharges } = this.props
-      , lineItems = charge.line_items.map(lineItem => lineItem.subscription_id)
-      ;
-
-    notification.info({
-      description: 'figure out a way to make this take WAAAAYYY less time',
-      message: 'TODO: reconcile with recharge support',
-    });
-
-    this.isLoading.setTrue();
-    this.isSkipped.toggle();
-    if (this.isSkipped.isTrue) {
-      // tslint:disable-next-line
-      for (let i = 0; i < lineItems.length; i += 1) {
-        await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
-      }
-    }
-    else if (this.isSkipped.isFalse) {
-      // tslint:disable-next-line
-      for (let i = 0; i < lineItems.length; i += 1) {
-        await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
-      }
-    }
-    await fetchCharges();
-    this.isLoading.setFalse();
-  }
+  // private async onSkipOrder () {
+  //   const { charge, fetchCharges } = this.props
+  //     , lineItems = charge.line_items.map(lineItem => lineItem.subscription_id)
+  //     ;
+  //
+  //   notification.info({
+  //     description: 'figure out a way to make this take WAAAAYYY less time',
+  //     message: 'TODO: reconcile with recharge support',
+  //   });
+  //
+  //   this.isLoading.setTrue();
+  //   this.isSkipped.toggle();
+  //   if (this.isSkipped.isTrue) {
+  //     // tslint:disable-next-line
+  //     for (let i = 0; i < lineItems.length; i += 1) {
+  //       await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
+  //     }
+  //   }
+  //   else if (this.isSkipped.isFalse) {
+  //     // tslint:disable-next-line
+  //     for (let i = 0; i < lineItems.length; i += 1) {
+  //       await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
+  //     }
+  //   }
+  //   await fetchCharges();
+  //   this.isLoading.setFalse();
+  // }
 
   private renderItem (item: any, itemIdx: number) {
     const src = item.images.medium;
@@ -156,10 +156,10 @@ class OrderGroup extends Component<IProps> {
             : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />
           }
         </Col>
-        <Col>
-          <Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}
-          {this.isSkipped.isTrue ? 'Skipped' : 'Skip'}
-        </Col>
+        {/*<Col>*/}
+          {/*<Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}*/}
+          {/*{this.isSkipped.isTrue ? 'Skipped' : 'Skip'}*/}
+        {/*</Col>*/}
       </>
     );
   }

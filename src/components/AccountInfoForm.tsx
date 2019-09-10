@@ -12,7 +12,7 @@ import Decimal from 'decimal.js';
 import dynamic from 'next/dynamic';
 
 import Spacer from './common/Spacer';
-import { PRICING } from '../constants';
+import { PRICING, states_hash } from '../constants';
 import { formatMoney } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 
@@ -127,7 +127,7 @@ class AccountInfoForm extends Component <{}> {
           first_name: model.first_name,
           last_name: model.last_name,
           phone: model.phone,
-          province: 'NY',
+          province: states_hash[model.shipping.state],
           zip: model.shipping.zip_code,
         },
       ],
@@ -148,7 +148,7 @@ class AccountInfoForm extends Component <{}> {
         first_name: model.first_name,
         last_name: model.last_name,
         phone: model.phone,
-        province: model.billing.state,
+        province: states_hash[model.billing.state],
         zip: model.billing.zip_code,
       });
     }
@@ -157,6 +157,24 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private serializeRechargeCustomerInfo (model: any) {
+    if (!model.billing.is_same_as_shipping) {
+      return {
+        billing_address1: model.billing.address1,
+        billing_address2: model.billing.address2,
+        billing_city: model.billing.city,
+        billing_country: 'United States',
+        billing_first_name: model.first_name,
+        billing_last_name: model.last_name,
+        billing_phone: model.phone,
+        billing_province: model.billing.state,
+        billing_zip: model.billing.zip_code,
+        email: model.email,
+        first_name: model.first_name,
+        last_name: model.last_name,
+        status: 'ACTIVE',
+      };
+    }
+
     return {
       billing_address1: model.shipping.address1,
       billing_address2: model.shipping.address2,
@@ -215,9 +233,9 @@ class AccountInfoForm extends Component <{}> {
     this.stripeFormRef = form;
   }
 
-  private onAddDiscount () {
-    notification.info({message: 'TODO: add discount', description: 'check recharge API for percent/amount'});
-  }
+  // private onAddDiscount () {
+  //   notification.info({message: 'TODO: add discount', description: 'check recharge API for percent/amount'});
+  // }
 
   private async onSave (model: any) {
     await this.stripeFormRef.props.onSubmit({preventDefault: noop});
@@ -287,7 +305,7 @@ class AccountInfoForm extends Component <{}> {
                 <h3>Order summary</h3>
                 <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
                 <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
-                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
+                {/*<Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />*/}
               </Card>
             }
           </Col>

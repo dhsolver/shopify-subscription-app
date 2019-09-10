@@ -38,6 +38,7 @@ import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
+import { states_hash } from '../constants';
 
 const GUTTER = 48
   , AVATAR_SIZE = 200
@@ -128,7 +129,7 @@ class Account extends Component<{}> {
         first_name: model.first_name,
         id: this.shippingAddress.id,
         last_name: model.last_name,
-        province: 'NY',
+        province: states_hash[model.shipping.state],
         zip: model.shipping.zip_code,
       },
     };
