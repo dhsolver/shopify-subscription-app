@@ -24,6 +24,16 @@ const DynamicComponentWithNoSSR = dynamic(
 const colProps = { span: 12 };
 const GUTTER = 48;
 
+const COL_PAYMENT = {
+  md: { span: 11, push: 1 },
+  xs: { span: 24 },
+};
+
+const COL_SUMMARY = {
+  md: { span: 11, pull: 1 },
+  xs: { span: 24 },
+};
+
 export const personalInfoFieldSet = {
   fields: [
     { field: 'first_name', required: true },
@@ -292,14 +302,14 @@ class AccountInfoForm extends Component <{}> {
           <h3>Payment &amp; Account Info</h3>
         </Row>
         <Row type='flex' gutter={GUTTER} justify='space-between'>
-          <Col span={11} push={1}>
+          <Col {...COL_PAYMENT}>
             <DynamicComponentWithNoSSR
               getStripeFormRef={this.getStripeFormRef}
               stripePublicKey='pk_test_gxEKMtkVdWvm3LArf1ipX5TX'
               handleResult={this.handleResult}
             />
           </Col>
-          <Col span={11} pull={1}>
+          <Col {...COL_SUMMARY}>
             {totalPrice &&
               <Card style={{marginTop: '21px'}}>
                 <h3>Order summary</h3>

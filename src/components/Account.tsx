@@ -21,7 +21,7 @@ const billingAddressFieldSet = {
 
 const editAccountDetailsFieldSet = {
   fields: [
-    {field: 'email', required: true},
+    {field: 'email', required: true, render: (value: string) => <span className='text-break-word'>{value}</span>},
     {field: 'phone', required: true},
   ],
   legend: 'Account Details',

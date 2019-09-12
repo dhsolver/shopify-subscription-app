@@ -4,6 +4,16 @@
 
 .page-checkout {
   .form-account-info .ant-form {
+
+    & > .button-toolbar {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+@media only screen and (min-width: 600px)  {
+  .form-account-info .ant-form {
     display: flex;
     flex-flow: row wrap;
 
@@ -17,11 +27,6 @@
       flex: 0 0 auto;
       padding-left: 24px;
       padding-right: 24px;
-    }
-
-    & > .button-toolbar {
-      width: 100%;
-      text-align: center;
     }
   }
 }
