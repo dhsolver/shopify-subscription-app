@@ -139,7 +139,7 @@ class OrderGroup extends Component<IProps> {
       <List.Item key={itemIdx}>
          <div className='recipe'>
           <img className='recipe-image' src={src} alt={item.title} />
-          <h4>{item.title}</h4>
+          <div className='recipe-info'><h4>{item.title}</h4></div>
           <p>{item.quantity}</p>
         </div>
       </List.Item>
