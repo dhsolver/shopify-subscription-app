@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import Link from 'next/link';
-import Layout from '../components/Layout';
 import Button from '../components/common/Button';
 import Spacer from '../components/common/Spacer';
+import dynamic from 'next/dynamic';
+const Layout = dynamic(
+  () => import('../components/Layout'),
+  { ssr: false },
+);
 
 @autoBindMethods
 @observer
