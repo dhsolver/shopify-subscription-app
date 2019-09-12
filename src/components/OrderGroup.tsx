@@ -152,7 +152,7 @@ class OrderGroup extends Component<IProps> {
         <Col>
           {this.props.hasAddedFamilyTime && <IconButton icon={PlateIcon} textAfter='Family Time' />}
           {this.isEditingOrder.isTrue
-            ? <IconButton icon={submitIcon} disabled={this.total !== this.maxItems} onClick={this.onSave} />
+            ? <IconButton icon={submitIcon} disabled={this.total !== this.maxItems} onClick={this.onSave} textAfter='Submit' />
             : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />
           }
         </Col>
