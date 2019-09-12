@@ -123,7 +123,7 @@ class OrderGroup extends Component<IProps> {
     const src = item.images.medium;
     if (this.isEditingOrder.isTrue) {
       return (
-        <Col key={itemIdx} {...ITEM_COLS}>
+        <List.Item key={itemIdx}>
           <ItemSelector
             disabled={this.total >= this.maxItems}
             name={item.title}
@@ -131,18 +131,18 @@ class OrderGroup extends Component<IProps> {
             onChange={this.onChange.bind(this, item)}
             quantity={item.quantity}
           />
-        </Col>
+        </List.Item>
       );
     }
 
     return (
-      <Col key={itemIdx} {...ITEM_COLS}>
+      <List.Item key={itemIdx}>
          <div className='recipe'>
-           <img className='recipe-image' src={src} alt={item.title} />
-           <h4>{item.title}</h4>
-           <p>{item.quantity}</p>
-         </div>
-       </Col>
+          <img className='recipe-image' src={src} alt={item.title} />
+          <h4>{item.title}</h4>
+          <p>{item.quantity}</p>
+        </div>
+      </List.Item>
      );
   }
 
