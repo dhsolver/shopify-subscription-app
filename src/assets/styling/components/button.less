@@ -14,4 +14,16 @@
       color: fade(@btn-primary-color, 80%);
     }
   }
+
+  /*
+    Icon Button (Custom)
+    Desc: Buttons with no border and text, an inlined icon.
+  */
+  .@{btn-prefix-cls}-icon {
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus { text-decoration: none; }
+  }
 }

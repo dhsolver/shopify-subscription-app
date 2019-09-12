@@ -1,0 +1,72 @@
+/*
+  PAGE: ORDERS
+*/
+.page-orders {
+
+  .btn-family-time {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+
+    .btn-add {
+      width: 42px;
+      height: 42px;
+
+      .anticon {
+        font-size: 21px;
+        vertical-align: -0.525em;
+      }
+    }
+
+    .icon-plate {
+      font-size: 72px;
+      margin-bottom: 6px;
+      vertical-align: middle;
+      cursor: pointer;
+
+      &:hover,
+      &:focus { opacity: .8; }
+
+      &:active { opacity: .9; }
+    }
+
+    .box-info {
+      display: flex;
+      align-items: center;
+      background-color: @btn-primary-bg;
+      border-radius: 6px;
+      color: @white;
+      font-size: @font-size-lg;
+      padding: 8px 15px;
+      margin-left: 8px;
+
+      small {
+        margin-left: 15px;
+
+        &.smaller {
+          font-size: 12px;
+          line-height: 1.25em;
+        }
+      }
+    }
+  }
+
+  .btn-add {
+    padding-bottom: 20px;
+
+    .ant-btn-icon-only {
+      margin-right: 10px;
+      vertical-align: bottom;
+    }
+
+    .ant-btn-primary {
+      small { margin-left: 10px; }
+    }
+  }
+
+  .btn-remove {
+    padding-bottom: 10px;
+
+
+  }
+}

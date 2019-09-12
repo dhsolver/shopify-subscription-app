@@ -33,7 +33,7 @@ interface IProps {
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
-  , COL_SHIPPING_DATE = 18
+  , COL_SHIPPING_DATE = 14
   , GUTTER_ACTIONS = 32
   , editIcon = () => <Icon type='edit' />
   , submitIcon = () => <Icon type='check' />
@@ -200,7 +200,7 @@ class OrderGroup extends Component<IProps> {
                   <span>{formatDate(moment(charge.scheduled_at).subtract(4, 'days').toString())}</span>
                 </div>
               </Col>
-              <Col xs={6} className='actions'>
+              <Col xs={10} className='actions'>
                 <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>
                   {this.renderIconButton()}
                 </Row>
