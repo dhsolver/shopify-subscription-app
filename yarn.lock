@@ -869,19 +869,22 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@mighty-justice/fields-ant@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@mighty-justice/fields-ant/-/fields-ant-1.0.5.tgz#b539b8a40d2b9af02addff0fd159a2e699171177"
-  integrity sha512-hmD0/lJfbw67nzPqtIeGk4PamqOwhi0QAP4+DlWtsbU/5AmCuKNROXAXkZxyiiG6phgagGUZr8X2yCgH0wve+w==
+"@mighty-justice/fields-ant@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@mighty-justice/fields-ant/-/fields-ant-1.1.4.tgz#ff1c10d4587048815892c4e9bbba44104272f916"
+  integrity sha512-AsujfqwsSLWxo43yZglS2xNPGeMC8ke9GKNSFCBY2KTcmqkzAmQCGJolc+GmK6faW3GGY8b876QCwvl6JcREhw==
   dependencies:
     "@mighty-justice/smart-bool" "^1.0.0"
-    "@mighty-justice/utils" "1.3.4"
+    "@mighty-justice/utils" "1.3.5"
     class-autobind-decorator "^3.0.1"
     classnames "^2.2.6"
     date-fns "^1.30.1"
     flat "^4.1.0"
     http-status-codes "^1.3.2"
     iso8601-duration "^1.2.0"
+    lodash "^4.0.0"
+    moment "^2.0.0"
+    zipcodes "^8.0.0"
 
 "@mighty-justice/smart-bool@^1.0.0":
   version "1.0.0"
@@ -898,21 +901,7 @@
     tslint-eslint-rules "^5.4"
     tslint-react "^3.6"
 
-"@mighty-justice/utils@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@mighty-justice/utils/-/utils-1.3.4.tgz#8c96581b64327a3dcca375d9f5b54a85e32bc698"
-  integrity sha512-Ja2u5Qs8AP0b5juoypkpkZI7aZL6j36zoQ+3/zNSVPcM6vda3to1Wy6Gzh+D5R70CykBayshVroT19zxEv8WHQ==
-  dependencies:
-    classnames "^2.2.6"
-    date-fns "^1.30.1"
-    decimal.js "^10.1.1"
-    fast-memoize "^2.5.1"
-    html-react-parser "0.6.1"
-    iso8601-duration "^1.1.7"
-    moment "^2.24.0"
-    numeral "^2.0.6"
-
-"@mighty-justice/utils@^1.3.4":
+"@mighty-justice/utils@1.3.5", "@mighty-justice/utils@^1.3.4":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@mighty-justice/utils/-/utils-1.3.5.tgz#e55097d6b595642e5075073f0b6fda588b41876f"
   integrity sha512-0MpqIGHjSMidNjI2tKD7W0UEAIVP0hd4OVVOWSVwF3N5uvJAjKGI6zGG6PAYwl+KSYrvfGwXVGJjs4RP8mOfeg==
@@ -4127,10 +4116,15 @@ lodash.throttle@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
-lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
+lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.13, lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+
+lodash@^4.16.5, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.17.5:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
+  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
@@ -4401,7 +4395,7 @@ mobx@^5.10.1:
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.13.0.tgz#0fd68f10aa5ff2d146a4ed9e145b53337cfbca59"
   integrity sha512-eSAntMSMNj0PFL705rgv+aB/z1RjNqDnFEpBe18yQVreXTWiVgIrmBUXzjnJfuba+eo4eAk6zi+/gXQkSUea8A==
 
-moment@2.x, moment@^2.24.0:
+moment@2.x, moment@^2.0.0, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -7278,3 +7272,8 @@ yallist@^3.0.0, yallist@^3.0.2, yallist@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
+
+zipcodes@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/zipcodes/-/zipcodes-8.0.0.tgz#4d124cdeedfc693f1b0ef8060323f206aeb98a9b"
+  integrity sha512-V8NolFaJhsPamGeCv5lJdk60Q7JBiXI6e+8JDksPC1NJWZ0t7g1OFfqVLZb2Nc2F5jmf9JTdYdWJBnIhGBvtbA==

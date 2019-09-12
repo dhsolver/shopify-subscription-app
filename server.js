@@ -240,7 +240,12 @@ app.prepare().then(() => {
 
   // END CHANGE ORDER DATE
 
-  // UPDATE SUBSCRIPTION
+  // SUBSCRIPTIONS
+
+  server.get('/subscriptions/:id', async (req, res) => {
+    const response = await rechargeClient.get(`/subscriptions/${req.params.id}`);
+    return res.send(JSON.stringify(response.data))
+  });
 
   server.put('/subscriptions/:id', async (req, res) => {
     try {
@@ -289,6 +294,18 @@ app.prepare().then(() => {
     }
     catch (e) {
       res.json({message: e.message});
+    }
+  });
+
+  // DISCOUNTS //
+
+  server.get('/discounts/:code', async (req, res) => {
+    try {
+      const response = await rechargeClient.get(`/discounts?discount_code=${req.params.code}`);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch (e) {
+      res.status(400).json(e);
     }
   });
 

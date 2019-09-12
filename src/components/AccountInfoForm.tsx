@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
-import { Card, Col, notification, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
@@ -105,6 +105,7 @@ const fieldSets = [
 @observer
 class AccountInfoForm extends Component <{}> {
   private stripeToken;
+  private discountCode;
   @observable private pricing: any = {};
 
   public componentDidMount () {
@@ -216,6 +217,7 @@ class AccountInfoForm extends Component <{}> {
 
     return {
       checkout: {
+        discount_code: get(this.discountCode, 'code'),
         email: model.email,
         line_items: lineItems.filter(lineItem => lineItem.quantity),
         shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
@@ -243,9 +245,10 @@ class AccountInfoForm extends Component <{}> {
     this.stripeFormRef = form;
   }
 
-  // private onAddDiscount () {
-  //   notification.info({message: 'TODO: add discount', description: 'check recharge API for percent/amount'});
-  // }
+  private async onAddDiscount (model) {
+    const { data } = await Axios.get(`/discounts/${model.discount_code}`);
+    if (data.discounts.length) { this.discountCode = data.discounts[0]; }
+  }
 
   private async onSave (model: any) {
     await this.stripeFormRef.props.onSubmit({preventDefault: noop});
@@ -315,7 +318,7 @@ class AccountInfoForm extends Component <{}> {
                 <h3>Order summary</h3>
                 <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
                 <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
-                {/*<Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />*/}
+                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
               </Card>
             }
           </Col>

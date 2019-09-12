@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import store from 'store';
-import { get, omit } from 'lodash';
+import { get, omit, sum } from 'lodash';
 
-import { Avatar, Col, Icon, message, notification, Row } from 'antd';
+import { Avatar, Col, Icon, Row } from 'antd';
 
 import { Card, fillInFieldSet } from '@mighty-justice/fields-ant';
 
@@ -38,7 +38,8 @@ import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
-import { states_hash } from '../constants';
+import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
+import Router from 'next/router';
 
 const GUTTER = 48
   , AVATAR_SIZE = 200
@@ -48,6 +49,10 @@ const GUTTER = 48
 @autoBindMethods
 @observer
 class Account extends Component<{}> {
+  @observable private charges: any[] = [];
+  @observable private quantity = 0;
+  @observable private frequency = 0;
+  @observable private rechargeId: any;
   @observable private customer: any = {};
   @observable private isEditingSubscriptionDetails = new SmartBool();
   @observable private isLoading = new SmartBool(true);
@@ -56,15 +61,39 @@ class Account extends Component<{}> {
   private subscriptionSelector: any;
 
   public async componentDidMount () {
-    const rechargeId = get(store.get('customerInfo'), 'rechargeId')
-      , shopifyId = get(store.get('customerInfo'), 'id')
-      , rechargeResponse = await Axios.get(`/recharge-customers/${rechargeId}`)
+    this.rechargeId = get(store.get('customerInfo'), 'rechargeId');
+    await Promise.all([
+      this.fetchCharges(),
+      this.fetchCustomerInfo(),
+    ]);
+
+    const { data } = await Axios.get(`/subscriptions/${this.charges[0].line_items[0].subscription_id}`);
+    this.frequency = data.subscription.order_interval_frequency;
+  }
+
+  private async fetchCustomerInfo () {
+    const shopifyId = get(store.get('customerInfo'), 'id')
+      , rechargeResponse = await Axios.get(`/recharge-customers/${this.rechargeId}`)
       , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
       ;
 
     this.shippingAddress = addressesResponse.data.addresses[0];
     this.customer = rechargeResponse.data.customer;
     this.isLoading.setFalse();
+  }
+
+  public async fetchCharges () {
+    if (!this.rechargeId) {
+      Router.push('/index');
+      return;
+    }
+
+    const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
+
+    this.charges = data.charges;
+    const lineItems = this.charges[0].line_items.filter(item => item.shopify_product_id !== FAMILY_TIME_PRODUCT_ID);
+    // TODO: exclude family time
+    this.quantity = sum(lineItems.map(lineItem => lineItem.quantity));
   }
 
   private serializeRechargeCustomerInfo (model: any) {
@@ -147,7 +176,7 @@ class Account extends Component<{}> {
       <div>
         <Row type='flex' justify='center'>
           <h3>
-            Your plan includes 12 meals in every order, every 2 weeks!
+            Your plan includes {this.quantity} meals in every order, every {this.frequency} weeks!
           </h3>
           <br/>
         </Row>
@@ -159,19 +188,22 @@ class Account extends Component<{}> {
     this.subscriptionSelector = component;
   }
 
-  private onSubscriptionChange () {
-
+  private async onSubscriptionChange () {
+    this.frequency = this.subscriptionSelector.selectedSchedule;
     const data = {
-      charge_interval_frequency: this.subscriptionSelector.selectedSchedule,
-      order_interval_frequency: this.subscriptionSelector.selectedSchedule,
-      order_interval_unit: 'week',
-    };
+        charge_interval_frequency: this.subscriptionSelector.selectedSchedule,
+        order_interval_frequency: this.subscriptionSelector.selectedSchedule,
+        order_interval_unit: 'week',
+      }
+      , lineItems = this.charges[0].line_items
+      ;
 
-    notification.success({
-      description: JSON.stringify(data),
-      message: 'TODO: MAKE THIS EDIT THE SUBSCRIPTION INTERVAL',
-    });
+    // tslint:disable-next-line
+    for (let i = 0; i < lineItems.length; i += 1) {
+      await Axios.put(`/subscriptions/${lineItems[i].subscription_id}`, data);
+    }
 
+    await this.fetchCustomerInfo();
     this.isEditingSubscriptionDetails.setFalse();
   }
 
@@ -181,14 +213,6 @@ class Account extends Component<{}> {
       ;
 
     this.customer = {...this.customer, ...response.data.customer};
-  }
-
-  private saveShippingInfo (model: any) {
-
-    notification.success({
-      description: JSON.stringify(model),
-      message: 'TODO: MAKE THIS UPDATE SHIPPING INFO',
-    });
   }
 
   public render () {
