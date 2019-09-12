@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import URI from 'urijs';
 import store from 'store';
-import { get } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
@@ -28,7 +28,32 @@ interface IProps {
 @autoBindMethods
 @observer
 export default class Layout extends Component<IProps> {
+  private resizeListener;
+  private debouncedResizeMessage;
+  private resizeObserver;
+
+  public constructor (props) {
+    super(props);
+  }
+
+  public componentWillUnmount () {
+    window.removeEventListener('resize', this.debouncedResizeMessage);
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
   public componentDidMount () {
+    const page = document.getElementById('page');
+    this.debouncedResizeMessage = debounce(() => {
+      window.top.postMessage(page.scrollHeight, '*');
+    }, 250);
+    this.resizeObserver = new MutationObserver(this.debouncedResizeMessage);
+    this.resizeObserver.observe(page, {attributes: true, childList: true, characterData: true, subtree: true});
+    this.resizeObserver.observe(page, {attributes: true, childList: true, characterData: true, subtree: true});
+    this.debouncedResizeMessage();
+    window.addEventListener('resize', this.debouncedResizeMessage);
+
     const query = URI.parseQuery(window.location.search) as {user_id?: string}
       , queryUserID = query.user_id
       , storedUserInfo = store.get('customerInfo')
@@ -53,7 +78,7 @@ export default class Layout extends Component<IProps> {
           <script src='https://js.stripe.com/v3/' />
         </Head>
         <Antd.LocaleProvider locale={enUS}>
-          <Antd.Layout>
+          <Antd.Layout id='page'>
             <Content style={{padding: '100px 0 50px'}}>
               <Antd.Row type='flex'>
                 <Antd.Col xs={1} sm={2} lg={3} xl={5} />
