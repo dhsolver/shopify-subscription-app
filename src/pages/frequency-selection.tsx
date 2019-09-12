@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import Layout from '../components/Layout';
+import dynamic from 'next/dynamic';
+const Layout = dynamic(
+  () => import('../components/Layout'),
+  { ssr: false },
+);
 import Steps from '../components/common/Steps';
 import SubscriptionSelector from '../components/SubscriptionSelector';
 import { Row } from 'antd';

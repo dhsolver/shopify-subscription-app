@@ -1,6 +1,10 @@
 import React from 'react';
 
-import Layout from '../components/Layout';
+import dynamic from 'next/dynamic';
+const Layout = dynamic(
+  () => import('../components/Layout'),
+  { ssr: false },
+);
 import OnboardingNameForm from '../components/OnboardingNameForm';
 
 export default () => (
