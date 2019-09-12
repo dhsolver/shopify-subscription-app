@@ -35,6 +35,7 @@ export const FAMILY_TIME_PRICE = '14.99';
 // tslint:disable-next-line
 export const states_hash = {
   'Alabama': 'AL',
+  'Alaska': 'AK',
   'Arizona': 'AZ',
   'Arkansas': 'AR',
   'California': 'CA',
@@ -44,6 +45,7 @@ export const states_hash = {
   'District Of Columbia': 'DC',
   'Florida': 'FL',
   'Georgia': 'GA',
+  'Hawaii': 'HI',
   'Idaho': 'ID',
   'Illinois': 'IL',
   'Indiana': 'IN',
@@ -88,6 +90,7 @@ export const states_hash = {
 
 export const stateOptions = [
   { name: 'Alabama', value: 'Alabama' },
+  { name: 'Alaska', value: 'Alaska' },
   { name: 'Arizona', value: 'Arizona' },
   { name: 'Arkansas', value: 'Arkansas' },
   { name: 'California', value: 'California' },
@@ -97,6 +100,7 @@ export const stateOptions = [
   { name: 'District Of Columbia', value: 'District Of Columbia' },
   { name: 'Florida', value: 'Florida' },
   { name: 'Georgia', value: 'Georgia' },
+  { name: 'Hawaii', value: 'Hawaii' },
   { name: 'Idaho', value: 'Idaho' },
   { name: 'Illinois', value: 'Illinois' },
   { name: 'Indiana', value: 'Indiana' },

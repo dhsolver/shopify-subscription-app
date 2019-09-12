@@ -3,11 +3,7 @@ import store from 'store';
 
 import { Row } from 'antd';
 
-import dynamic from 'next/dynamic';
-const Layout = dynamic(
-  () => import('../components/Layout'),
-  { ssr: false },
-);
+import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
 import RecipeSelectionGroup from '../components/RecipeSelectionGroup';
 import Router from 'next/router';
