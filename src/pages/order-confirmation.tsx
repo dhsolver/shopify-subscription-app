@@ -1,9 +1,5 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
-const Layout = dynamic(
-  () => import('../components/Layout'),
-  { ssr: false },
-);
+import Layout from '../components/Layout';
 import Steps from '../components/common/Steps';
 import { Row } from 'antd';
 import Link from 'next/link';
