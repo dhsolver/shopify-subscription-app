@@ -6,19 +6,21 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import URI from 'urijs';
 import store from 'store';
-import { debounce, get } from 'lodash';
+import { debounce } from 'lodash';
 
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
-import Link from 'next/link';
 
 import * as Antd from 'antd';
 
 // Core app styling
 import '../assets/styling/layout.less';
 import Router from 'next/router';
+import Axios from 'axios';
+import { observable } from 'mobx';
+import SmartBool from '@mighty-justice/smart-bool';
 
-const { Content, Footer } = Antd.Layout;
+const { Content } = Antd.Layout;
 
 interface IProps {
   title?: string;
@@ -28,6 +30,7 @@ interface IProps {
 @autoBindMethods
 @observer
 export default class Layout extends Component<IProps> {
+  @observable private isLoading = new SmartBool(true);
   private resizeListener;
   private debouncedResizeMessage;
   private resizeObserver;
@@ -43,7 +46,7 @@ export default class Layout extends Component<IProps> {
     }
   }
 
-  public componentDidMount () {
+  public async componentDidMount () {
     const page = document.getElementById('page');
     this.debouncedResizeMessage = debounce(() => {
       window.top.postMessage(page.scrollHeight, '*');
@@ -55,14 +58,21 @@ export default class Layout extends Component<IProps> {
     window.addEventListener('resize', this.debouncedResizeMessage);
 
     const query = URI.parseQuery(window.location.search) as {user_id?: string}
-      , queryUserID = query.user_id
-      , storedUserInfo = store.get('customerInfo')
-      , userId = queryUserID || get(storedUserInfo, 'id')
+      , userId = query.user_id
       ;
+
     if (userId) {
-      store.set('customerInfo', {id: userId, rechargeId: storedUserInfo.rechargeId});
+      const { data } = await Axios.get(`/recharge-customers/${userId}`);
+
+      store.set('customerInfo', {id: userId, rechargeId: data.id});
       Router.push('/dashboard');
     }
+
+    else {
+      store.remove('customerInfo');
+      Router.push('/onboarding-name');
+    }
+    this.isLoading.setFalse();
   }
 
   public render () {

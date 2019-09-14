@@ -89,7 +89,8 @@ app.prepare().then(() => {
   /* GET CUSTOMER INFO */
 
   server.get('/recharge-customers/:id', async (req, res) => {
-    const response = await rechargeClient.get(`customers/${req.params.id}`);
+    console.log('alkjflkajflkj', req.query.id)
+    const response = await rechargeClient.get(`customers?shopify_customer_id=${req.params.id}`);
     return res.end(JSON.stringify(response.data));
   });
 
