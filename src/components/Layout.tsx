@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import URI from 'urijs';
 import store from 'store';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
@@ -64,10 +64,9 @@ export default class Layout extends Component<IProps> {
     if (userId) {
       const { data } = await Axios.get(`/recharge-customers/${userId}`);
 
-      store.set('customerInfo', {id: userId, rechargeId: data.id});
+      store.set('customerInfo', {id: userId, rechargeId: get(data, 'customers[0].id')});
       Router.push('/dashboard');
     }
-
     else {
       store.remove('customerInfo');
       Router.push('/onboarding-name');
