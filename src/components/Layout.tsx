@@ -30,7 +30,6 @@ interface IProps {
 @autoBindMethods
 @observer
 export default class Layout extends Component<IProps> {
-  @observable private isLoading = new SmartBool(true);
   private resizeListener;
   private debouncedResizeMessage;
   private resizeObserver;
@@ -46,7 +45,7 @@ export default class Layout extends Component<IProps> {
     }
   }
 
-  public async componentDidMount () {
+  public componentDidMount () {
     const page = document.getElementById('page');
     this.debouncedResizeMessage = debounce(() => {
       window.top.postMessage(page.scrollHeight, '*');
@@ -56,22 +55,6 @@ export default class Layout extends Component<IProps> {
     this.resizeObserver.observe(page, {attributes: true, childList: true, characterData: true, subtree: true});
     this.debouncedResizeMessage();
     window.addEventListener('resize', this.debouncedResizeMessage);
-
-    const query = URI.parseQuery(window.location.search) as {user_id?: string}
-      , userId = query.user_id
-      ;
-
-    if (userId) {
-      const { data } = await Axios.get(`/recharge-customers/${userId}`);
-
-      store.set('customerInfo', {id: userId, rechargeId: get(data, 'customers[0].id')});
-      Router.push('/dashboard');
-    }
-    else {
-      store.remove('customerInfo');
-      Router.push('/onboarding-name');
-    }
-    this.isLoading.setFalse();
   }
 
   public render () {
