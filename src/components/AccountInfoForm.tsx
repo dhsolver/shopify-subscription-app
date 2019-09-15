@@ -107,6 +107,7 @@ const fieldSets = [
 @autoBindMethods
 @observer
 class AccountInfoForm extends Component <{}> {
+  @observable private isAddingDiscount = new SmartBool();
   @observable private isLoading = new SmartBool(true);
   @observable private stripeToken;
   @observable private discountCode;
@@ -269,41 +270,49 @@ class AccountInfoForm extends Component <{}> {
       return message.error('Oops! Please provide a valid payment method!');
     }
 
-    const {data: {id}} = await Axios.post('/shopify-customers/', this.serializeShopifyCustomerInfo(model))
-      , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
-      , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
-      , rechargeId = rechargeCustomerResponse.data.customer.id
-      , rechargeCheckoutResponse = await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model))
-      , { checkout: { token } } = rechargeCheckoutResponse.data
-      , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
-      , familyTime = store.get('familyTime')
-      , metafieldData = {metafield: {...this.serializeMetafields(), owner_id: rechargeId}}
-      ;
-
-    store.set('customerInfo', {id, rechargeId});
-
-    await Axios.post('/recharge-metafields/', metafieldData);
-    await Axios.put(`/recharge-checkouts/${token}/`, {
-      checkout: {
-        shipping_line: {handle: get(shippingRates, 'data.shipping_rates[0].handle') || 'shopify-Free%20Shipping-0.00' },
-      },
-    });
-
-    await Axios.post(`/recharge-charges/${token}/`, {
-      checkout_charge: { payment_processor: 'stripe', payment_token: this.stripeToken },
-    });
-
-    if (familyTime) {
-      const { data: { charges } } = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
-        , familyTimeSubmitData = {...familyTime, next_charge_scheduled_at: charges[0].scheduled_at}
+    try {
+      const {data: {id}} = await Axios.post('/shopify-customers/', this.serializeShopifyCustomerInfo(model))
+        , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
+        , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
+        , rechargeId = rechargeCustomerResponse.data.customer.id
+        , rechargeCheckoutResponse = await Axios.post('/recharge-checkouts/', this.serializeRechargeCheckoutInfo(model))
+        , { checkout: { token } } = rechargeCheckoutResponse.data
+        , shippingRates = await Axios.get(`/recharge-checkouts/${token}/shipping-rates`)
+        , familyTime = store.get('familyTime')
+        , metafieldData = {metafield: {...this.serializeMetafields(), owner_id: rechargeId}}
         ;
-      await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
+
+      store.set('customerInfo', {id, rechargeId});
+
+      await Axios.post('/recharge-metafields/', metafieldData);
+      await Axios.put(`/recharge-checkouts/${token}/`, {
+        checkout: {
+          shipping_line: {
+            handle: get(shippingRates, 'data.shipping_rates[0].handle', 'shopify-Free%20Shipping-0.00'),
+          },
+        },
+      });
+
+      await Axios.post(`/recharge-charges/${token}/`, {
+        checkout_charge: { payment_processor: 'stripe', payment_token: this.stripeToken },
+      });
+
+      if (familyTime) {
+        const { data: { charges } } = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
+          , familyTimeSubmitData = {...familyTime, next_charge_scheduled_at: charges[0].scheduled_at}
+          ;
+        await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
+      }
+
+      Router.push('/order-confirmation');
+      return rechargeCustomerResponse;
     }
-
-    this.isLoading.setFalse();
-
-    Router.push('/order-confirmation');
-    return rechargeCustomerResponse;
+    catch (e) {
+      message.error('Oops! Something went wrong! Double check your submission and try again');
+    }
+    finally {
+      this.isLoading.setFalse();
+    }
   }
 
   public handleResult ({token}: any) {
@@ -410,7 +419,10 @@ class AccountInfoForm extends Component <{}> {
 
                 <Spacer small />
 
-                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false} />
+                {this.isAddingDiscount.isTrue
+                  ? <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false}/>
+                  : <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>
+                }
               </Card>
             }
           </Col>
@@ -425,6 +437,7 @@ class AccountInfoForm extends Component <{}> {
                 <Form
                   fieldSets={fieldSets}
                   onSave={this.onSave}
+                  resetOnSuccess={false}
                 />
               </div>
             </Col>
