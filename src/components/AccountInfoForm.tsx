@@ -402,7 +402,7 @@ class AccountInfoForm extends Component <{}> {
                 {discount && (
                   <Row type='flex' justify='space-between'>
                     <Col span={16}>
-                      <p className='large'>Discount/Gift Card:</p>
+                      <p className='large'>Discount/Gift Card:{'\n'}<i>{this.discountCode.code}</i></p>
                     </Col>
                     <Col span={4}>
                       <p>{discount.toString()} ({this.discountCode.value}%)</p>
