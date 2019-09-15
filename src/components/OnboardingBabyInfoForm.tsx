@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Date, Form, OptionSelect } from '@mighty-justice/fields-ant';
+import { Date, Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer, Provider } from 'mobx-react';
 import store from 'store';

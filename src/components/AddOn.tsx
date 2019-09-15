@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Icon, Row } from 'antd';
+import { Col, Row } from 'antd';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import { FAMILY_TIME_PRICE, FAMILY_TIME_PRODUCT_ID, FAMILY_TIME_VARIANT_ID } from '../constants';

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import { Modal } from 'antd';
 import SmartBool from '@mighty-justice/smart-bool';
-import { preserveNewLines } from '@mighty-justice/utils';
 import parser from 'html-react-parser';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';

@@ -17,7 +17,6 @@ import { formatMoney, pluralize } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import Loader from './common/Loader';
-import { FAMILY_TIME_DATA } from './AddOn';
 
 const StripeForm = dynamic(
   () => import('./StripeForm'),

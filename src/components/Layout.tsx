@@ -4,9 +4,7 @@ import '@babel/polyfill';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
-import URI from 'urijs';
-import store from 'store';
-import { debounce, get } from 'lodash';
+import { debounce } from 'lodash';
 
 import Head from 'next/head';
 import enUS from 'antd/lib/locale-provider/en_US';
@@ -15,10 +13,6 @@ import * as Antd from 'antd';
 
 // Core app styling
 import '../assets/styling/layout.less';
-import Router from 'next/router';
-import Axios from 'axios';
-import { observable } from 'mobx';
-import SmartBool from '@mighty-justice/smart-bool';
 
 const { Content } = Antd.Layout;
 
@@ -30,7 +24,6 @@ interface IProps {
 @autoBindMethods
 @observer
 export default class Layout extends Component<IProps> {
-  private resizeListener;
   private debouncedResizeMessage;
   private resizeObserver;
 
@@ -80,9 +73,6 @@ export default class Layout extends Component<IProps> {
                 <Antd.Col xs={1} sm={2} lg={3} xl={5} />
               </Antd.Row>
             </Content>
-            {/*<Footer>*/}
-              {/*<Link href='/'><a>Home</a></Link><br />*/}
-            {/*</Footer>*/}
           </Antd.Layout>
         </Antd.LocaleProvider>
       </div>

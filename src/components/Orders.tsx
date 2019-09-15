@@ -6,11 +6,7 @@ import { find, get, some } from 'lodash';
 import store from 'store';
 import Axios from 'axios';
 
-import {
-  Col,
-  Icon,
-  Row,
-} from 'antd';
+import { Icon } from 'antd';
 
 import Button from './common/Button';
 import Center from './common/Center';

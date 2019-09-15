@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Avatar, Col, Input, Row } from 'antd';
+import { Avatar, Col, Row } from 'antd';
 import { Form } from '@mighty-justice/fields-ant';
-import Button from '../components/common/Button';
 import ReferralLink from './common/ReferralLink';
 import Center from './common/Center';
 import Spacer from './common/Spacer';

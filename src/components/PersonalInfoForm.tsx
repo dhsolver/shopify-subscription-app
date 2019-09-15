@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, FormCard, IFieldSet } from '@mighty-justice/fields-ant';
+import { Card, FormCard } from '@mighty-justice/fields-ant';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
@@ -8,7 +8,6 @@ import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 
 interface IProps {
-  //fieldSet: IFieldSet;
   fieldSet: any;
   model: any;
   onSave: (model: any) => void;
