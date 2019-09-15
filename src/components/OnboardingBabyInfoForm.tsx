@@ -5,7 +5,7 @@ import { observer, Provider } from 'mobx-react';
 import store from 'store';
 import Router from 'next/router';
 import { observable } from 'mobx';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import SmartBool from '@mighty-justice/smart-bool';
 import { sleep } from '../utils/utils';
 import cx from 'classnames';
@@ -86,6 +86,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
   public componentDidMount () {
     this.name = get(store.get('nameInfo'), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
+    if (!isEmpty(store.get('babyInfo'))) { Router.push('/onboarding-finish'); }
   }
 
   private async onSave (data) {

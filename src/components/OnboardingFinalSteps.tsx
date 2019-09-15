@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 import store from 'store';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { observable } from 'mobx';
 import Router from 'next/router';
 import { Card, Icon, message, Upload } from 'antd';
@@ -32,6 +32,7 @@ class OnboardingFinalSteps extends Component<{}> {
   public componentDidMount () {
     this.name = get(store.get('nameInfo'), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
+    if (!isEmpty(store.get('profilePicture'))) { Router.push('/onboarding-name'); }
   }
 
   private get uploadProps () {
