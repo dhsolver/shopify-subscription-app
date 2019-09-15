@@ -9,11 +9,8 @@ import { Card, Icon, Upload } from 'antd';
 import Button from './common/Button';
 import Spacer from './common/Spacer';
 import SmartBool from '@mighty-justice/smart-bool';
-import { sleep } from '../utils/utils';
 import cx from 'classnames';
 import Link from 'next/link';
-
-const SUBMIT_SLEEP = 1500;
 
 import AWS from 'aws-sdk';
 
@@ -45,37 +42,32 @@ class OnboardingFinalSteps extends Component<{}> {
         const S3 = new AWS.S3();
         const objParams = { Body: file, Bucket: S3_BUCKET, Key: key };
 
-        store.set('profilePicture', `https://tiny-organics.s3.amazonaws.com/${key}`);
-
         S3.putObject(objParams)
           .send(function (err, data: any) {
             if (err) {
               onError();
             } else {
               onSuccess(data.response, file);
+              store.set('profilePicture', `https://tiny-organics.s3.amazonaws.com/${key}`);
             }
           });
       },
     };
   }
 
-  private async onSave (_model) {
-    this.isSaving.setTrue();
-    // console.log(_model);
-    await sleep(SUBMIT_SLEEP);
-    await Router.push('/frequency-selection');
-  }
-
   public render () {
+    const imageUrl = store.get('profilePicture');
+
     return (
       <Card className={cx({'ant-card-saving': this.isSaving.isTrue})} style={{textAlign: 'center'}}>
         <Spacer />
         <h2>
           Upload a picture of {this.name}
           <Upload {...this.uploadProps}>
-            <Button>
-              <Icon type='upload' /> Click to Upload
-            </Button>
+            {imageUrl
+              ? <img src={imageUrl} alt='avatar' style={{ width: '150px', height: '150px', borderRadius: '100%'}} />
+              : <Button><Icon type='upload' /> Click to Upload</Button>
+            }
           </Upload>
         </h2>
         <Spacer large />

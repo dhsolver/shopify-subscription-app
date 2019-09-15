@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, message, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
@@ -15,6 +15,8 @@ import Spacer from './common/Spacer';
 import { PRICING, states_hash } from '../constants';
 import { formatMoney } from '@mighty-justice/utils';
 import { observable } from 'mobx';
+import SmartBool from '@mighty-justice/smart-bool';
+import Loader from './common/Loader';
 
 const DynamicComponentWithNoSSR = dynamic(
   () => import('./StripeForm'),
@@ -86,7 +88,7 @@ export const accountDetailsFieldSet = {
   fields: [
     {field: 'email', required: true},
     // TODO: why is this not validating
-    {field: 'phone', required: true},
+    {field: 'phone', required: true, type: 'phone'},
     {field: 'password', required: true},
     {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password', required: true },
   ],
@@ -104,6 +106,7 @@ const fieldSets = [
 @autoBindMethods
 @observer
 class AccountInfoForm extends Component <{}> {
+  private isLoading = new SmartBool();
   private stripeToken;
   private discountCode;
   @observable private pricing: any = {};
@@ -251,7 +254,15 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private async onSave (model: any) {
-    await this.stripeFormRef.props.onSubmit({preventDefault: noop});
+    this.isLoading.setTrue();
+    try {
+      await this.stripeFormRef.props.onSubmit({preventDefault: noop});
+    }
+    catch (e) {
+      this.isLoading.setFalse();
+      return message.error('Oops! Please provide a valid payment method!');
+    }
+
     const {data: {id}} = await Axios.post('/shopify-customers/', this.serializeShopifyCustomerInfo(model))
       , rechargeSubmitData = {...this.serializeRechargeCustomerInfo(model), shopify_customer_id: id}
       , rechargeCustomerResponse = await Axios.post('/recharge-customers/', rechargeSubmitData)
@@ -283,6 +294,8 @@ class AccountInfoForm extends Component <{}> {
       await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
     }
 
+    this.isLoading.setFalse();
+
     Router.push('/order-confirmation');
     return rechargeCustomerResponse;
   }
@@ -296,45 +309,47 @@ class AccountInfoForm extends Component <{}> {
 
     return (
       <div>
-        <Spacer />
-        <Row type='flex' justify='center'>
-          <h2>Finalize Your Subscription</h2>
-        </Row>
-        <Spacer />
-        <Row type='flex' justify='center'>
-          <h3>Payment &amp; Account Info</h3>
-        </Row>
-        <Row type='flex' gutter={GUTTER} justify='space-between'>
-          <Col {...COL_PAYMENT}>
-            <DynamicComponentWithNoSSR
-              getStripeFormRef={this.getStripeFormRef}
-              stripePublicKey='pk_test_gxEKMtkVdWvm3LArf1ipX5TX'
-              handleResult={this.handleResult}
-            />
-          </Col>
-          <Col {...COL_SUMMARY}>
-            {totalPrice &&
-              <Card style={{marginTop: '21px'}}>
-                <h3>Order summary</h3>
-                <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
-                <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
-                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
-              </Card>
-            }
-          </Col>
-        </Row>
-        <Spacer />
-        <Row type='flex' gutter={GUTTER} justify='space-between'>
-          {/* tslint:disable-next-line no-magic-numbers */}
-          <Col span={24}>
-            <div className='form-account-info'>
-              <Form
-                fieldSets={fieldSets}
-                onSave={this.onSave}
+        <Loader spinning={this.isLoading.isTrue}>
+          <Spacer />
+          <Row type='flex' justify='center'>
+            <h2>Finalize Your Subscription</h2>
+          </Row>
+          <Spacer />
+          <Row type='flex' justify='center'>
+            <h3>Payment &amp; Account Info</h3>
+          </Row>
+          <Row type='flex' gutter={GUTTER} justify='space-between'>
+            <Col {...COL_PAYMENT}>
+              <DynamicComponentWithNoSSR
+                getStripeFormRef={this.getStripeFormRef}
+                stripePublicKey='pk_live_wpkDVHl2lqGI8d3MM8QcMOra'
+                handleResult={this.handleResult}
               />
-            </div>
-          </Col>
-        </Row>
+            </Col>
+            <Col {...COL_SUMMARY}>
+              {totalPrice &&
+                <Card style={{marginTop: '21px'}}>
+                  <h3>Order summary</h3>
+                  <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
+                  <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
+                  <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
+                </Card>
+              }
+            </Col>
+          </Row>
+          <Spacer />
+          <Row type='flex' gutter={GUTTER} justify='space-between'>
+            {/* tslint:disable-next-line no-magic-numbers */}
+            <Col span={24}>
+              <div className='form-account-info'>
+                <Form
+                  fieldSets={fieldSets}
+                  onSave={this.onSave}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Loader>
       </div>
     );
   }
