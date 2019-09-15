@@ -73,12 +73,12 @@ class Account extends Component<{}> {
 
   private async fetchCustomerInfo () {
     const shopifyId = get(store.get('customerInfo'), 'id')
-      , rechargeResponse = await Axios.get(`/recharge-customers/${this.rechargeId}`)
+      , rechargeResponse = await Axios.get(`/recharge-customers/${shopifyId}`)
       , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
       ;
 
     this.shippingAddress = addressesResponse.data.addresses[0];
-    this.customer = rechargeResponse.data.customer;
+    this.customer = rechargeResponse.data.customers[0];
     this.isLoading.setFalse();
   }
 
