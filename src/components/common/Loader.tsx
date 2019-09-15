@@ -1,9 +1,9 @@
 import React from 'react';
-import { CircleLoader } from 'react-spinners';
+import { GridLoader } from 'react-spinners';
 import { Spin } from 'antd';
 
 const Loader = (props) => (
-  <Spin spinning indicator={<CircleLoader color='#1394C9' />} {...props}>
+  <Spin spinning indicator={<GridLoader color='#1394C9' />} {...props}>
     {props.children}
   </Spin>
 );

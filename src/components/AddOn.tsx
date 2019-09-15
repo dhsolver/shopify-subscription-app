@@ -10,7 +10,7 @@ import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 
 const ADD_ON_STATIC_PHOTO = 'https://cdn.shopify.com/s/files/1/0018/4650/9667/files/family-time-banner-image.jpg?40232';
-const FAMILY_TIME_DATA = {
+export const FAMILY_TIME_DATA = {
   charge_interval_frequency: null,
   order_interval_frequency: null,
   order_interval_unit: null,

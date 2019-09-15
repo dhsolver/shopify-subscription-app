@@ -12,13 +12,14 @@ import Decimal from 'decimal.js';
 import dynamic from 'next/dynamic';
 
 import Spacer from './common/Spacer';
-import { PRICING, states_hash } from '../constants';
+import { FAMILY_TIME_PRICE, PRICING, states_hash } from '../constants';
 import { formatMoney } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import Loader from './common/Loader';
+import { FAMILY_TIME_DATA } from './AddOn';
 
-const DynamicComponentWithNoSSR = dynamic(
+const StripeForm = dynamic(
   () => import('./StripeForm'),
   { ssr: false },
 );
@@ -106,9 +107,9 @@ const fieldSets = [
 @autoBindMethods
 @observer
 class AccountInfoForm extends Component <{}> {
-  private isLoading = new SmartBool();
-  private stripeToken;
-  private discountCode;
+  @observable private isLoading = new SmartBool(true);
+  @observable private stripeToken;
+  @observable private discountCode;
   @observable private pricing: any = {};
 
   public componentDidMount () {
@@ -126,6 +127,7 @@ class AccountInfoForm extends Component <{}> {
 
     this.pricing = {quantity, frequency, perItemPrice, totalPrice};
     this.serializeMetafields();
+    this.isLoading.setFalse();
   }
 
   private stripeFormRef;
@@ -250,7 +252,11 @@ class AccountInfoForm extends Component <{}> {
 
   private async onAddDiscount (model) {
     const { data } = await Axios.get(`/discounts/${model.discount_code}`);
-    if (data.discounts.length) { this.discountCode = data.discounts[0]; }
+    if (data.discounts.length) {
+      this.discountCode = data.discounts[0];
+      return message.success('Discount successfully applied!');
+    }
+    return message.error('This discount code is invalid!');
   }
 
   private async onSave (model: any) {
@@ -305,40 +311,111 @@ class AccountInfoForm extends Component <{}> {
   }
 
   public render () {
-    const {quantity, frequency, perItemPrice, totalPrice} = this.pricing;
+    if (this.isLoading.isTrue) { return <Row type='flex' justify='center'><Loader/></Row>; }
+
+    const {quantity, frequency, perItemPrice, totalPrice} = this.pricing
+      , familyTime = store.get('familyTime')
+      , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
+      , cupsTotalDecimal = new Decimal(totalPrice)
+      , totalDecimal = cupsTotalDecimal.add(familyTimeDecimal)
+      , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
+      , discount = this.discountCode && totalDecimal.times(discountDecimal)
+      , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
+      , totalDisplay = formatMoney(discount ? totalWithDiscount.toString() : totalDecimal.toString())
+      ;
 
     return (
       <div>
-        <Loader spinning={this.isLoading.isTrue}>
-          <Spacer />
-          <Row type='flex' justify='center'>
-            <h2>Finalize Your Subscription</h2>
-          </Row>
-          <Spacer />
-          <Row type='flex' justify='center'>
-            <h3>Payment &amp; Account Info</h3>
-          </Row>
-          <Row type='flex' gutter={GUTTER} justify='space-between'>
-            <Col {...COL_PAYMENT}>
-              <DynamicComponentWithNoSSR
-                getStripeFormRef={this.getStripeFormRef}
-                stripePublicKey='pk_live_wpkDVHl2lqGI8d3MM8QcMOra'
-                handleResult={this.handleResult}
-              />
-            </Col>
-            <Col {...COL_SUMMARY}>
-              {totalPrice &&
-                <Card style={{marginTop: '21px'}}>
-                  <h3>Order summary</h3>
-                  <p className='large'>{quantity} x Tiny meals @ {formatMoney(perItemPrice)} per cup</p>
-                  <p className='large'>Every {frequency} weeks -- {formatMoney(totalPrice)} total</p>
-                  <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} />
-                </Card>
-              }
-            </Col>
-          </Row>
-          <Spacer />
-          <Row type='flex' gutter={GUTTER} justify='space-between'>
+        <Spacer />
+        <Row type='flex' justify='center'>
+          <h2>Finalize Your Subscription</h2>
+        </Row>
+        <Spacer />
+        <Row type='flex' justify='center'>
+          <h3>Payment &amp; Account Info</h3>
+        </Row>
+        <Row type='flex' gutter={GUTTER} justify='space-between'>
+          <Col {...COL_PAYMENT}>
+            <StripeForm
+              getStripeFormRef={this.getStripeFormRef}
+              stripePublicKey='pk_live_wpkDVHl2lqGI8d3MM8QcMOra'
+              handleResult={this.handleResult}
+            />
+          </Col>
+          <Col {...COL_SUMMARY}>
+            {totalPrice &&
+              <Card style={{marginTop: '21px'}}>
+                <h3>Order summary</h3>
+
+                <Row>
+                  <Col span={18}>
+                    <p className='large'>{quantity} meal subscription plan every {frequency} weeks:</p>
+                  </Col>
+                  <Col span={4}>
+                    <p>{formatMoney(cupsTotalDecimal.toString())}</p>
+                  </Col>
+                </Row>
+
+                {familyTime && (
+                  <Row>
+                    <Col span={18}>
+                      <p className='large'>Family time add-on:</p>
+                    </Col>
+                    <Col span={4}>
+                      <p>{formatMoney(FAMILY_TIME_PRICE)}</p>
+                    </Col>
+                  </Row>
+                )}
+
+                <Row>
+                  <Col span={18}>
+                    <p className='large'>Subtotal:</p>
+                  </Col>
+                  <Col span={4}>
+                    <p>{formatMoney(totalDecimal.toString())}</p>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col span={18}>
+                    <p className='large'>Shipping & Handling:</p>
+                  </Col>
+                  <Col span={4}>
+                    <p>$0.00</p>
+                  </Col>
+                </Row>
+
+                {discount && (
+                  <Row>
+                    <Col span={18}>
+                      <p className='large'>Discount/Gift Card:</p>
+                    </Col>
+                    <Col span={4}>
+                      <p>{discount.toString()} ({this.discountCode.value}%)</p>
+                    </Col>
+                  </Row>
+                )}
+
+                <Row>
+                  <Col span={18}>
+                    <b><p className='large'>Grand Total:</p></b>
+                  </Col>
+                  <Col span={4}>
+                    <b><p>{totalDisplay}</p></b>
+                  </Col>
+                </Row>
+
+                <Spacer small />
+
+                <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false} />
+              </Card>
+            }
+          </Col>
+        </Row>
+        <Row type='flex' justify='center'>
+          <Loader spinning={this.isLoading.isTrue} />
+        </Row>
+        <Row type='flex' gutter={GUTTER} justify='space-between'>
             {/* tslint:disable-next-line no-magic-numbers */}
             <Col span={24}>
               <div className='form-account-info'>
@@ -348,8 +425,7 @@ class AccountInfoForm extends Component <{}> {
                 />
               </div>
             </Col>
-          </Row>
-        </Loader>
+        </Row>
       </div>
     );
   }
