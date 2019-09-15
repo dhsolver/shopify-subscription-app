@@ -84,7 +84,7 @@ class OnboardingFinalSteps extends Component<{}> {
         </h2>
         <Spacer large />
         <Link href='/frequency-selection'>
-          <Button>Submit</Button>
+          <Button disabled={this.isSaving.isTrue}>Submit</Button>
         </Link>
       </Card>
     );
