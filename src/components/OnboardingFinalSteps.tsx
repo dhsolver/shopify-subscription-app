@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observer } from 'mobx-react';
 import store from 'store';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { observable } from 'mobx';
 import Router from 'next/router';
 import { Card, Icon, message, Upload } from 'antd';
@@ -32,7 +32,6 @@ class OnboardingFinalSteps extends Component<{}> {
   public componentDidMount () {
     this.name = get(store.get('nameInfo'), 'child_name', '');
     if (!this.name) { Router.push('/onboarding-name'); }
-    if (!isEmpty(store.get('profilePicture'))) { Router.push('/onboarding-name'); }
   }
 
   private get uploadProps () {
@@ -41,11 +40,11 @@ class OnboardingFinalSteps extends Component<{}> {
     const key = `${this.name}-${Date.now()}`;
     return {
       beforeUpload,
-      customRequest: ({
+      customRequest ({
         file,
         onError,
         onSuccess,
-      }) => {
+      }) {
         self.isSaving.setTrue();
         AWS.config.update({ accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_ACCESS_KEY });
 
@@ -56,6 +55,7 @@ class OnboardingFinalSteps extends Component<{}> {
           .send(function (err, data: any) {
             if (err) {
               onError();
+              self.isSaving.setFalse();
             } else {
               onSuccess(data.response, file);
               store.set('profilePicture', `https://tiny-organics.s3.amazonaws.com/${key}`);
