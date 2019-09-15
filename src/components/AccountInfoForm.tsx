@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic';
 
 import Spacer from './common/Spacer';
 import { FAMILY_TIME_PRICE, PRICING, states_hash } from '../constants';
-import { formatMoney } from '@mighty-justice/utils';
+import { formatMoney, pluralize } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import Loader from './common/Loader';
@@ -361,7 +361,9 @@ class AccountInfoForm extends Component <{}> {
 
                 <Row type='flex' justify='space-between'>
                   <Col span={16}>
-                    <p className='large'>{quantity} meal subscription plan every {frequency} weeks:</p>
+                    <p className='large'>
+                      {quantity} meal subscription plan every {pluralize('week', 's', frequency)}:
+                    </p>
                   </Col>
                   <Col span={4}>
                     <p>{formatMoney(cupsTotalDecimal.toString())}</p>

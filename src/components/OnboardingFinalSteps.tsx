@@ -5,7 +5,7 @@ import store from 'store';
 import { get } from 'lodash';
 import { observable } from 'mobx';
 import Router from 'next/router';
-import { Card, Icon, Upload } from 'antd';
+import { Card, Icon, message, Upload } from 'antd';
 import Button from './common/Button';
 import Spacer from './common/Spacer';
 import SmartBool from '@mighty-justice/smart-bool';
@@ -16,6 +16,12 @@ import AWS from 'aws-sdk';
 
 import getConfig from 'next/config';
 const { publicRuntimeConfig: { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, S3_BUCKET } } = getConfig();
+
+function beforeUpload (file) {
+  const isLessThan2M = file.size / 1024 / 1024 < 2;
+  if (!isLessThan2M) { message.error('Image must smaller than 2MB!'); }
+  return isLessThan2M;
+}
 
 @autoBindMethods
 @observer
@@ -31,6 +37,7 @@ class OnboardingFinalSteps extends Component<{}> {
   private get uploadProps () {
     const key = `${this.name}-${Date.now()}`;
     return {
+      beforeUpload,
       multiple: false,
       customRequest ({
         file,

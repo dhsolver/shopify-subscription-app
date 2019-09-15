@@ -27,7 +27,7 @@ export default class Index extends Component <{}> {
     }
     else {
       await sleep();
-      store.remove('customerInfo');
+      store.clearAll();
       Router.push('/onboarding-name');
     }
   }

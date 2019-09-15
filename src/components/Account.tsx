@@ -40,6 +40,7 @@ import SmartBool from '@mighty-justice/smart-bool';
 import { IconButton } from './common/Button';
 import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
 import Router from 'next/router';
+import { pluralize } from '@mighty-justice/utils';
 
 const GUTTER = 48
   , AVATAR_SIZE = 200
@@ -176,7 +177,7 @@ class Account extends Component<{}> {
       <div>
         <Row type='flex' justify='center'>
           <h3>
-            Your plan includes {this.quantity} meals in every order, every {this.frequency} weeks!
+            Your plan includes {this.quantity} meals in every order, every {pluralize('week', 's', this.frequency)}!
           </h3>
           <br/>
         </Row>

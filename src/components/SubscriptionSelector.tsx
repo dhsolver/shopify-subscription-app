@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Button from '../components/common/Button';
 import store from 'store';
 import Spacer from './common/Spacer';
+import { pluralize } from '@mighty-justice/utils';
 
 interface IProps {
   omitNext?: boolean;
@@ -72,7 +73,8 @@ class SubscriptionSelector extends Component <IProps> {
         <Spacer />
         <Row type='flex' justify='center'>
           <p>
-            I want to receive an order every <span style={{fontSize: '16px'}}>{this.selectedSchedule}</span> Weeks
+            I want to receive an order every <span style={{fontSize: '16px'}}>{this.selectedSchedule}</span>{' '}
+            {pluralize('Week', 's', this.selectedSchedule)}
           </p>
         </Row>
         <Row type='flex' justify='center'>
