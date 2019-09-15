@@ -345,7 +345,10 @@ class AccountInfoForm extends Component <{}> {
           <Col {...COL_SUMMARY}>
             {totalPrice &&
               <Card style={{marginTop: '21px'}}>
-                <h3>Order summary</h3>
+                <Row type='flex' justify='center' align='middle'>
+                  <h3>Order Summary</h3>
+                </Row>
+                <Spacer small />
 
                 <Row type='flex' justify='space-between'>
                   <Col span={16}>
@@ -401,7 +404,7 @@ class AccountInfoForm extends Component <{}> {
                     <b><p className='large'>Grand Total:</p></b>
                   </Col>
                   <Col span={4}>
-                    <b><p>{totalDisplay}</p></b>
+                    <b><p>{totalDisplay}<br/><i> + tax</i></p></b>
                   </Col>
                 </Row>
 
