@@ -89,7 +89,6 @@ app.prepare().then(() => {
   /* GET CUSTOMER INFO */
 
   server.get('/recharge-customers/:id', async (req, res) => {
-    console.log('alkjflkajflkj', req.query.id)
     const response = await rechargeClient.get(`customers?shopify_customer_id=${req.params.id}`);
     return res.end(JSON.stringify(response.data));
   });
@@ -110,7 +109,6 @@ app.prepare().then(() => {
 
   server.post('/shopify-customers/', async (req, res) => {
     try {
-      console.log(req.body);
       const response = await adminAPI.customer.create(req.body);
       res.send(JSON.stringify(response));
     }

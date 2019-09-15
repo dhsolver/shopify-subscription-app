@@ -25,6 +25,7 @@ import Switch from './common/Switch';
 import { IconButton } from './common/Button';
 import ItemSelector from './ItemSelector';
 import PlateIcon from './icons/PlateIcon';
+import Loader from './common/Loader';
 
 interface IProps {
   charge: any;
@@ -182,7 +183,7 @@ class OrderGroup extends Component<IProps> {
     const { charge } = this.props;
     return (
       <Card className='order-group'>
-        <Spin spinning={this.isLoading.isTrue}>
+        <Loader spinning={this.isLoading.isTrue}>
           <>
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
@@ -216,7 +217,7 @@ class OrderGroup extends Component<IProps> {
               renderItem={this.renderItem}
             />
           </>
-        </Spin>
+        </Loader>
       </Card>
     );
   }

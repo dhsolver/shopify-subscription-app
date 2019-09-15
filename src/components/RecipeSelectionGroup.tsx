@@ -14,6 +14,7 @@ import Spacer from './common/Spacer';
 import Link from 'next/link';
 import Button from '../components/common/Button';
 import { PRODUCT_RECOMMENDATIONS } from '../constants';
+import Loader from './common/Loader';
 
 const ITEM_COLS = {xs: 24, sm: 12, lg: 8};
 
@@ -90,7 +91,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
     if (this.isLoading.isTrue) {
       return (
         <Row type='flex' justify='center'>
-          <Spin size='large' />
+          <Loader size='large' />
         </Row>
       );
     }
