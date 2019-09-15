@@ -347,8 +347,8 @@ class AccountInfoForm extends Component <{}> {
               <Card style={{marginTop: '21px'}}>
                 <h3>Order summary</h3>
 
-                <Row>
-                  <Col span={18}>
+                <Row type='flex' justify='space-between'>
+                  <Col span={16}>
                     <p className='large'>{quantity} meal subscription plan every {frequency} weeks:</p>
                   </Col>
                   <Col span={4}>
@@ -357,8 +357,8 @@ class AccountInfoForm extends Component <{}> {
                 </Row>
 
                 {familyTime && (
-                  <Row>
-                    <Col span={18}>
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
                       <p className='large'>Family time add-on:</p>
                     </Col>
                     <Col span={4}>
@@ -367,8 +367,8 @@ class AccountInfoForm extends Component <{}> {
                   </Row>
                 )}
 
-                <Row>
-                  <Col span={18}>
+                <Row type='flex' justify='space-between'>
+                  <Col span={16}>
                     <p className='large'>Subtotal:</p>
                   </Col>
                   <Col span={4}>
@@ -376,8 +376,8 @@ class AccountInfoForm extends Component <{}> {
                   </Col>
                 </Row>
 
-                <Row>
-                  <Col span={18}>
+                <Row type='flex' justify='space-between'>
+                  <Col span={16}>
                     <p className='large'>Shipping & Handling:</p>
                   </Col>
                   <Col span={4}>
@@ -386,8 +386,8 @@ class AccountInfoForm extends Component <{}> {
                 </Row>
 
                 {discount && (
-                  <Row>
-                    <Col span={18}>
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
                       <p className='large'>Discount/Gift Card:</p>
                     </Col>
                     <Col span={4}>
@@ -396,8 +396,8 @@ class AccountInfoForm extends Component <{}> {
                   </Row>
                 )}
 
-                <Row>
-                  <Col span={18}>
+                <Row type='flex' justify='space-between'>
+                  <Col span={16}>
                     <b><p className='large'>Grand Total:</p></b>
                   </Col>
                   <Col span={4}>
