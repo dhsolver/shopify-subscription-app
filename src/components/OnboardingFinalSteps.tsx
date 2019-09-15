@@ -35,15 +35,17 @@ class OnboardingFinalSteps extends Component<{}> {
   }
 
   private get uploadProps () {
+    // tslint:disable-next-line no-this-assignment
+    const self = this;
     const key = `${this.name}-${Date.now()}`;
     return {
       beforeUpload,
-      multiple: false,
-      customRequest ({
+      customRequest: ({
         file,
         onError,
         onSuccess,
-      }) {
+      }) => {
+        self.isSaving.setTrue();
         AWS.config.update({ accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_ACCESS_KEY });
 
         const S3 = new AWS.S3();
@@ -56,9 +58,12 @@ class OnboardingFinalSteps extends Component<{}> {
             } else {
               onSuccess(data.response, file);
               store.set('profilePicture', `https://tiny-organics.s3.amazonaws.com/${key}`);
+              self.isSaving.setFalse();
             }
           });
       },
+      multiple: false,
+      showUploadList: false,
     };
   }
 
