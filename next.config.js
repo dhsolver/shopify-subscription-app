@@ -41,7 +41,10 @@ module.exports = {
   ),
   env: {
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
-    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+    AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+    S3_BUCKET: process.env.S3_BUCKET,
   },
   publicRuntimeConfig: {
     // Will be available on both server and client

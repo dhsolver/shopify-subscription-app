@@ -15,7 +15,6 @@ import Link from 'next/link';
 import AWS from 'aws-sdk';
 
 import getConfig from 'next/config';
-const { publicRuntimeConfig: { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, S3_BUCKET } } = getConfig();
 
 function beforeUpload (file) {
   const isLessThan2M = file.size / 1024 / 1024 < 2;
@@ -46,10 +45,13 @@ class OnboardingFinalSteps extends Component<{}> {
         onSuccess,
       }) {
         self.isSaving.setTrue();
-        AWS.config.update({ accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_ACCESS_KEY });
+        AWS.config.update({
+          accessKeyId: process.env.AWS_ACCESS_KEY,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        });
 
         const S3 = new AWS.S3();
-        const objParams = { Body: file, Bucket: S3_BUCKET, Key: key };
+        const objParams = { Body: file, Bucket: process.env.S3_BUCKET, Key: key };
 
         S3.putObject(objParams)
           .send(function (err, data: any) {
