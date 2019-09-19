@@ -45,11 +45,11 @@ const EATING_STYLE_OPTIONS = [
 ];
 
 const DIET_RESEMBLES_OPTIONS = [
-  {name: 'Vegan', value: 'vegan'},
-  {name: 'Gluten Free', value: 'gluten_free'},
-  {name: 'Vegetarian', value: 'vegetarian'},
-  {name: 'Omnivore', value: 'omnivore'},
+  {name: 'An omnivore (Eats everything!)', value: 'omnivore'},
+  {name: 'A vegetarian', value: 'vegetarian'},
   {name: 'Dairy Free', value: 'dairy_free'},
+  {name: 'Gluten Free', value: 'gluten_free'},
+  {name: 'Plant-Based', value: 'vegan'},
 ];
 
 const getOptions = () => ({
@@ -107,13 +107,14 @@ class OnboardingBabyInfoForm extends Component<{}> {
 
     const insertAllergiesIf = (model: any) => model.has_allergies
       , eatingConcernOptions = [
-        {name: `Getting ${this.name} to Eat!`, value: 'getting_to_eat'},
-        {name: 'Adding variety', value: 'adding_variety'},
-        {name: `Is ${this.name} full?`, value: 'is_full'},
-        {name: `Is ${this.name} getting enough nutrition?`, value: 'is_getting_enough_nutrition'},
+        {name: `For ${this.name} to eat more.`, value: 'getting_to_eat'},
+        {name: `For ${this.name} to have more variety in their diet.`, value: 'adding_variety'},
         {name: 'Meal planning', value: 'meal_planning'},
         {name: 'Feeding on the go', value: 'feeding_on_the_go'},
         {name: 'Feeding when I\'m not home', value: 'feeding_when_not_home'},
+        {name: `Making sure ${this.name}eats high-quality ingredients (organic, preservative-free, etc.)`,
+        value: 'is_getting_enough_nutrition'},
+        // {name: `Is ${this.name} full?`, value: 'is_full'},
       ];
 
     const babyInfoFieldSet = [
@@ -199,7 +200,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_concerns',
-        label: `My biggest eating concern for ${this.name} is....`,
+        label: `My biggest feeding priorities for ${this.name} right now are....`,
         options: eatingConcernOptions,
         required: true,
         type: 'radio',
