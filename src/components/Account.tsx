@@ -93,7 +93,6 @@ class Account extends Component<{}> {
 
     this.charges = data.charges;
     const lineItems = this.charges[0].line_items.filter(item => item.shopify_product_id !== FAMILY_TIME_PRODUCT_ID);
-    // TODO: exclude family time
     this.quantity = sum(lineItems.map(lineItem => lineItem.quantity));
   }
 

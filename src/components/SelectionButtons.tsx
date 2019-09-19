@@ -9,6 +9,7 @@ interface IProps {
   disabled?: boolean;
   isRecommended?: boolean;
   onChange: (quantity: number) => any;
+  page?: string;
   quantity?: number;
 }
 
@@ -39,6 +40,7 @@ class SelectionButtons extends Component <IProps> {
         size: 'small',
         type: 'default',
       }
+      , disabledAtOne = this.props.page === 'orders' && this.quantity === 1
       ;
 
     if (this.quantity === 0) {
@@ -61,7 +63,7 @@ class SelectionButtons extends Component <IProps> {
       <>
         <Button
           {...buttonProps}
-          disabled={this.props.isRecommended}
+          disabled={this.props.isRecommended || disabledAtOne}
           icon='minus'
           onClick={this.onQuantityChange}
           value={-1}

@@ -127,6 +127,7 @@ class OrderGroup extends Component<IProps> {
       return (
         <List.Item key={itemIdx}>
           <ItemSelector
+            page='orders'
             disabled={this.total >= this.maxItems}
             name={item.title}
             image={src}

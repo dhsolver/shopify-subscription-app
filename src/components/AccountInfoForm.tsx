@@ -6,7 +6,7 @@ import { Card, Col, message, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
-import { get, noop } from 'lodash';
+import { get, isEmpty, noop } from 'lodash';
 import Decimal from 'decimal.js';
 
 import dynamic from 'next/dynamic';
@@ -265,8 +265,9 @@ class AccountInfoForm extends Component <{}> {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     }
     catch (e) {
+      message.error('Oops! Please provide a valid payment method!');
       this.isLoading.setFalse();
-      return message.error('Oops! Please provide a valid payment method!');
+      return null;
     }
 
     try {
@@ -308,6 +309,7 @@ class AccountInfoForm extends Component <{}> {
     }
     catch (e) {
       message.error('Oops! Something went wrong! Double check your submission and try again');
+      return null;
     }
     finally {
       this.isLoading.setFalse();
@@ -319,8 +321,7 @@ class AccountInfoForm extends Component <{}> {
   }
 
   public render () {
-    if (this.isLoading.isTrue) { return <Row type='flex' justify='center'><Loader/></Row>; }
-
+    if (isEmpty(this.pricing)) { return <Row type='flex' justify='center'><Loader/></Row>; }
     const {quantity, frequency, perItemPrice, totalPrice} = this.pricing
       , familyTime = store.get('familyTime')
       , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))

@@ -48,6 +48,9 @@ export default class Layout extends Component<IProps> {
     this.resizeObserver.observe(page, {attributes: true, childList: true, characterData: true, subtree: true});
     this.debouncedResizeMessage();
     window.addEventListener('resize', this.debouncedResizeMessage);
+
+    const untypedWindow = window as any;
+    if (untypedWindow.analytics) { untypedWindow.analytics.page(); }
   }
 
   public render () {

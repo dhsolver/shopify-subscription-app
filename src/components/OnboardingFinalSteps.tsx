@@ -46,12 +46,12 @@ class OnboardingFinalSteps extends Component<{}> {
       }) {
         self.isSaving.setTrue();
         AWS.config.update({
-          accessKeyId: process.env.AWS_ACCESS_KEY,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          accessKeyId: 'AKIAX4KPUAAZQGGZSWEA',
+          secretAccessKey: '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',
         });
 
         const S3 = new AWS.S3();
-        const objParams = { Body: file, Bucket: process.env.S3_BUCKET, Key: key };
+        const objParams = { Body: file, Bucket: 'tiny-organics', Key: key };
 
         S3.putObject(objParams)
           .send(function (err, data: any) {
