@@ -1,6 +1,7 @@
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
 import * as snippet from '@segment/snippet'
+import { Container } from 'next/app';
 
 const {
   // This write key is associated with https://segment.com/nextjs-example/sources/nextjs.
@@ -9,6 +10,10 @@ const {
 } = process.env
 
 export default class extends Document {
+  componentDidMount () {
+    window['_fs_run_in_iframe'] = true;
+  }
+
   static getInitialProps ({ renderPage }) {
     const { html, head, errorHtml, chunks } = renderPage()
     return { html, head, errorHtml, chunks }

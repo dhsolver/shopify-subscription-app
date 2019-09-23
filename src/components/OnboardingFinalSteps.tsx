@@ -15,6 +15,7 @@ import Link from 'next/link';
 import AWS from 'aws-sdk';
 
 import getConfig from 'next/config';
+const { publicRuntimeConfig: { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET } } = getConfig();
 
 function beforeUpload (file) {
   const isLessThan2M = file.size / 1024 / 1024 < 2;
@@ -46,12 +47,12 @@ class OnboardingFinalSteps extends Component<{}> {
       }) {
         self.isSaving.setTrue();
         AWS.config.update({
-          accessKeyId: 'AKIAX4KPUAAZQGGZSWEA',
-          secretAccessKey: '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',
+          accessKeyId: AWS_ACCESS_KEY_ID,
+          secretAccessKey: AWS_SECRET_ACCESS_KEY,
         });
 
         const S3 = new AWS.S3();
-        const objParams = { Body: file, Bucket: 'tiny-organics', Key: key };
+        const objParams = { Body: file, Bucket: S3_BUCKET, Key: key };
 
         S3.putObject(objParams)
           .send(function (err, data: any) {

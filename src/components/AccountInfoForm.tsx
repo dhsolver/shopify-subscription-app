@@ -18,6 +18,9 @@ import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 import Loader from './common/Loader';
 
+import getConfig from 'next/config';
+const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
+
 const StripeForm = dynamic(
   () => import('./StripeForm'),
   { ssr: false },
@@ -347,7 +350,7 @@ class AccountInfoForm extends Component <{}> {
           <Col {...COL_PAYMENT}>
             <StripeForm
               getStripeFormRef={this.getStripeFormRef}
-              stripePublicKey='pk_live_wpkDVHl2lqGI8d3MM8QcMOra'
+              stripePublicKey={STRIPE_PUBLIC_KEY}
               handleResult={this.handleResult}
             />
           </Col>
