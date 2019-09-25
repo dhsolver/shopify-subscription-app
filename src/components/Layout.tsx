@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 // tslint:disable no-magic-numbers
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';

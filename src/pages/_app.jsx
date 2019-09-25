@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import React from 'react';
 import Router from 'next/router';
 import App, { Container } from 'next/app';
