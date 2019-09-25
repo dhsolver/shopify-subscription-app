@@ -262,16 +262,21 @@ class Account extends Component<{}> {
           <Col {...ITEM_COLS}>
             <Card fieldSets={[]}>
               <Row type='flex' justify='end'>
-                {this.isEditingSubscriptionDetails.isTrue
-                  ? <IconButton icon={submitIcon} onClick={this.onSubscriptionChange}/>
-                  : <IconButton icon={editIcon} onClick={this.isEditingSubscriptionDetails.setTrue}/>
-                }
+                {/*{this.isEditingSubscriptionDetails.isTrue*/}
+                  {/*? <IconButton icon={submitIcon} onClick={this.onSubscriptionChange}/>*/}
+                  {/*: <IconButton icon={editIcon} onClick={this.isEditingSubscriptionDetails.setTrue}/>*/}
+                {/*}*/}
               </Row>
               <Center>
                 {this.isEditingSubscriptionDetails.isTrue
                   ? <SubscriptionSelector ref={this.getSubscriptionSelectorRef} omitNext omitQuantity />
                   : this.renderSubscriptionPlan()
                 }
+                <small>
+                  * Please send us a chat or email us at founders@tinyorganics.com to update your subscription{' '}
+                  details. (This feature is coming soon!) You can always change your recipe selection in the Orders{' '}
+                  tab above.
+                </small>
               </Center>
             </Card>
             <Row>

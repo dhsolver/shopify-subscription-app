@@ -175,8 +175,9 @@ class OrderGroup extends Component<IProps> {
   private async onDateChange (_current, date) {
     const { charge, fetchCharges } = this.props;
     this.isLoading.setTrue();
+    const chargeDate = formatDate(moment(date).subtract(3, 'days').toString());
     this.isModifyingSchedule.setFalse();
-    await Axios.post(`/change-order-date/${charge.id}`, {next_charge_date: date});
+    await Axios.post(`/change-order-date/${charge.id}`, {next_charge_date: chargeDate});
     await fetchCharges();
     this.isLoading.setFalse();
   }

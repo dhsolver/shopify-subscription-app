@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+const webpack = require('webpack');
 const withCss = require('@zeit/next-css');
 const withLess = require('@zeit/next-less');
 const lessToJS = require('less-vars-to-js');
-require('dotenv').config();
+const { parsed: localEnv } = require('dotenv').config();
 
 // fix: prevents error when .less files are required by node
 if (typeof require !== 'undefined') {
@@ -25,17 +26,24 @@ module.exports = {
         */
       },
       webpack: (config, options) => {
+        config.plugins.push(new webpack.EnvironmentPlugin(localEnv));
         config.module.rules.push({
           test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
           use: {
             loader: 'url-loader',
             options: {
-              limit: 100000
-            }
-          }
+              limit: 100000,
+            },
+          },
         });
+        config.node = {fs: "empty"};
+        config.plugins = config.plugins || [];
 
-        return config
+        config.plugins = [
+          ...config.plugins,
+        ];
+
+        return config;
       }
     }),
   ),
