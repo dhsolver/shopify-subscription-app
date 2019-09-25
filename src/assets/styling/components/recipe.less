@@ -5,7 +5,6 @@
 @recipe-image-size: 200px;
 
 .recipe {
-  height: @recipe-image-size + 60px;
   padding-bottom: 20px;
   display: flex;
   align-items: center;
@@ -13,9 +12,8 @@
 
   &-image {
     width: @recipe-image-size;
-    height: @recipe-image-size;
+    max-width: 100%;
 
-    img { width: @recipe-image-size; }
     &-empty {
       width: @recipe-image-size;
       height: @recipe-image-size;
@@ -23,5 +21,10 @@
     }
   }
 
-  &-info { text-align: center; }
+  &-info {
+    text-align: center;
+    height: 60px;
+    
+    h4 { padding-top: 5px; }
+  }
 }

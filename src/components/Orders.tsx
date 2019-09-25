@@ -80,7 +80,7 @@ class Orders extends Component<{}> {
   private renderFamilyTimeIcon = (charge: any) => {
     if (this.hasAddedFamilyTime.isTrue) {
       return (
-        <div className='btn-family-time'>
+        <div className='btn-family-time' key={`icon-${charge}`}>
           <PlateIcon onClick={this.onRemoveFamilyTime} />
           <div className='box-info'>
             Yay! <small>Adult-sized versions of tiny coming your way!</small>
@@ -90,7 +90,7 @@ class Orders extends Component<{}> {
     }
 
     return (
-      <div className='btn-family-time' onClick={this.addFamilyTime.bind(this, charge)}>
+      <div className='btn-family-time' onClick={this.addFamilyTime.bind(this, charge)} key={`icon-${charge}`}>
         <Button className='btn-add' type='primary' icon='plus' shape='circle' />
         <div className='box-info'>
           <span>Family Time</span>
@@ -116,17 +116,15 @@ class Orders extends Component<{}> {
         <Spacer />
 
         {this.charges.map(
-          charge => (
-            <>
-              {this.renderFamilyTimeIcon(charge)}
-              <OrderGroup
-                fetchCharges={this.fetchCharges}
-                key={charge.id}
-                charge={charge}
-                hasAddedFamilyTime={this.hasAddedFamilyTime.isTrue}
-              />
-            </>
-          ),
+          charge => [
+            this.renderFamilyTimeIcon(charge),
+            (<OrderGroup
+              fetchCharges={this.fetchCharges}
+              key={charge.id}
+              charge={charge}
+              hasAddedFamilyTime={this.hasAddedFamilyTime.isTrue}
+            />),
+          ],
         )}
       </div>
     );

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import cx from 'classnames';
-import { Card } from 'antd';
+import parser from 'html-react-parser';
+import { Card, Popover, Descriptions } from 'antd';
 import SelectionButtons from './SelectionButtons';
-import ProductDescriptionModal from './ProductDescriptionModal';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 
@@ -23,21 +23,47 @@ interface IProps {
 @observer
 class ItemSelector extends Component <IProps> {
   private clsPrefix = 'item-selector';
-  @observable private isModalVisible = new SmartBool();
+  @observable private isDescriptionVisible = new SmartBool();
 
-  public render () {
-    const { name, description, disabled, image, onChange, page, quantity, isRecommended } = this.props;
+  private get showDescription () {
+    return !!this.props.description;
+  }
+
+  private renderImage () {
+    const { description, image } = this.props
+      , imageComponent = (
+        <div className={`${this.clsPrefix}-image`}>
+          {image
+            ? <img src={image} alt={name}/>
+            : <div className={`${this.clsPrefix}-image-empty`} />
+          }
+        </div>
+      );
+
+    if (!this.showDescription) {
+      return imageComponent;
+    }
 
     return (
-      <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false} hoverable>
-        <a onClick={this.isModalVisible.setTrue}>
-          <div className={`${this.clsPrefix}-image`}>
-            {image
-              ? <img src={image} alt={name}/>
-              : <div className={`${this.clsPrefix}-image-empty`} />
-            }
-          </div>
-        </a>
+      <Popover
+        content={parser(description)}
+        onVisibleChange={this.isDescriptionVisible.set}
+        overlayClassName='modal-product-description'
+        placement='top'
+        trigger='click'
+        visible={this.isDescriptionVisible.isTrue}
+      >
+        {imageComponent}
+      </Popover>
+    );
+  }
+
+  public render () {
+    const { name, disabled, onChange, page, quantity, isRecommended } = this.props;
+
+    return (
+      <Card className={cx('ant-card-ghost', this.clsPrefix)} bordered={false} hoverable={this.showDescription}>
+        {this.renderImage()}
         <div className={`${this.clsPrefix}-info`}>
           <h4>{name}</h4>
         </div>
@@ -50,7 +76,6 @@ class ItemSelector extends Component <IProps> {
             isRecommended={isRecommended}
           />
         </div>
-        {description && <ProductDescriptionModal isVisible={this.isModalVisible} description={description} />}
       </Card>
     );
   }

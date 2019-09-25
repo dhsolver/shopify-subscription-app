@@ -2,21 +2,26 @@
   COMPONENT: ITEM SELECTOR
 */
 
+@recipe-image-size: 200px;
+
 .item-selector {
-  height: 320px;
   padding-bottom: 20px;
   display: flex;
   align-items: center;
   flex-direction: column;
 
   &-image {
-    width: 200px;
-    height: 200px;
+    width: @recipe-image-size;
+    max-width: 100%;
 
-    img { width: 200px; }
+    img {
+      width: @recipe-image-size;
+      max-width: 100%;
+    }
+
     &-empty {
-      width: 200px;
-      height: 200px;
+      width: @recipe-image-size;
+      height: @recipe-image-size;
       background-color: blue;
     }
   }

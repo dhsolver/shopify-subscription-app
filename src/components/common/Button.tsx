@@ -37,9 +37,10 @@ interface IIconButtonProps extends HTMLProps<HTMLAnchorElement> {
 }
 
 export const IconButton = (props: IIconButtonProps) => {
-  const className = cx(`${ANT_BTN_PREFIX_CLS}-icon`, props.className);
+  const className = cx(`${ANT_BTN_PREFIX_CLS}-icon`, props.className)
+    , anchorProps = omit(props, 'icon', 'iconProps', 'textAfter', 'textBefore');
   return (
-    <a {...omit(props, 'icon', 'iconProps')} className={className}>
+    <a {...anchorProps} className={className}>
       {props.textBefore}
       <props.icon {...props.iconProps} />
       {' '}

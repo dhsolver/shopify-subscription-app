@@ -142,8 +142,10 @@ class OrderGroup extends Component<IProps> {
       <List.Item key={itemIdx}>
          <div className='recipe'>
           <img className='recipe-image' src={src} alt={item.title} />
-          <div className='recipe-info'><h4>{item.title}</h4></div>
-          <p>{item.quantity}</p>
+          <div className='recipe-info'>
+            <div className='recipe-count'>{item.quantity}</div>
+            <h4>{item.title}</h4>
+          </div>
         </div>
       </List.Item>
      );
@@ -215,7 +217,7 @@ class OrderGroup extends Component<IProps> {
             <Spacer />
 
             <List
-              grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 6, xxl: 3}}
+              grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 3, xxl: 4}}
               dataSource={charge.line_items}
               renderItem={this.renderItem}
             />
