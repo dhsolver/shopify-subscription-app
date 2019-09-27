@@ -1,0 +1,17 @@
+/*
+  ANTD COMPONENT: POPOVER
+*/
+
+@popover-shadow-color : rgba(@shadow-color-base, 60%);
+
+:global {
+  .@{popover-prefix-cls} {
+    &-inner {
+      background-color: @popover-bg;
+      background-clip: padding-box;
+      border-radius: @border-radius-base;
+      box-shadow: 0 2px 8px @popover-shadow-color; // copy of @shadow-1-down
+      box-shadow: ~'0 0 8px @{popover-shadow-color} \9';
+    }
+  }
+}

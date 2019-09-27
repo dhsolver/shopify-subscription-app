@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
-import { Card, Col, message, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
@@ -16,6 +16,7 @@ import { FAMILY_TIME_PRICE, PRICING, states_hash } from '../constants';
 import { formatMoney, pluralize } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
+import Alert from './common/Alert';
 import Loader from './common/Loader';
 
 import getConfig from 'next/config';
@@ -114,6 +115,8 @@ class AccountInfoForm extends Component <{}> {
   @observable private stripeToken;
   @observable private discountCode;
   @observable private pricing: any = {};
+  @observable private formMessage;
+  @observable private discountMessage;
 
   public componentDidMount () {
     if (!store.get('product_id') || !store.get('variant_id')) {
@@ -254,12 +257,14 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private async onAddDiscount (model) {
+    this.discountMessage = null;
+
     const { data } = await Axios.get(`/discounts/${model.discount_code}`);
     if (data.discounts.length) {
       this.discountCode = data.discounts[0];
-      return message.success('Discount successfully applied!');
+      this.discountMessage = {type: 'success', message: 'Discount successfully applied!'};
     }
-    return message.error('This discount code is invalid!');
+    this.discountMessage = {type: 'error', message: 'This discount code is invalid!'};
   }
 
   private async onSave (model: any) {
@@ -268,7 +273,7 @@ class AccountInfoForm extends Component <{}> {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     }
     catch (e) {
-      message.error('Oops! Please provide a valid payment method!');
+      this.formMessage = {type: 'error', message: 'Oops! Please provide a valid payment method!'};
       this.isLoading.setFalse();
       return null;
     }
@@ -311,7 +316,10 @@ class AccountInfoForm extends Component <{}> {
       return rechargeCustomerResponse;
     }
     catch (e) {
-      message.error('Oops! Something went wrong! Double check your submission and try again');
+      this.formMessage = {
+        message: 'Oops! Something went wrong! Double check your submission and try again',
+        type: 'error',
+      };
       return null;
     }
     finally {
@@ -321,6 +329,36 @@ class AccountInfoForm extends Component <{}> {
 
   public handleResult ({token}: any) {
     this.stripeToken = token.id;
+  }
+
+  private afterCloseDiscountMessage () {
+    this.discountMessage = null;
+  }
+
+  private afterCloseFormMessage () {
+    this.formMessage = null;
+  }
+
+  private renderDiscount () {
+
+    if (!this.isAddingDiscount.isTrue) {
+      return <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>;
+    }
+
+    return (
+      <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false}>
+        {this.discountMessage && (
+          <Row className='message-item'>
+            <Alert
+              afterClose={this.afterCloseDiscountMessage}
+              closable
+              message={this.discountMessage.message}
+              type={this.discountMessage.type}
+            />
+          </Row>
+        )}
+      </Form>
+    );
   }
 
   public render () {
@@ -424,10 +462,7 @@ class AccountInfoForm extends Component <{}> {
 
                 <Spacer small />
 
-                {this.isAddingDiscount.isTrue
-                  ? <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false}/>
-                  : <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>
-                }
+                {this.renderDiscount()}
               </Card>
             }
           </Col>
@@ -443,7 +478,18 @@ class AccountInfoForm extends Component <{}> {
                   fieldSets={fieldSets}
                   onSave={this.onSave}
                   resetOnSuccess={false}
-                />
+                >
+                  {this.formMessage && (
+                    <div className='message-item'>
+                      <Alert
+                        afterClose={this.afterCloseFormMessage}
+                        closable
+                        message={this.formMessage.message}
+                        type={this.formMessage.type}
+                      />
+                    </div>
+                  )}
+                </Form>
               </div>
             </Col>
         </Row>
