@@ -126,7 +126,7 @@ class AccountInfoForm extends Component <{}> {
     const subscriptionInfo = store.get('subscriptionInfo')
       , quantity = get(subscriptionInfo, 'quantity')
       , frequency = get(subscriptionInfo, 'frequency')
-      , perItemPrice = PRICING[quantity]
+      , perItemPrice = PRICING[24] // All prices currently at $4.69 until price overhaul
       , itemDecimal = new Decimal(perItemPrice)
       , totalPrice = itemDecimal.times(quantity).toDecimalPlaces(2).toString()
       ;
@@ -339,12 +339,7 @@ class AccountInfoForm extends Component <{}> {
     this.formMessage = null;
   }
 
-  private renderDiscount () {
-
-    if (!this.isAddingDiscount.isTrue) {
-      return <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>;
-    }
-
+  private renderDiscountForm () {
     return (
       <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false}>
         {this.discountMessage && (
@@ -359,6 +354,25 @@ class AccountInfoForm extends Component <{}> {
         )}
       </Form>
     );
+  }
+
+  private renderDiscount () {
+    if (this.pricing.quantity === 12) {
+      return (
+        <Row type='flex' justify='space-between'>
+          <Col span={16}>
+            <p className='large'>$0.80/cup discount automatically applied</p>
+          </Col>
+          <Col span={4}>
+            <p>(-$9.60)</p>
+          </Col>
+        </Row>
+      );
+    }
+
+    return this.isAddingDiscount.isTrue
+      ? this.renderDiscountForm()
+      : <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>;
   }
 
   public render () {
@@ -461,7 +475,6 @@ class AccountInfoForm extends Component <{}> {
                 </Row>
 
                 <Spacer small />
-
                 {this.renderDiscount()}
               </Card>
             }
