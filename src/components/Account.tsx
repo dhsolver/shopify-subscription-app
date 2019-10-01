@@ -12,6 +12,7 @@ import {
 } from './AccountInfoForm';
 
 import Center from './common/Center';
+import Loader from './common/Loader';
 import Spacer from './common/Spacer';
 
 const billingAddressFieldSet = {
@@ -216,7 +217,7 @@ class Account extends Component<{}> {
   }
 
   public render () {
-    if (this.isLoading.isTrue) { return 'loading......'; }
+    if (this.isLoading.isTrue) { return <Loader spinning />; }
     const profilePicture = store.get('profilePicture');
 
     return (

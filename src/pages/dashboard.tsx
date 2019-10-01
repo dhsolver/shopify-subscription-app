@@ -24,7 +24,7 @@ const getStateOptions = () => stateOptions;
 export default () => (
   <Layout title='Ant Design Page!'>
     <Provider getOptions={getStateOptions}>
-      <Tabs tabs={tabs} />
+      <Tabs centered tabs={tabs} />
     </Provider>
   </Layout>
 );
