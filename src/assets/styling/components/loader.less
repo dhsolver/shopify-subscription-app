@@ -1,0 +1,16 @@
+/*
+  COMPONENT: LOADER
+*/
+
+:global {
+  .@{spin-prefix-cls} {
+    &-nested-loading {
+      > div > .@{spin-prefix-cls} {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}

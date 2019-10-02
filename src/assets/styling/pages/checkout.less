@@ -11,6 +11,15 @@
   }
 
   .form-account-info .ant-form {
+
+    .chk-info {
+      display: block;
+      font-size: 12px;
+      padding-left: 25px;
+      padding-top: 8px;
+      opacity: .75;
+    }
+
     & > .button-toolbar {
       width: 100%;
       text-align: center;
@@ -33,6 +42,15 @@
       flex: 0 0 auto;
       padding-left: 24px;
       padding-right: 24px;
+    }
+
+    /*
+      This is an 3\/1|_ dirty hack, but becasue of fields-ant there's no way
+      to set a className on a given row, child of the form.
+    */
+    & > div:nth-child(7n) {
+      width: 100%;
+      float: initial;
     }
   }
 }

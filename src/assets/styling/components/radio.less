@@ -12,11 +12,23 @@
   .@{radio-group-prefix-cls} {
     &-vertical {
 
+      .@{radio-prefix-cls} {
+        // We absolute the radio button to allow multi-line text to not wrap under the radio.
+        position: absolute;
+        margin-top: 4px;
+      }
+
       .@{radio-prefix-cls}-wrapper {
         display: block;
-        height: 30px;
+        min-height: 30px;
         line-height: 30px;
         margin-bottom: 8px;
+        white-space: initial;
+
+        & > span:not(.@{radio-prefix-cls}) {
+          display: inline-block;
+          padding-left: @radio-size + 10px;
+        }
       }
 
     }
