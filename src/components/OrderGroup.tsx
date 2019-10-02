@@ -192,7 +192,7 @@ class OrderGroup extends Component<IProps> {
           <>
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-                Shipping on: <span>{formatDate(charge.scheduled_at)}</span>{' '}
+                Shipping on: <span>{formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
                 <a onClick={this.isModifyingSchedule.toggle}>Modify Schedule</a>
                 {this.isModifyingSchedule.isTrue &&
                   <DatePicker
@@ -203,7 +203,7 @@ class OrderGroup extends Component<IProps> {
                   />
                 }
                 <div className='last-date'>
-                  Last date to ship this modify this order is{' '}
+                  The last date to modify this order is{' '}
                   <span>{formatDate(moment(charge.scheduled_at).subtract(4, 'days').toString())}</span>
                 </div>
               </Col>
