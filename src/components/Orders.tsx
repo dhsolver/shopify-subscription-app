@@ -23,6 +23,7 @@ import { FAMILY_TIME_PRICE, FAMILY_TIME_PRODUCT_ID, FAMILY_TIME_VARIANT_ID } fro
 class Orders extends Component<{}> {
   @observable private hasAddedFamilyTime = new SmartBool();
   @observable private charges = [];
+  @observable private recipes = [];
   @observable private oneTime = null;
   @observable private customerAddressID;
 
@@ -30,7 +31,16 @@ class Orders extends Component<{}> {
 
   public async componentDidMount () {
     this.rechargeId = get(store.get('customerInfo'), 'rechargeId');
-    await this.fetchCharges();
+    if (!this.rechargeId) {
+      Router.push('/onboarding-name');
+      return;
+    }
+    await this.fetchData();
+    this.recipes = await this.fetchRecipes();
+  }
+
+  public async fetchData () {
+    this.charges = await this.fetchCharges();
     if (this.charges[0]) {
       this.oneTime = find(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
       const includesFamilyTime = some(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
@@ -40,14 +50,25 @@ class Orders extends Component<{}> {
   }
 
   public async fetchCharges () {
-    if (!this.rechargeId) {
-      Router.push('/index');
-      return;
-    }
-
     const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
 
-    this.charges = data.charges;
+    return data.charges;
+  }
+
+  public async fetchRecipes () {
+    const [rechargeResponse, shopifyResponse] = await Promise.all([
+        Axios.get('/recharge-products/'),
+        Axios.get('/shopify-menu-products/'),
+      ])
+      , rechargeProductData = rechargeResponse.data.products
+      , shopifyProductData = shopifyResponse.data.products
+      , recipes = rechargeProductData.map(product => ({
+        ...product,
+        ...shopifyProductData.find(shopifyProduct => shopifyProduct.id === product.shopify_product_id),
+      }))
+      ;
+
+    return recipes;
   }
 
   private async addFamilyTime (charge) {
@@ -119,10 +140,11 @@ class Orders extends Component<{}> {
           charge => [
             this.renderFamilyTimeIcon(charge),
             (<OrderGroup
-              fetchCharges={this.fetchCharges}
+              fetchData={this.fetchData}
               key={charge.id}
               charge={charge}
               hasAddedFamilyTime={this.hasAddedFamilyTime.isTrue}
+              recipes={this.recipes}
             />),
           ],
         )}

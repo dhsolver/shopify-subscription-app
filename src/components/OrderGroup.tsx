@@ -30,8 +30,9 @@ import Loader from './common/Loader';
 
 interface IProps {
   charge: any;
-  fetchCharges: () => void;
+  fetchData: () => void;
   hasAddedFamilyTime: boolean;
+  recipes: any[];
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
@@ -49,6 +50,7 @@ class OrderGroup extends Component<IProps> {
   @observable private isModifyingSchedule = new SmartBool();
   @observable private isEditingOrder = new SmartBool();
   @observable private total = 0;
+  private subscriptionInfo: any = {};
 
   private boxItems = {};
   private maxItems = 0;
@@ -64,6 +66,13 @@ class OrderGroup extends Component<IProps> {
         order_interval_frequency: get(frequency, 'value', null),
         order_interval_unit: 'week',
       };
+      if (!this.subscriptionInfo.charge_interval_frequency) {
+        this.subscriptionInfo = {
+          charge_interval_frequency: get(frequency, 'value', null),
+          order_interval_frequency: get(frequency, 'value', null),
+          order_interval_unit: 'week',
+        };
+      }
     });
   }
 
@@ -78,17 +87,44 @@ class OrderGroup extends Component<IProps> {
   }
 
   private async onSave () {
+    const { charge } = this.props;
     const subscriptionIds = Object.keys(this.boxItems);
     this.isLoading.setTrue();
 
     // tslint:disable-next-line
     for (let i = 0; i < subscriptionIds.length; i += 1) {
-      await Axios.put(
+      const [newQuantity, oldQuantity] = [
+        this.boxItems[subscriptionIds[i]].quantity,
+        get(charge.line_items.find(
+          item => this.boxItems[subscriptionIds[i]].subscription_id === item.subscription_id,
+        ), 'quantity', 0),
+      ];
+
+      if (newQuantity && oldQuantity) {
+        await Axios.put(
         `/subscriptions/${subscriptionIds[i]}`,
-        {quantity: this.boxItems[subscriptionIds[i]].quantity},
-      );
+        {quantity: newQuantity},
+        );
+      }
+      else if ((newQuantity === 0) && oldQuantity) {
+        await Axios.delete(`/subscriptions/${subscriptionIds[i]}`);
+      }
+      else if (newQuantity && (oldQuantity === 0)) {
+        await Axios.post(
+          '/subscriptions',
+          {
+            address_id: charge.address_id,
+            next_charge_scheduled_at: charge.scheduled_at,
+            price: get(this.boxItems[subscriptionIds[i]], 'variants[0].price'),
+            product_title: this.boxItems[subscriptionIds[i]].title,
+            quantity: newQuantity,
+            shopify_variant_id: get(this.boxItems[subscriptionIds[i]], 'variants[0].id'),
+            ...this.subscriptionInfo,
+          },
+        );
+      }
     }
-    await this.props.fetchCharges();
+    await this.props.fetchData();
     this.isEditingOrder.setFalse();
     this.isLoading.setFalse();
   }
@@ -121,18 +157,18 @@ class OrderGroup extends Component<IProps> {
   //   this.isLoading.setFalse();
   // }
 
-  private renderItem (item: any, itemIdx: number) {
-    const src = item.images.medium;
+  private renderItem (data: any, itemIdx: number) {
+    const src = data.images.medium || data.images[0].src;
     if (this.isEditingOrder.isTrue) {
       return (
         <List.Item key={itemIdx}>
           <ItemSelector
             page='orders'
             disabled={this.total >= this.maxItems}
-            name={item.title}
+            name={data.title}
             image={src}
-            onChange={this.onChange.bind(this, item)}
-            quantity={item.quantity}
+            onChange={this.onChange.bind(this, data)}
+            quantity={data.quantity || 0}
           />
         </List.Item>
       );
@@ -141,10 +177,10 @@ class OrderGroup extends Component<IProps> {
     return (
       <List.Item key={itemIdx}>
          <div className='recipe'>
-          <img className='recipe-image' src={src} alt={item.title} />
+          <img className='recipe-image' src={src} alt={data.title} />
           <div className='recipe-info'>
-            <div className='recipe-count'>{item.quantity}</div>
-            <h4>{item.title}</h4>
+            <div className='recipe-count'>{data.quantity || 0}</div>
+            <h4>{data.title}</h4>
           </div>
         </div>
       </List.Item>
@@ -175,17 +211,28 @@ class OrderGroup extends Component<IProps> {
   }
 
   private async onDateChange (_current, date) {
-    const { charge, fetchCharges } = this.props;
+    const { charge, fetchData } = this.props;
     this.isLoading.setTrue();
     const chargeDate = formatDate(moment(date).subtract(3, 'days').toString());
     this.isModifyingSchedule.setFalse();
     await Axios.post(`/change-order-date/${charge.id}`, {next_charge_date: chargeDate});
-    await fetchCharges();
+    await fetchData();
     this.isLoading.setFalse();
   }
 
   public render () {
-    const { charge } = this.props;
+    const { charge, recipes } = this.props
+      , recipeData = recipes.map(
+        recipe => {
+          const foundItem = charge.line_items.find(
+          lineItem => String(recipe.shopify_product_id) === String(lineItem.shopify_product_id),
+          );
+
+          return {...recipe, ...(foundItem || {})};
+        },
+      )
+      ;
+
     return (
       <Card className='order-group'>
         <Loader spinning={this.isLoading.isTrue}>
@@ -218,7 +265,7 @@ class OrderGroup extends Component<IProps> {
 
             <List
               grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 3, xxl: 4}}
-              dataSource={charge.line_items}
+              dataSource={this.isEditingOrder.isTrue ? recipeData : recipeData.filter(item => item.quantity)}
               renderItem={this.renderItem}
             />
           </>

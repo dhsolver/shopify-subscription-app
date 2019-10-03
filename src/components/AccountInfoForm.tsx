@@ -301,14 +301,13 @@ class AccountInfoForm extends Component <{}> {
     const { data } = await Axios.get(`/discounts/${model.discount_code}`);
     if (data.discounts.length) {
       this.discountCode = data.discounts[0];
-      this.discountMessage = {type: 'success', message: 'Discount successfully applied!'};
+      return this.discountMessage = {type: 'success', message: 'Discount successfully applied!'};
     }
-    this.discountMessage = {type: 'error', message: 'This discount code is invalid!'};
+    return this.discountMessage = {type: 'error', message: 'This discount code is invalid!'};
   }
 
   private async onSave (model: any) {
     this.isLoading.setTrue();
-    return null;
     if (!model.share_onboaring_info) {
       this.formMessage = {type: 'error', message: 'Oops! Please agree to share your onboaridng info with us.'};
       return null;
