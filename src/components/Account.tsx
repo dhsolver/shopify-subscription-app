@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import store from 'store';
-import { get, omit, sum } from 'lodash';
+import { find, get, omit, sum } from 'lodash';
 
 import { Avatar, Col, Icon, Row } from 'antd';
 
@@ -28,9 +28,6 @@ const editAccountDetailsFieldSet = {
   legend: 'Account Details',
 };
 
-const editIcon = () => <Icon type='edit' />;
-const submitIcon = () => <Icon type='check' />;
-
 import PersonalInfoForm from './PersonalInfoForm';
 import SubscriptionSelector from './SubscriptionSelector';
 import Axios from 'axios';
@@ -38,7 +35,6 @@ import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
-import { IconButton } from './common/Button';
 import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
 import Router from 'next/router';
 import { pluralize } from '@mighty-justice/utils';
@@ -79,7 +75,7 @@ class Account extends Component<{}> {
       , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
       ;
 
-    this.shippingAddress = addressesResponse.data.addresses[0];
+    this.shippingAddress = find(addressesResponse.data.addresses, {default: true});
     this.customer = rechargeResponse.data.customers[0];
     this.isLoading.setFalse();
   }

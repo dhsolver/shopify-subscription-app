@@ -140,7 +140,7 @@ app.prepare().then(() => {
 
   server.put('/customers/:customer_id/addresses/:address_id', async (req, res) => {
     try {
-      const response = await adminClient.put(`/customers/${req.params.customer_id}/addresses/${req.params.address_id}.json`, req.body)
+      const response = await adminClient.put(`/customers/${req.params.customer_id}/addresses/${req.params.address_id}.json`, req.body);
       return res.send(JSON.stringify(response.data));
     }
     catch (e) {
