@@ -307,7 +307,6 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private async onSave (model: any) {
-    this.isLoading.setTrue();
     if (!model.share_onboaring_info) {
       this.formMessage = {type: 'error', message: 'Oops! Please agree to share your onboaridng info with us.'};
       return null;
