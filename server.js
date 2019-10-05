@@ -258,7 +258,7 @@ app.prepare().then(() => {
 
   server.delete('/subscriptions/:id', async (req, res) => {
     try {
-      const response = await rechargeClient.put(`/subscriptions/${req.params.id}`, req.body);
+      const response = await rechargeClient.delete(`/subscriptions/${req.params.id}`, req.body);
       return res.send(JSON.stringify(response.data))
     }
     catch (e) {

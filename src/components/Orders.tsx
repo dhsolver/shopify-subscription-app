@@ -90,8 +90,6 @@ class Orders extends Component<{}> {
     this.hasAddedFamilyTime.setTrue();
   }
 
-  private get addFamilyTimeIcon () { return () => <Icon type='plus-circle' theme='filled' />; }
-
   private async onRemoveFamilyTime () {
     await Axios.delete(`/onetimes/${this.oneTime.id || this.oneTime.subscription_id}`);
     await this.fetchCharges();

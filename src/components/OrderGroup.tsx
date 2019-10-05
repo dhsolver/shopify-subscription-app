@@ -100,7 +100,11 @@ class OrderGroup extends Component<IProps> {
         ), 'quantity', 0),
       ];
 
-      if (newQuantity && oldQuantity) {
+      if (newQuantity === oldQuantity) {
+        // tslint:disable-next-line
+        console.log('no change');
+      }
+      else if (newQuantity && oldQuantity) {
         await Axios.put(
         `/subscriptions/${subscriptionIds[i]}`,
         {quantity: newQuantity},
