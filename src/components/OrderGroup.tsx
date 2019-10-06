@@ -70,16 +70,15 @@ class OrderGroup extends Component<IProps> {
 
     this.maxItems = this.total = sum(props.charge.line_items.map(lineItem => lineItem.quantity));
     lineItemData.forEach(lineItem => {
-      const frequency = find(lineItem.properties, {name: 'charge_interval_frequency'});
       this.boxItems[lineItem.id] = {
         ...lineItem,
-        order_interval_frequency: get(frequency, 'value', null),
+        order_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
         order_interval_unit: 'week',
       };
       if (!this.subscriptionInfo.charge_interval_frequency) {
         this.subscriptionInfo = {
-          charge_interval_frequency: get(frequency, 'value', null),
-          order_interval_frequency: get(frequency, 'value', null),
+          charge_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
+          order_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
           order_interval_unit: 'week',
         };
       }
