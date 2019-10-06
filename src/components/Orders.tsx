@@ -17,6 +17,7 @@ import Router from 'next/router';
 import PlateIcon from './icons/PlateIcon';
 import SmartBool from '@mighty-justice/smart-bool';
 import { FAMILY_TIME_PRICE, FAMILY_TIME_PRODUCT_ID, FAMILY_TIME_VARIANT_ID } from '../constants';
+import Loader from './common/Loader';
 
 @autoBindMethods
 @observer
@@ -124,6 +125,7 @@ class Orders extends Component<{}> {
   }
 
   public render () {
+    if (!this.charges.length || !this.recipes.length) { return <Loader />; }
     return (
       <div className='page-orders'>
         <Spacer />

@@ -58,10 +58,20 @@ class OrderGroup extends Component<IProps> {
   public constructor (props) {
     super(props);
 
+    const lineItemData = props.charge.line_items.map(
+      lineItem => {
+        const foundItem = props.recipes.find(
+        recipe => String(recipe.shopify_product_id) === String(lineItem.shopify_product_id),
+        );
+
+        return {...lineItem, ...(foundItem || {})};
+      },
+    );
+
     this.maxItems = this.total = sum(props.charge.line_items.map(lineItem => lineItem.quantity));
-    props.charge.line_items.forEach(lineItem => {
+    lineItemData.forEach(lineItem => {
       const frequency = find(lineItem.properties, {name: 'charge_interval_frequency'});
-      this.boxItems[lineItem.subscription_id] = {
+      this.boxItems[lineItem.id] = {
         ...lineItem,
         order_interval_frequency: get(frequency, 'value', null),
         order_interval_unit: 'week',
@@ -79,10 +89,10 @@ class OrderGroup extends Component<IProps> {
   private onChange (item, value: number) {
     this.isLoading.setTrue();
     this.total += value;
-    if (this.boxItems[item.subscription_id] === undefined) {
-      this.boxItems[item.subscription_id] = {...item, quantity: 0};
+    if (this.boxItems[item.id] === undefined) {
+      this.boxItems[item.id] = {...item, quantity: 0};
     }
-    this.boxItems[item.subscription_id].quantity += value;
+    this.boxItems[item.id].quantity += value;
     this.isLoading.setFalse();
   }
 
@@ -96,22 +106,21 @@ class OrderGroup extends Component<IProps> {
       const [newQuantity, oldQuantity] = [
         this.boxItems[subscriptionIds[i]].quantity,
         get(charge.line_items.find(
-          item => this.boxItems[subscriptionIds[i]].subscription_id === item.subscription_id,
+          item => String(this.boxItems[subscriptionIds[i]].product_id) === item.shopify_product_id,
         ), 'quantity', 0),
       ];
 
       if (newQuantity === oldQuantity) {
         // tslint:disable-next-line
-        console.log('no change');
       }
       else if (newQuantity && oldQuantity) {
         await Axios.put(
-        `/subscriptions/${subscriptionIds[i]}`,
+        `/subscriptions/${this.boxItems[subscriptionIds[i]].subscription_id}`,
         {quantity: newQuantity},
         );
       }
       else if ((newQuantity === 0) && oldQuantity) {
-        await Axios.delete(`/subscriptions/${subscriptionIds[i]}`);
+        await Axios.delete(`/subscriptions/${this.boxItems[subscriptionIds[i]].subscription_id}`);
       }
       else if (newQuantity && (oldQuantity === 0)) {
         await Axios.post(
