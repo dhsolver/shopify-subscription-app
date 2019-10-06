@@ -58,9 +58,15 @@ class OrderGroup extends Component<IProps> {
   public constructor (props) {
     super(props);
 
-    const lineItemData = props.charge.line_items.map(
+    this.serializeData();
+  }
+
+  private serializeData () {
+    const { charge, recipes } = this.props;
+
+    const lineItemData = charge.line_items.map(
       lineItem => {
-        const foundItem = props.recipes.find(
+        const foundItem = recipes.find(
         recipe => String(recipe.shopify_product_id) === String(lineItem.shopify_product_id),
         );
 
@@ -68,7 +74,7 @@ class OrderGroup extends Component<IProps> {
       },
     );
 
-    this.maxItems = this.total = sum(props.charge.line_items.map(lineItem => lineItem.quantity));
+    this.maxItems = this.total = sum(charge.line_items.map(lineItem => lineItem.quantity));
     lineItemData.forEach(lineItem => {
       this.boxItems[lineItem.id] = {
         ...lineItem,
@@ -137,6 +143,7 @@ class OrderGroup extends Component<IProps> {
       }
     }
     await this.props.fetchData();
+    this.serializeData();
     this.isEditingOrder.setFalse();
     this.isLoading.setFalse();
   }

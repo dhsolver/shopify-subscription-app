@@ -37,7 +37,6 @@ class Orders extends Component<{}> {
       return;
     }
     await this.fetchData();
-    this.recipes = await this.fetchRecipes();
   }
 
   public async fetchData () {
@@ -48,6 +47,7 @@ class Orders extends Component<{}> {
       if (includesFamilyTime) { this.hasAddedFamilyTime.setTrue(); }
       else if (store.get('familyTime')) { await this.addFamilyTime(this.charges[0]); }
     }
+    this.recipes = await this.fetchRecipes();
   }
 
   public async fetchCharges () {
