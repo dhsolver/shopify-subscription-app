@@ -74,7 +74,7 @@ class SubscriptionSelector extends Component <IProps> {
         <Row type='flex' justify='center'>
           <p>
             I want to receive an order every <span style={{fontSize: '16px'}}>{this.selectedSchedule}{' '}</span>{' '}
-            {pluralize('Week', 's', this.selectedSchedule)}
+            {pluralize('week', 's', this.selectedSchedule)}
           </p>
         </Row>
         <Row type='flex' justify='center'>

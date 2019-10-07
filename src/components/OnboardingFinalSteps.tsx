@@ -78,7 +78,8 @@ class OnboardingFinalSteps extends Component<{}> {
       <Card className={cx({'ant-card-saving': this.isSaving.isTrue})} style={{textAlign: 'center'}}>
         <Spacer />
         <h2>
-          Upload a picture of {this.name}
+          Upload a picture of {this.name} eating for your account page!
+          (optional)
           <Upload {...this.uploadProps}>
             {imageUrl
               ? <img src={imageUrl} alt='avatar' style={{ width: '150px', height: '150px', borderRadius: '100%'}} />

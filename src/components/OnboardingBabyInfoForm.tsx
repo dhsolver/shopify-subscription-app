@@ -24,16 +24,14 @@ const STAGE_OF_EATING_OPTIONS = [
   {name: 'Supported Sitter', value: 'supported_sitter'},
   {name: 'Sitter', value: 'sitter'},
   {name: 'Crawler', value: 'crawler'},
-  {name: 'Toddler', value: 'toddler'},
-  {name: 'Preschooler', value: 'preschooler'},
+  {name: 'Toddler (12 - 36 months)', value: 'toddler'},
+  {name: 'Preschooler (36 months - 5 years)', value: 'preschooler'},
 ];
 
 const CURRENT_DIET_OPTIONS = [
-  {name: 'Only breast milk and/or formula', value: 'breast_milk_formula'},
-  {name: 'A combo of breast milk/formula and purees', value: 'breast_milk_formula__purees'},
-  {name: 'Only purees', value: 'purees'},
-  {name: 'a combo of purees and finger food', value: 'purees__finger_food'},
-  {name: 'Finger foods', value: 'finger_food'},
+  {name: 'breastmilk and/or formula', value: 'breast_milk_formula'},
+  {name: 'purees', value: 'purees'},
+  {name: 'finger foods', value: 'finger_food'},
 ];
 
 const EATS_MEAT_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
@@ -44,12 +42,22 @@ const EATING_STYLE_OPTIONS = [
   {name: 'Both', value: 'both'},
 ];
 
+/*
 const DIET_RESEMBLES_OPTIONS = [
   {name: 'An omnivore (Eats everything!)', value: 'omnivore'},
   {name: 'A vegetarian', value: 'vegetarian'},
   {name: 'Dairy Free', value: 'dairy_free'},
   {name: 'Gluten Free', value: 'gluten_free'},
   {name: 'Plant-Based', value: 'vegan'},
+];
+*/
+const DIET_RESEMBLES_OPTIONS = [
+  {name: 'an omnivore (eats everything)', value: 'omnivore'},
+  {name: 'a vegetarian', value: 'vegetarian'},
+  {name: 'a pescetarian (eats fish)', value: 'pescetarian'},
+  {name: 'dairy-free', value: 'dairy_free'},
+  {name: 'gluten-free', value: 'gluten_free'},
+  {name: 'plant-based', value: 'plant_based'},
 ];
 
 const getOptions = () => ({
@@ -68,10 +76,10 @@ const FORM_COLS = {
 
 const AllergiesBlurb = () => (
   <i style={{fontSize: 11}}>
-    {'* Tiny Organics products are manufactured in a facility that also processes allergens. '}
-    {'We recommend you exercise caution if your child has a history of allergic reaction due to cross contamination. '}
-    {'It is extremely important to us that we practice strict health and safety standard '}
-    {'and there is always a thorough clean of equipment between runs.'}
+    {'Our meals do not contain any of the Big-8 Allergens (milk, eggs, fish, crustacean shellfish, tree nuts '}
+    {'(except coconut), peanuts, wheat and soybean).'}
+    {'Please note that while we do not use ingredients that contain allergens, '}
+    {'Tiny Organics meals are manufactured in a facility that also processes allergens.'}
   </i>
 );
 
@@ -109,10 +117,10 @@ class OnboardingBabyInfoForm extends Component<{}> {
       , eatingConcernOptions = [
         {name: `For ${this.name} to eat more.`, value: 'getting_to_eat'},
         {name: `For ${this.name} to have more variety in their diet.`, value: 'adding_variety'},
-        {name: 'Meal planning', value: 'meal_planning'},
-        {name: 'Feeding on the go', value: 'feeding_on_the_go'},
-        {name: 'Feeding when I\'m not home', value: 'feeding_when_not_home'},
-        {name: `Making sure ${this.name}eats high-quality ingredients (organic, preservative-free, etc.)`,
+        {name: 'meal planning', value: 'meal_planning'},
+        {name: 'feeding on the go or at daycare', value: 'feeding_on_the_go'},
+        {name: `feeding ${this.name} when I\'m not home`, value: 'feeding_when_not_home'},
+        {name: `Making sure ${this.name} eats high-quality ingredients (organic, preservative-free, etc.)`,
         value: 'is_getting_enough_nutrition'},
         // {name: `Is ${this.name} full?`, value: 'is_full'},
       ];
@@ -144,7 +152,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         field: 'allergies',
         insertIf: insertAllergiesIf,
-        label: `Please list ${this.name}'s allergies below`,
+        label: `My biggest feeding priorities right now are...`,
         required: true,
         type: 'text',
       },
@@ -158,7 +166,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'stage_of_eating',
-        label: `What is ${this.name}'s stage of eating?`,
+        label: `Which best describes ${this.name}'s developmental phase?`,
         options: STAGE_OF_EATING_OPTIONS,
         required: true,
         type: 'radio',
@@ -183,7 +191,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'diet_resembles',
-        label: `${this.name}'s eating style most closely resembles....`,
+        label: `${this.name} is...`,
         options: DIET_RESEMBLES_OPTIONS,
         required: true,
         type: 'radio',
@@ -191,7 +199,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_style',
-        label: `${this.name}'s eating style is....`,
+        label: `${this.name}'s eating style is...`,
         options: EATING_STYLE_OPTIONS,
         required: true,
         type: 'radio',
@@ -200,7 +208,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_concerns',
-        label: `My biggest feeding priorities for ${this.name} right now are....`,
+        label: `My biggest feeding priorities for ${this.name} right now are...`,
         options: eatingConcernOptions,
         required: true,
         type: 'radio',
