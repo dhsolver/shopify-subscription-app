@@ -37,9 +37,9 @@ const CURRENT_DIET_OPTIONS = [
 const EATS_MEAT_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
 
 const EATING_STYLE_OPTIONS = [
-  {name: 'Picky', value: 'picky'},
-  {name: 'Adventurous', value: 'adventurous'},
-  {name: 'Both', value: 'both'},
+  {name: 'picky', value: 'picky'},
+  {name: 'adventurous', value: 'adventurous'},
+  {name: 'both', value: 'both'},
 ];
 
 /*
@@ -115,12 +115,12 @@ class OnboardingBabyInfoForm extends Component<{}> {
 
     const insertAllergiesIf = (model: any) => model.has_allergies
       , eatingConcernOptions = [
-        {name: `For ${this.name} to eat more.`, value: 'getting_to_eat'},
-        {name: `For ${this.name} to have more variety in their diet.`, value: 'adding_variety'},
+        {name: `for ${this.name} to eat more`, value: 'getting_to_eat'},
+        {name: `for ${this.name} to have more variety in their diet`, value: 'adding_variety'},
         {name: 'meal planning', value: 'meal_planning'},
         {name: 'feeding on the go or at daycare', value: 'feeding_on_the_go'},
         {name: `feeding ${this.name} when I\'m not home`, value: 'feeding_when_not_home'},
-        {name: `Making sure ${this.name} eats high-quality ingredients (organic, preservative-free, etc.)`,
+        {name: `making sure ${this.name} eats high-quality ingredients (organic, preservative-free, etc.)`,
         value: 'is_getting_enough_nutrition'},
         // {name: `Is ${this.name} full?`, value: 'is_full'},
       ];

@@ -22,9 +22,9 @@ const ALLERGIES_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false
 const EATS_MEAT_OPTIONS = [{name: 'Does', value: true}, {name: 'Does not', value: false}];
 
 const EATING_STYLE_OPTIONS = [
-  {name: 'Picky', value: 'picky'},
-  {name: 'Adventurous', value: 'adventurous'},
-  {name: 'Both', value: 'both'},
+  {name: 'picky', value: 'picky'},
+  {name: 'adventurous', value: 'adventurous'},
+  {name: 'both', value: 'both'},
 ];
 
 const getOptions = () => ({

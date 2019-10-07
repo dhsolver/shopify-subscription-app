@@ -270,7 +270,7 @@ class OrderGroup extends Component<IProps> {
                 }
                 <div className='last-date'>
                   The last date to modify this order is{' '}
-                  <span>{formatDate(moment(charge.scheduled_at).subtract(4, 'days').toString())}</span>
+                  <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
                 </div>
               </Col>
               <Col xs={10} className='actions'>

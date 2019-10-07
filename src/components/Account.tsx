@@ -270,7 +270,7 @@ class Account extends Component<{}> {
                   : this.renderSubscriptionPlan()
                 }
                 <small>
-                  * Please send us a chat or email us at founders@tinyorganics.com to update your subscription{' '}
+                  * Please send us a chat or email us at hello@tinyorganics.com to update your subscription{' '}
                   details. (This feature is coming soon!) You can always change your recipe selection in the Orders{' '}
                   tab above.
                 </small>
