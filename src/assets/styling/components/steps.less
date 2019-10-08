@@ -7,17 +7,17 @@
 @process-icon-text-color: @white;
 
 @process-icon-color: @white;
-@process-title-color: @text-color;
-@process-description-color: @text-color;
-@process-tail-color: #E9DDD2;
-@wait-icon-color: #C1B0A0;
-@wait-title-color: @text-color;
+@process-title-color: @primary-color;
+@process-description-color: @primary-color;
+@process-tail-color: @info-color;
+@wait-icon-color: @primary-color;
+@wait-title-color: @primary-color;
 @wait-description-color: @wait-title-color;
-@wait-tail-color: #E9DDD2;
-@finish-icon-color: #C1B0A0;
-@finish-title-color: @text-color;
+@wait-tail-color: @info-color;
+@finish-icon-color: @primary-color;
+@finish-title-color: @primary-color;
 @finish-description-color: @text-color-secondary;
-@finish-tail-color: #E9DDD2;
+@finish-tail-color: @info-color;
 //@error-icon-color: @error-color;
 //@error-title-color: @error-color;
 //@error-description-color: @error-color;
@@ -43,18 +43,19 @@
     &-wait {
       .@{steps-prefix-cls}-item-icon {
         background: transparent;
+        border-color: #1394C9;
       }
     }
     &-finish {
       .@{steps-prefix-cls}-item-icon {
-        background: #E9DDD2;
-        border-color: #E9DDD2;
+        background: transparent;
+        border-color: @primary-color;
       }
     }
     &-process {
       .@{steps-prefix-cls}-item-icon {
-        background: #C1B0A0;
-        border-color: #C1B0A0;
+        background: #1394C9;
+        border-color: #1394C9;
       }
     }
 

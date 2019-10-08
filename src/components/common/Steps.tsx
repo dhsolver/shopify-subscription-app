@@ -9,6 +9,7 @@ import * as Antd from 'antd';
 
 const defaultSteps = [
   {title: 'Finished'},
+  {title: 'Almost There'},
   {title: 'In Progress'},
   {title: 'Waiting'},
 ];
@@ -49,7 +50,7 @@ class Steps extends Component <IProps> {
         current={this.currentStep}
         labelPlacement='vertical'
         onChange={this.onStepChange}
-        style={{maxWidth: 600}}
+        style={{maxWidth: 750, marginBottom: 50}}
         {...omit(this.props, 'steps')}
       >
         {(steps || defaultSteps).map((step, idx) => (
