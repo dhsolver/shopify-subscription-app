@@ -307,10 +307,10 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private async onSave (model: any) {
-    if (!model.share_onboaring_info) {
-      this.formMessage = {type: 'error', message: 'Oops! Please agree to share your onboaridng info with us.'};
-      return null;
-    }
+    // if (!model.share_onboaring_info) {
+    //   this.formMessage = {type: 'error', message: 'Oops! Please agree to share your onboaridng info with us.'};
+    //   return null;
+    // }
 
     if (!model.terms_accept) {
       this.formMessage = {type: 'error', message: 'Oops! Please agree to our terms and conditions.'};

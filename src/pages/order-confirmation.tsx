@@ -8,9 +8,10 @@ import { Provider } from 'mobx-react';
 import { stateOptions } from '../constants';
 
 const steps = [
-  {title: 'Plan Details'},
-  {title: 'Select Recipes'},
-  {title: 'Checkout'},
+  {title: 'Me & My Kids', url: '/onboarding-name'},
+  {title: 'My Plan', url: '/frequency-selection'},
+  {title: 'First Box', url: '/recipe-selection'},
+  {title: 'Checkout', url: '/checkout'},
 ];
 
 const getStateOptions = () => stateOptions;
@@ -20,7 +21,7 @@ export default () => (
     <Provider getOptions={getStateOptions}>
       <>
         <Row type='flex' justify='center'>
-          <Steps steps={steps} current={2} />
+          <Steps steps={steps} current={3} />
         </Row>
 
         <Row type='flex' justify='center'>
