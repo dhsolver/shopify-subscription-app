@@ -9,6 +9,9 @@ import {
 } from 'react-stripe-elements';
 import { Form } from 'antd';
 
+import Button from './common/Button';
+import Spacer from './common/Spacer';
+
 // TODO: style
 const createOptions = () => {
   return {
@@ -49,6 +52,7 @@ class _SplitFieldsForm extends Component {
   };
 
   render() {
+    const { isAccountPage } = this.props;
     return (
       <Form ref={this.props.getStripeFormRef} onSubmit={this.handleSubmit.bind(this)}>
         <div className="split-form">
@@ -88,7 +92,8 @@ class _SplitFieldsForm extends Component {
         <div className="error" role="alert">
           {this.state.errorMessage}
         </div>
-        <button onClick={this.handleSubmit} type='submit'>Submit</button>
+        <Spacer />
+        {isAccountPage && <Button type='primary' onClick={this.handleSubmit} type='submit'>Submit</Button>}
       </Form>
     );
   }
@@ -98,10 +103,11 @@ const SplitFieldsForm = injectStripe(_SplitFieldsForm);
 
 export default class SplitFieldsDemo extends Component {
   render() {
+    const { isAccountPage } = this.props;
     return (
       <StripeProvider apiKey={this.props.stripePublicKey}>
         <Elements>
-          <SplitFieldsForm getStripeFormRef={this.props.getStripeFormRef} handleResult={this.props.handleResult} />
+          <SplitFieldsForm isAccountPage={isAccountPage} getStripeFormRef={this.props.getStripeFormRef} handleResult={this.props.handleResult} />
         </Elements>
       </StripeProvider>
     );

@@ -77,6 +77,7 @@ class PaymentInfoForm extends Component<IProps> {
                 getStripeFormRef={this.props.getStripeFormRef}
                 stripePublicKey={this.props.stripePublicKey}
                 handleResult={this.onSave}
+                isAccountPage
             />
             : <Card
                 className='ant-card-ghost'
