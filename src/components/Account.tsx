@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import store from 'store';
 import { find, get, omit, sum } from 'lodash';
 
+import dynamic from 'next/dynamic';
+
 import { Avatar, Col, Icon, Row } from 'antd';
 
 import { Card, fillInFieldSet } from '@mighty-justice/fields-ant';
@@ -14,6 +16,11 @@ import {
 import Center from './common/Center';
 import Loader from './common/Loader';
 import Spacer from './common/Spacer';
+
+const StripeForm = dynamic(
+  () => import('./StripeForm'),
+  { ssr: false },
+);
 
 const billingAddressFieldSet = {
   fields: [{field: 'billing', type: 'address'}],
@@ -29,6 +36,7 @@ const editAccountDetailsFieldSet = {
 };
 
 import PersonalInfoForm from './PersonalInfoForm';
+import PaymentInfo from './PaymentInfo';
 import SubscriptionSelector from './SubscriptionSelector';
 import Axios from 'axios';
 import { observer } from 'mobx-react';
@@ -38,6 +46,9 @@ import SmartBool from '@mighty-justice/smart-bool';
 import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
 import Router from 'next/router';
 import { pluralize } from '@mighty-justice/utils';
+
+import getConfig from 'next/config';
+const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
 
 const GUTTER = 48
   , AVATAR_SIZE = 200
@@ -55,8 +66,10 @@ class Account extends Component<{}> {
   @observable private isEditingSubscriptionDetails = new SmartBool();
   @observable private isLoading = new SmartBool(true);
   @observable private shippingAddress: any = {};
+  @observable private paymentSource: any = {};
 
   private subscriptionSelector: any;
+  private stripeFormRef: any;
 
   public async componentDidMount () {
     this.rechargeId = get(store.get('customerInfo'), 'rechargeId');
@@ -65,17 +78,26 @@ class Account extends Component<{}> {
       this.fetchCustomerInfo(),
     ]);
 
-    const { data } = await Axios.get(`/subscriptions/${this.charges[0].line_items[0].subscription_id}`);
-    this.frequency = data.subscription.order_interval_frequency;
+    const { data } = await Axios.get(`/subscriptions/${this.charges[0].line_items[1].subscription_id}`);
+    this.frequency = Number(data.subscription.order_interval_frequency);
+  }
+
+  private getStripeFormRef (form: any) {
+    this.stripeFormRef = form;
   }
 
   private async fetchCustomerInfo () {
     const shopifyId = get(store.get('customerInfo'), 'id')
+      // , rechargeId = get(store.get('customerInfo'), 'rechargeId')
       , rechargeResponse = await Axios.get(`/recharge-customers/${shopifyId}`)
+      , stripeToken = get(rechargeResponse, 'data.customers[0].stripe_customer_token')
       , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
+      , paymentResponse = await Axios.get(`/recharge-customers/${stripeToken}/payment_sources`)
+      , { data: { default_source, sources } } = paymentResponse
       ;
 
     this.shippingAddress = find(addressesResponse.data.addresses, {default: true});
+    this.paymentSource = sources.data.find(source => source.id === default_source);
     this.customer = rechargeResponse.data.customers[0];
     this.isLoading.setFalse();
   }
@@ -173,7 +195,8 @@ class Account extends Component<{}> {
       <div>
         <Row type='flex' justify='center'>
           <h3>
-            Your plan includes {this.quantity} meals in every order, every {pluralize('week', 's', this.frequency)}!
+            Your plan includes {this.quantity} meals in every order,{' '}
+            every {this.frequency} {pluralize('week', 's', this.frequency)}!
           </h3>
           <br/>
         </Row>
@@ -210,6 +233,21 @@ class Account extends Component<{}> {
       ;
 
     this.customer = {...this.customer, ...response.data.customer};
+  }
+
+  private async handlePaymentInfoChange ({token}: any) {
+    await Axios.put(
+      `customers/${this.customer.stripe_customer_token}/payment-info`,
+      {token: token.id, email: this.customer.email},
+    );
+
+    const paymentResponse = await Axios.get(
+      `/recharge-customers/${this.customer.stripe_customer_token}/payment_sources`,
+      )
+      , { data: { default_source, sources } } = paymentResponse
+      ;
+
+    this.paymentSource = sources.data.find(source => source.id === default_source);
   }
 
   public render () {
@@ -281,6 +319,14 @@ class Account extends Component<{}> {
                 model={this.deserializeFormData(this.customer)}
                 fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
                 onSave={this.saveCustomerInfo}
+              />
+            </Row>
+            <Row>
+              <PaymentInfo
+                getStripeFormRef={this.getStripeFormRef}
+                stripePublicKey={STRIPE_PUBLIC_KEY}
+                handleResult={this.handlePaymentInfoChange}
+                model={this.paymentSource}
               />
             </Row>
           </Col>

@@ -88,6 +88,7 @@ class _SplitFieldsForm extends Component {
         <div className="error" role="alert">
           {this.state.errorMessage}
         </div>
+        <button onClick={this.handleSubmit} type='submit'>Submit</button>
       </Form>
     );
   }

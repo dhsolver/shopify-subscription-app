@@ -7,9 +7,11 @@ const next = require('next')
   , mobxReact = require('mobx-react')
   , Client = require('shopify-buy')
   , Axios = require('axios')
+  , stripe = require('stripe')
   ;
 
 dotenv.config();
+const stripeClient = stripe(process.env.STRIPE_API_KEY);
 
 const port = parseInt(process.env.PORT, 10) || 3000
   , dev = process.env.NODE_ENV !== 'production'
@@ -103,6 +105,11 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
+  server.get('/recharge-customers/:stripe_id/payment_sources', async (req, res) => {
+    const response = await stripeClient.customers.retrieve(req.params.stripe_id);
+    return res.end(JSON.stringify(response));
+  });
+
   /* END GET CUSTOMER INFO */
 
   /* CREATE CUSTOMERS */
@@ -147,6 +154,28 @@ app.prepare().then(() => {
       return res.status(400).send(e.response.data.errors);
     }
   });
+
+  /* END CREATE CUSTOMERS */
+
+  /* UPDATE CUSTOMER PAYMENT INFO */
+
+  server.put('/customers/:stripe_id/payment-info', async (req, res) => {
+    try {
+      const { params: { stripe_id }, body: { token, email } } = req;
+      const source = await stripeClient.sources.create({type: 'card', token: token, owner: {email}});
+      await stripeClient.customers.createSource(stripe_id, {source: source.id});
+      console.log(source);
+      const response = await stripeClient.customers.update(stripe_id, {default_source: source.id});
+      console.log(response);
+      return res.status(204).send('Success');
+    }
+    catch (e) {
+      console.log(e)
+      // return res.status(400).send(e.response.data.errors);
+    }
+  });
+
+  /* END UPDATE CUSTOMER PAYMENT INFO */
 
   /* CREATE ORDER */
 
@@ -214,7 +243,7 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
-  // FETCH CHARGES
+  // END FETCH CHARGES
 
   // Skip/Un-skip Charges
 
