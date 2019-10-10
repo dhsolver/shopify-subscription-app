@@ -7,7 +7,7 @@ import { Row } from 'antd';
 const steps = [
   {title: 'Me & My Kids', url: '/onboarding-name'},
   {title: 'My Plan', url: '/frequency-selection'},
-  {title: 'First Box', url: '/recipe-selection'},
+  // {title: 'First Box', url: '/recipe-selection'},
   {title: 'Checkout', url: '/checkout'},
 ];
 

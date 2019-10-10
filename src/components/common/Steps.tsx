@@ -50,7 +50,7 @@ class Steps extends Component <IProps> {
         current={this.currentStep}
         labelPlacement='vertical'
         onChange={this.onStepChange}
-        style={{maxWidth: 750, marginBottom: 50}}
+        style={{maxWidth: 550, marginBottom: 50, alignSelf: 'center'}}
         {...omit(this.props, 'steps')}
       >
         {(steps || defaultSteps).map((step, idx) => (

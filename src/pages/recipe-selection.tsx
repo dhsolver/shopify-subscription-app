@@ -11,7 +11,7 @@ import Router from 'next/router';
 const steps = [
   {title: 'Me & My Kids', url: '/onboarding-name'},
   {title: 'My Plan', url: '/frequency-selection'},
-  {title: 'First Box', url: '/recipe-selection'},
+  // {title: 'First Box', url: '/recipe-selection'},
   {title: 'Checkout', url: '/checkout'},
 ];
 
@@ -26,7 +26,7 @@ export default class RecipeSelection extends Component<{}> {
     return (
       <Layout title='Ant Design Page!'>
         <Row type='flex' justify='center'>
-          <Steps steps={steps} current={2} />
+          <Steps steps={steps} current={1} />
         </Row>
         <RecipeSelectionGroup />
       </Layout>
