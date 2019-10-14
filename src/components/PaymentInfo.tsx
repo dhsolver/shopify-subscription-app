@@ -39,14 +39,16 @@ class PaymentInfoForm extends Component<IProps> {
   }
 
   private serializeCardData (model) {
-    if (!model || !model.card) { return null; }
+    if (!model) { return null; }
 
-    return {
-      card_brand: model.card.brand,
-      card_exp_month: model.card.exp_month,
-      card_exp_year: model.card.exp_year,
-      card_last4: model.card.last4,
+    const data = {
+      card_brand: model.brand || model.card.brand,
+      card_exp_month: model.exp_month || model.card.exp_month,
+      card_exp_year: model.exp_year || model.card.exp_year,
+      card_last4: model.last4 || model.card.last4,
     };
+
+    return data.card_brand ? data : {};
   }
 
   private renderEditIcon () {

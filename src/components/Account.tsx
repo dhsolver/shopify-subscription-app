@@ -97,7 +97,7 @@ class Account extends Component<{}> {
       ;
 
     this.shippingAddress = find(addressesResponse.data.addresses, {default: true});
-    this.paymentSource = sources.data.find(source => source.id === default_source);
+    this.paymentSource = sources.data.find(source => source.id === default_source) || sources.data[0];
     this.customer = rechargeResponse.data.customers[0];
     this.isLoading.setFalse();
   }
@@ -242,7 +242,7 @@ class Account extends Component<{}> {
     );
 
     const paymentResponse = await Axios.get(
-      `/recharge-customers/${this.customer.stripe_customer_token}/payment_sources`,
+      `/recharge-customers/${this.customer.stripe_customer_token}/payment_sources?id=${this.customer.id}`,
       )
       , { data: { default_source, sources } } = paymentResponse
       ;
