@@ -538,6 +538,7 @@ class AccountInfoForm extends Component <{}> {
                     fieldSets={fieldSets}
                     onSave={this.onSave}
                     resetOnSuccess={false}
+                    saveText='Place Your Order'
                   >
                     {this.formMessage && (
                       <div className='message-item'>

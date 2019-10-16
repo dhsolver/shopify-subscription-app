@@ -71,6 +71,22 @@ class OnboardingFinalSteps extends Component<{}> {
     };
   }
 
+  private renderPhoto (imageUrl: string) {
+    return (
+      <div className='avatar-wrapper'>
+        <img src={imageUrl} alt='avatar' />
+      </div>
+    );
+  }
+
+  private renderUploadButton () {
+    return (
+      <Button disabled={this.isSaving.isTrue}>
+        {this.isSaving.isTrue ? <Icon type='loading' /> : <Icon type='upload' />} Click to Upload
+      </Button>
+    );
+  }
+
   public render () {
     const imageUrl = store.get('profilePicture');
 
@@ -80,16 +96,17 @@ class OnboardingFinalSteps extends Component<{}> {
         <h2>
           Upload a picture of {this.name} eating for your account page!
           (optional)
+          <Spacer />
           <Upload {...this.uploadProps}>
             {imageUrl
-              ? <img src={imageUrl} alt='avatar' style={{ width: '150px', height: '150px', borderRadius: '100%'}} />
-              : <Button><Icon type='upload' /> Click to Upload</Button>
+              ? this.renderPhoto(imageUrl)
+              : this.renderUploadButton()
             }
           </Upload>
         </h2>
         <Spacer large />
         <Link href='/frequency-selection'>
-          <Button disabled={this.isSaving.isTrue}>Submit</Button>
+          <Button type='primary' size='large' disabled={this.isSaving.isTrue}>Next</Button>
         </Link>
       </Card>
     );

@@ -20,8 +20,7 @@ export const FAMILY_TIME_DATA = {
   variant_id: FAMILY_TIME_VARIANT_ID,
 };
 
-const COL_PHOTO = {xs: 24, sm: 8}
-  , COL_INFO = {xs: 24, sm: 16};
+const COL_ADDON = {xs: 24, md: 12};
 
 @autoBindMethods
 @observer
@@ -41,19 +40,17 @@ class AddOn extends Component<{}> {
   private renderFamilyTimeIcon () {
     if (this.hasAddedFamilyTime.isTrue) {
       return (
-        <div className='btn-remove'>
-          <PlateIcon/>
-          <Button type='primary' onClick={this.onRemoveFamilyTime}>
-            Yay! <small>adult-sized versions of tiny coming your way!</small>
-          </Button>
+        <div className='btn-family-item btn-remove'>
+          <PlateIcon onClick={this.onRemoveFamilyTime} />
+          <div>Yay! <small> adult-sized versions of tiny coming your way!</small></div>
         </div>
       );
     }
 
     return (
-      <div className='btn-add'>
+      <div className='btn-family-item btn-add'>
         <Button type='primary' onClick={this.addFamilyTime} icon='plus' shape='circle'/>
-        <Button type='primary' onClick={this.addFamilyTime}>Family Time</Button>
+        <div>Family Time</div>
       </div>
     );
   }
@@ -62,18 +59,18 @@ class AddOn extends Component<{}> {
     return (
       <div className='add-on-static'>
         <Row type='flex'>
-          <Col {...COL_PHOTO} className='col-photo'>
+          <Col {...COL_ADDON} className='col-photo'>
             <div className='photo' style={{backgroundImage: `url(${ADD_ON_STATIC_PHOTO}`}}/>
           </Col>
-          <Col {...COL_INFO}>
+          <Col {...COL_ADDON}>
             <div className='info'>
-              <h3>Don’t miss out on Family Time</h3>
+              <h3>Don’t miss out on Family Time!</h3>
               <p>
-                Our Mommy & Me Meals come in a set of 3 8-oz containers that include one of each of the following{' '}
-                recipes: Ratatouille, Give it a Chai, Coconut Curry (see ingredients below).
+              Our Family Time meals come in a set of three 8-oz cups. Recipes include: Ratatouille,{' '}
+              Give it a Chai, and Coconut Curry.
               </p>
               <p>
-                Special introductory price: $14.99 dollars with your Tiny subscription plan
+                $14.99 with your Tiny subscription plan.
               </p>
               {this.renderFamilyTimeIcon()}
             </div>

@@ -63,7 +63,7 @@ export default class Layout extends Component<IProps> {
         </Head>
         <Antd.LocaleProvider locale={enUS}>
           <Antd.Layout id='page'>
-            <Content style={{paddingTop: '100px'}}>
+            <Content style={{padding: '100px 0'}}>
               <Antd.Row type='flex'>
                 <Antd.Col xs={1} sm={2} lg={3} xl={5} />
                 <Antd.Col xs={22} sm={20} lg={18} xl={14}>

@@ -11,9 +11,14 @@
     padding: 40px;
   }
 
+  .btn-family-item {
+    display: flex;
+    align-items: center;
+    height: 70px;
+  }
+
   .btn-add {
     .ant-btn-icon-only {
-      margin-right: 10px;
       vertical-align: bottom;
     }
   }
@@ -21,9 +26,11 @@
   .btn-remove {
     .icon-plate {
       font-size: 62px;
-      margin-bottom: 8px;
-      margin-right: 8px;
       vertical-align: middle;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 

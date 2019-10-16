@@ -35,7 +35,7 @@ const getOptions = () => ({
 });
 
 const RelationshipRadioGroup = (props) => (
-  <div style={{width: 140, margin: '0 auto'}}>
+  <div style={{width: 160, margin: '0 auto'}}>
     <div className='title-question'>I am...</div>
     <RadioGroup
       className='ant-radio-group-vertical'

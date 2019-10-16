@@ -152,8 +152,8 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         field: 'allergies',
         insertIf: insertAllergiesIf,
-        label: `My biggest feeding priorities right now are...`,
         required: true,
+        showLabel: false,
         type: 'text',
       },
       {

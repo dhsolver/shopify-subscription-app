@@ -25,6 +25,7 @@ import Spacer from './common/Spacer';
 // import Switch from './common/Switch';
 import { IconButton } from './common/Button';
 import ItemSelector from './ItemSelector';
+import PencilIcon from './icons/PencilIcon';
 import PlateIcon from './icons/PlateIcon';
 import Loader from './common/Loader';
 
@@ -38,7 +39,7 @@ interface IProps {
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
   , COL_SHIPPING_DATE = 14
   , GUTTER_ACTIONS = 32
-  , editIcon = () => <Icon type='edit' />
+  , editIcon = () => <PencilIcon />
   , submitIcon = () => <Icon type='check' />
   ;
 
