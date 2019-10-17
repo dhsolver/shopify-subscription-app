@@ -54,6 +54,7 @@ class PersonalInfoForm extends Component<IProps> {
                 fieldSets={[simpleFieldSet]}
                 model={model || {}}
                 onSave={this.onSave}
+                onCancel={this.isEditing.toggle}
                 // renderTopRight={this.renderEditIcon}
                 // showControls={false}
                 title={fieldSet.legend}

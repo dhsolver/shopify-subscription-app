@@ -1,0 +1,55 @@
+/*
+  COMPONENT: BUTTON TOOLBAR
+*/
+
+.button-toolbar {
+  padding-top: 15px;
+
+  .@{btn-prefix-cls} {
+    margin-right: 10px;
+    min-width: initial;
+
+    &:last-child { margin-right: 0; }
+  }
+
+  // Align
+  &.align-between {
+    .ant-form-item-children {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  &.align-center {
+    display: flex;
+    justify-content: center;
+  }
+
+  &.align-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  // Position Fixed
+  &.position-fixed {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #e9e9e9;
+    padding: 15px;
+    background: #fff;
+    text-align: right;
+    margin-bottom: 0;
+  }
+
+  // No top and bottom spacing
+  &.no-spacing {
+    padding: 0;
+    margin: 0;
+  } 
+}
+
+.ant-form-inline .button-toolbar {
+  padding-top: 0;
+}

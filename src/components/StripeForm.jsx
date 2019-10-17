@@ -7,9 +7,10 @@ import {
   StripeProvider,
   Elements,
 } from 'react-stripe-elements';
-import { Form } from 'antd';
+import { Card, Form } from 'antd';
 
 import Button from './common/Button';
+import ButtonToolbar from './common/ButtonToolbar';
 import Spacer from './common/Spacer';
 
 // TODO: style
@@ -51,50 +52,62 @@ class _SplitFieldsForm extends Component {
     }
   };
 
+  renderButtonToolbar () {
+    return (
+      <ButtonToolbar align='right'>
+        <Button onClick={this.props.handleCancel}>Cancel</Button>
+        <Button type='primary' onClick={this.handleSubmit}>Submit</Button>
+      </ButtonToolbar>
+    );
+  }
+
   render() {
     const { isAccountPage } = this.props;
     return (
-      <Form ref={this.props.getStripeFormRef} onSubmit={this.handleSubmit.bind(this)}>
-        <div className="split-form">
-          <label>
-            Card number
-            <CardNumberElement
-              {...createOptions()}
-              onChange={this.handleChange}
-              className='ant-input'
-            />
-          </label>
-          <label>
-            Expiration date
-            <CardExpiryElement
-              {...createOptions()}
-              onChange={this.handleChange}
-              className='ant-input'
-            />
-          </label>
-        </div>
-        <div className="split-form">
-          <label>
-            CVC
-            <CardCVCElement {...createOptions()} onChange={this.handleChange} className='ant-input'/>
-          </label>
-          <label>
-            Postal code
-            <input
-              name="name"
-              type="text"
-              placeholder="94115"
-              className="ant-input"
-              required
-            />
-          </label>
-        </div>
-        <div className="error" role="alert">
-          {this.state.errorMessage}
-        </div>
-        <Spacer />
-        {isAccountPage && <Button type='primary' onClick={this.handleSubmit} type='submit'>Submit</Button>}
-      </Form>
+      <Card title='Payment Information'>
+        <Form ref={this.props.getStripeFormRef} onSubmit={this.handleSubmit.bind(this)}>
+          <div className="split-form">
+            <label>
+              Card number
+              <CardNumberElement
+                {...createOptions()}
+                onChange={this.handleChange}
+                className='ant-input'
+              />
+            </label>
+            <label>
+              Expiration date
+              <CardExpiryElement
+                {...createOptions()}
+                onChange={this.handleChange}
+                className='ant-input'
+              />
+            </label>
+          </div>
+          <div className="split-form">
+            <label>
+              CVC
+              <CardCVCElement {...createOptions()} onChange={this.handleChange} className='ant-input'/>
+            </label>
+            <label>
+              Postal code
+              <input
+                name="name"
+                type="text"
+                placeholder="94115"
+                className="ant-input"
+                required
+              />
+            </label>
+          </div>
+          <div className="error" role="alert">
+            {this.state.errorMessage}
+          </div>
+          <Spacer />
+          
+          {isAccountPage && this.renderButtonToolbar()}
+        </Form>
+      </Card>
     );
   }
 }
@@ -107,7 +120,12 @@ export default class SplitFieldsDemo extends Component {
     return (
       <StripeProvider apiKey={this.props.stripePublicKey}>
         <Elements>
-          <SplitFieldsForm isAccountPage={isAccountPage} getStripeFormRef={this.props.getStripeFormRef} handleResult={this.props.handleResult} />
+          <SplitFieldsForm
+            getStripeFormRef={this.props.getStripeFormRef}
+            handleCancel={this.props.handleCancel}
+            handleResult={this.props.handleResult}
+            isAccountPage={isAccountPage}
+          />
         </Elements>
       </StripeProvider>
     );

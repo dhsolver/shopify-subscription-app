@@ -19,12 +19,8 @@ interface IProps {
 
 export const paymentInfoFieldSet = {
   fields: [
-    {field: 'card_brand', required: true },
-    {field: 'card_exp_month', required: true },
-    {field: 'card_exp_year', required: true },
-    {field: 'card_last4', required: true },
+    {field: 'card_summary', showLabel: false, required: true},
   ],
-  legend: 'Payment Information',
 };
 
 @autoBindMethods
@@ -46,7 +42,17 @@ class PaymentInfoForm extends Component<IProps> {
       card_exp_month: model.exp_month || model.card.exp_month,
       card_exp_year: model.exp_year || model.card.exp_year,
       card_last4: model.last4 || model.card.last4,
+      card_summary: null,
     };
+
+    const cardSummary = [
+      data.card_brand,
+      'expires',
+      `${data.card_exp_month}/${data.card_exp_year},`,
+      data.card_last4,
+    ];
+
+    data.card_summary = cardSummary.join(' ');
 
     return data.card_brand ? data : {};
   }
@@ -77,16 +83,17 @@ class PaymentInfoForm extends Component<IProps> {
           this.isEditing.isTrue
             ? <StripeForm
                 getStripeFormRef={this.props.getStripeFormRef}
-                stripePublicKey={this.props.stripePublicKey}
+                handleCancel={this.isEditing.toggle}
                 handleResult={this.onSave}
                 isAccountPage
+                stripePublicKey={this.props.stripePublicKey}
             />
             : <Card
                 className='ant-card-ghost'
                 fieldSets={[paymentInfoFieldSet]}
                 model={this.serializeCardData(model) || {}}
                 renderTopRight={this.renderEditIcon}
-                title={paymentInfoFieldSet.legend}
+                title='Payment Information'
             />
         }
       </div>

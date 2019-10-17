@@ -23,7 +23,7 @@ const StripeForm = dynamic(
 );
 
 const billingAddressFieldSet = {
-  fields: [{field: 'billing', type: 'address'}],
+  fields: [{field: 'billing', type: 'address', showLabel: false}],
   legend: 'Billing Address',
 };
 
