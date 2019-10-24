@@ -165,7 +165,7 @@ class AccountInfoForm extends Component <{}> {
     const subscriptionInfo = store.get('subscriptionInfo')
       , quantity = get(subscriptionInfo, 'quantity')
       , frequency = get(subscriptionInfo, 'frequency')
-      , perItemPrice = PRICING[24] // All prices currently at $4.69 until price overhaul
+      , perItemPrice = PRICING[12] // All prices currently at $5.49 until price overhaul
       , itemDecimal = new Decimal(perItemPrice)
       , totalPrice = itemDecimal.times(quantity).toDecimalPlaces(2).toString()
       ;
@@ -267,7 +267,7 @@ class AccountInfoForm extends Component <{}> {
 
     return {
       checkout: {
-        discount_code: get(this.discountCode, 'code'),
+        discount_code: this.pricing.quantity === 24 ? '24-PRICING-FIX' : get(this.discountCode, 'code'),
         email: model.email,
         line_items: lineItems.filter(lineItem => lineItem.quantity),
         shipping_address: {...this.serializeShopifyCustomerInfo(model).addresses[0], province: model.shipping.state},
@@ -406,14 +406,14 @@ class AccountInfoForm extends Component <{}> {
   }
 
   private renderDiscount () {
-    if (this.pricing.quantity === 12) {
+    if (this.pricing.quantity === 24) {
       return (
         <Row type='flex' justify='space-between'>
           <Col span={16}>
             <p className='large'>$0.80/cup discount automatically applied</p>
           </Col>
           <Col span={4}>
-            <p>(-$9.60)</p>
+            <p>(-$19.20)</p>
           </Col>
         </Row>
       );
@@ -430,7 +430,10 @@ class AccountInfoForm extends Component <{}> {
       , familyTime = store.get('familyTime')
       , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
       , cupsTotalDecimal = new Decimal(totalPrice)
-      , totalDecimal = cupsTotalDecimal.add(familyTimeDecimal)
+      , is24 = this.pricing.quantity === 24
+      , discount24 = new Decimal(19.2)
+      , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
+      , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
       , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
       , discount = this.discountCode && totalDecimal.times(discountDecimal)
       , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
