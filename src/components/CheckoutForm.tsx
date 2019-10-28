@@ -219,7 +219,7 @@ class CheckoutForm extends Component <{}> {
 
   private renderDiscountForm () {
     return (
-      <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]} resetOnSuccess={false}>
+      <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]}>
         {this.discountMessage && (
           <Row className='message-item'>
             <Alert

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form } from '@mighty-justice/fields-ant';
+import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
 import { inject, observer } from 'mobx-react';
 import { Row } from 'antd';
@@ -8,10 +8,12 @@ import Axios from 'axios';
 import store from 'store';
 import { get, isEmpty } from 'lodash';
 
-import Spacer from './common/Spacer';
-import { states_hash } from '../constants';
-import { observable } from 'mobx';
+import { Form } from '@mighty-justice/fields-ant';
 import SmartBool from '@mighty-justice/smart-bool';
+
+import { states_hash } from '../constants';
+
+import Spacer from './common/Spacer';
 import Alert from './common/Alert';
 import Loader from './common/Loader';
 
@@ -229,7 +231,6 @@ class AccountInfoForm extends Component <{}> {
             <Form
               fieldSets={accountFieldSets}
               onSave={this.onSave}
-              resetOnSuccess={false}
               saveText='Continue to Payment'
             >
               {this.formMessage && (
