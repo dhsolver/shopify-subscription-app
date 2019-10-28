@@ -8,6 +8,7 @@ const next = require('next')
   , Client = require('shopify-buy')
   , Axios = require('axios')
   , stripe = require('stripe')
+  , { get } = require('lodash')
   ;
 
 dotenv.config();
@@ -161,17 +162,18 @@ app.prepare().then(() => {
 
   server.put('/customers/:stripe_id/payment-info', async (req, res) => {
     try {
-      const { params: { stripe_id }, body: { token, email } } = req;
-      const source = await stripeClient.sources.create({type: 'card', token: token, owner: {email}});
+      const { params: { stripe_id }, body: { token, email } } = req
+        , source = await stripeClient.sources.create({type: 'card', token: token, owner: {email}})
+        ;
+
       await stripeClient.customers.createSource(stripe_id, {source: source.id});
-      console.log(source);
-      const response = await stripeClient.customers.update(stripe_id, {default_source: source.id});
-      console.log(response);
+      await stripeClient.customers.update(stripe_id, {default_source: source.id});
+
       return res.status(204).send('Success');
     }
     catch (e) {
-      console.log(e)
-      // return res.status(400).send(e.response.data.errors);
+      console.error(e)
+      return res.status(400).json(JSON.stringify(e));
     }
   });
 
@@ -179,11 +181,84 @@ app.prepare().then(() => {
 
   /* CREATE ORDER */
 
+  server.post('/recharge-customer-info/', async (req, res) => {
+    const { shopifyCustomerInfo, rechargeCustomerInfo, metafieldData } = req.body;
+
+    let id = ''
+      , isExistingCustomer = false
+      , rechargeCustomerResponse = {}
+      ;
+
+    try {
+      const response = await adminAPI.customer.create(shopifyCustomerInfo);
+      id = response.id;
+    }
+    catch (e) {
+      const shopifyCustomers = await adminAPI.customer.list({email: shopifyCustomerInfo.email});
+      if (shopifyCustomers.length) {
+        id = shopifyCustomers[0].id;
+        isExistingCustomer = true;
+      }
+    }
+
+    try {
+      const rechargeSubmitData = {...rechargeCustomerInfo, shopify_customer_id: id};
+      rechargeCustomerResponse = await rechargeClient.post('customers', rechargeSubmitData);
+    }
+    catch (e) {
+      const rechargeCustomers = await rechargeClient.get(`customers?shopify_customer_id=${id}`);
+      rechargeCustomerResponse = {data: {customer: {id: rechargeCustomers.data.customers[0].id } } };
+    }
+
+    try {
+      const rechargeId = rechargeCustomerResponse.data.customer.id;
+
+      if (!isExistingCustomer) {
+        metafieldSubmitData = { metafield: { ...metafieldData, owner_id: rechargeId } };
+        await rechargeClient.post(`/metafields?owner_resource=customer`, metafieldSubmitData);
+      }
+
+      res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
+    }
+    catch (e) {
+      console.error(e);
+      res.status(e.statusCode).json({message: e.message});
+    }
+  });
+
+  server.post('/checkout/', async (req, res) => {
+    try {
+      const { rechargeCheckoutData, stripeToken } = req.body
+        , rechargeCheckoutResponse = await rechargeClient.post('checkouts', rechargeCheckoutData)
+        , { checkout: { token } } = rechargeCheckoutResponse.data
+        , shippingRates = await rechargeClient.get(`checkouts/${token}/shipping_rates/`)
+        ;
+
+      await rechargeClient.put(`checkouts/${token}/`, {
+        checkout: {
+          shipping_line: {
+            handle: get(shippingRates, 'data.shipping_rates[0].handle', 'shopify-Free%20Shipping-0.00'),
+          },
+        },
+      });
+      await rechargeClient.post(`checkouts/${token}/charge/`,{
+        checkout_charge: { payment_processor: 'stripe', payment_token: stripeToken },
+      });
+
+      res.status(200).json({message: 'Success!'});
+    }
+    catch (e) {
+      console.error(e)
+      res.status(400).json(e);
+    }
+  });
+
   server.post('/recharge-checkouts/', async (req, res) => {
     try {
       const response = await rechargeClient.post('checkouts', req.body);
       return res.end(JSON.stringify(response.data));
     }
+
     catch (e) {
       console.error(e.response.data.errors)
       res.status(e.statusCode).json({message: e.message});

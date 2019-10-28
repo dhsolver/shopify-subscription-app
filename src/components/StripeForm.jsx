@@ -63,8 +63,9 @@ class _SplitFieldsForm extends Component {
 
   render() {
     const { isAccountPage } = this.props;
+
     return (
-      <Card title='Payment Information'>
+      <div>
         <Form ref={this.props.getStripeFormRef} onSubmit={this.handleSubmit.bind(this)}>
           <div className="split-form">
             <label>
@@ -107,7 +108,7 @@ class _SplitFieldsForm extends Component {
           
           {isAccountPage && this.renderButtonToolbar()}
         </Form>
-      </Card>
+      </div>
     );
   }
 }

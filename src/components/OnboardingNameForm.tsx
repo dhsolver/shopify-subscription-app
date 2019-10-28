@@ -9,7 +9,7 @@ import Router from 'next/router';
 import SmartBool from '@mighty-justice/smart-bool';
 import { sleep } from '../utils/utils';
 import cx from 'classnames';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 const RELATIONSHIP_OPTIONS = [
   {value: 'parent', name: 'a parent'},
@@ -84,9 +84,8 @@ class OnboardingNameForm extends Component<{}> {
   @observable private isSaving = new SmartBool();
 
   public componentDidMount () {
-    if (!isEmpty(store.get('nameInfo'))) {
-      Router.push('/onboarding-baby-info');
-    }
+    if (get(store.get('customerInfo'), 'id')) { Router.push('/dashboard'); }
+    if (!isEmpty(store.get('nameInfo'))) { Router.push('/onboarding-baby-info'); }
   }
 
   private async onSave (data: any) {

@@ -10,47 +10,34 @@
     margin-bottom: 15px;
   }
 
-  .form-account-info .ant-form {
+  .chk-billing {
+    text-align: center;
+    margin: 20px 0 0;
 
-    .chk-info {
-      display: block;
-      font-size: 12px;
-      padding-left: 25px;
-      padding-top: 8px;
-      opacity: .75;
-    }
-
-    & > .button-toolbar {
-      width: 100%;
-      text-align: center;
-    }
+    .ant-form-item-control-wrapper { display: inline-block; }
   }
-}
 
-@media only screen and (min-width: 600px)  {
-  .form-account-info .ant-form {
-    display: flex;
-    flex-flow: row wrap;
+  .form-wrapper {
+    width: 100%;
+    max-width: 450px;
 
-    & > div.ant-divider {
-      display: none;
-    }
-    
-    & > div {
-      width: 50%;
-      float: left;
-      flex: 0 0 auto;
-      padding-left: 24px;
-      padding-right: 24px;
-    }
+    h3 { text-align: center; }
 
-    /*
-      This is an 3\/1|_ dirty hack, but becasue of fields-ant there's no way
-      to set a className on a given row, child of the form.
-    */
-    & > div:nth-child(7n) {
-      width: 100%;
-      float: initial;
+    .ant-form {
+      .chk-info {
+        display: block;
+        font-size: 12px;
+        padding-left: 25px;
+        padding-top: 8px;
+        opacity: .75;
+      }
+  
+      & > .button-toolbar {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding-top: 30px;
+      }
     }
   }
 }

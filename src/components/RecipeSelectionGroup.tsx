@@ -126,7 +126,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <AddOn />
         <br/>
         <Row type='flex' justify='center'>
-          <Link href='/checkout'>
+          <Link href='/account-info'>
             <Button disabled={this.maxItems !== this.total} onClick={this.save} type='primary' size='large'>
               Next
             </Button>
