@@ -192,6 +192,7 @@ class CheckoutForm extends Component <{}> {
       }
 
       Router.push('/order-confirmation');
+      return;
     }
     catch (e) {
       this.formMessage = {
