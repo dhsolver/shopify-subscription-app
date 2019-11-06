@@ -197,6 +197,7 @@ app.prepare().then(() => {
       const shopifyCustomers = await adminAPI.customer.list({email: shopifyCustomerInfo.email});
       if (shopifyCustomers.length) {
         id = shopifyCustomers[0].id;
+        await adminAPI.customer.update(id, shopifyCustomerInfo);
         isExistingCustomer = true;
       }
     }
@@ -213,10 +214,8 @@ app.prepare().then(() => {
     try {
       const rechargeId = rechargeCustomerResponse.data.customer.id;
 
-      if (!isExistingCustomer) {
-        metafieldSubmitData = { metafield: { ...metafieldData, owner_id: rechargeId } };
-        await rechargeClient.post(`/metafields?owner_resource=customer`, metafieldSubmitData);
-      }
+      metafieldSubmitData = { metafield: { ...metafieldData, owner_id: rechargeId } };
+      await rechargeClient.post(`/metafields?owner_resource=customer`, metafieldSubmitData);
 
       res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
     }
