@@ -364,6 +364,7 @@ class CheckoutForm extends Component <{}> {
             <Spacer large />
             <Form
               fieldSets={checkoutFieldSets}
+              isLoading={this.isLoading.isTrue}
               onSave={this.onSave}
               resetOnSuccess={false}
               saveText='Place Your Order'

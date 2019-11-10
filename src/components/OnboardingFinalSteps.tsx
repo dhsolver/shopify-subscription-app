@@ -31,7 +31,6 @@ class OnboardingFinalSteps extends Component<{}> {
 
   public componentDidMount () {
     this.name = get(store.get('nameInfo'), 'child_name', '');
-    if (!this.name) { Router.push('/onboarding-name'); }
   }
 
   private get uploadProps () {
@@ -106,7 +105,9 @@ class OnboardingFinalSteps extends Component<{}> {
         </h2>
         <Spacer large />
         <Link href='/frequency-selection'>
-          <Button type='primary' size='large' disabled={this.isSaving.isTrue}>Next</Button>
+          <Button type='primary' size='large' loading={this.isSaving.isTrue} onClick={this.isSaving.setTrue}>
+            Next
+          </Button>
         </Link>
       </Card>
     );

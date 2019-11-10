@@ -25,6 +25,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
   @observable private shopifyProductData: any = [];
   @observable public total = 0;
   @observable private isLoading = new SmartBool(true);
+  @observable private isNavigating = new SmartBool(true);
   @observable private isRecommended = false;
   private boxItems = {};
   private subscriptionInfo = store.get('subscriptionInfo');
@@ -57,6 +58,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
   }
 
   private save () {
+    this.isNavigating.setTrue();
     Object.keys(this.boxItems).forEach(id => {
       const item = this.shopifyProductData.find(product => product.id === this.boxItems[id].shopify_product_id);
       this.boxItems[id].variant_id = item.variants[0].id;
@@ -127,7 +129,13 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <br/>
         <Row type='flex' justify='center'>
           <Link href='/account-info'>
-            <Button disabled={this.maxItems !== this.total} onClick={this.save} type='primary' size='large'>
+            <Button
+              disabled={this.maxItems !== this.total}
+              loading={this.isNavigating.isTrue}
+              onClick={this.save}
+              size='large'
+              type='primary'
+            >
               Next
             </Button>
           </Link>

@@ -85,7 +85,6 @@ class OnboardingNameForm extends Component<{}> {
 
   public componentDidMount () {
     if (get(store.get('customerInfo'), 'id')) { Router.push('/dashboard'); }
-    else if (!isEmpty(store.get('nameInfo'))) { Router.push('/onboarding-baby-info'); }
   }
 
   private async onSave (data: any) {

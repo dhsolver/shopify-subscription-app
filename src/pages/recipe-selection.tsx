@@ -16,7 +16,7 @@ const steps = [
 
 export default class RecipeSelection extends Component<{}> {
   public componentDidMount () {
-    if (!store.get('product_id') || !store.get('variant_id')) {
+    if (!store.get('subscriptionInfo')) {
       Router.push('/frequency-selection');
     }
   }

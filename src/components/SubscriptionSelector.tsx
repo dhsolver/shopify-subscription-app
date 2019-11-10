@@ -14,6 +14,7 @@ import Button from '../components/common/Button';
 import store from 'store';
 import Spacer from './common/Spacer';
 import { pluralize } from '@mighty-justice/utils';
+import SmartBool from '@mighty-justice/smart-bool';
 
 interface IProps {
   omitNext?: boolean;
@@ -23,6 +24,7 @@ interface IProps {
 @autoBindMethods
 @observer
 class SubscriptionSelector extends Component <IProps> {
+  @observable private isNavigating = new SmartBool();
   @observable private selectedQuantity = 12;
   @observable private selectedSchedule = 2;
 
@@ -39,6 +41,7 @@ class SubscriptionSelector extends Component <IProps> {
   }
 
   private save () {
+    this.isNavigating.setTrue();
     store.set('subscriptionInfo', {quantity: this.selectedQuantity, frequency: this.selectedSchedule});
     store.set('product_id', PRODUCT_ID[this.selectedQuantity]);
     store.set('variant_id', VARIANT_ID[this.selectedQuantity]);
@@ -96,7 +99,9 @@ class SubscriptionSelector extends Component <IProps> {
             <div style={{height: 100}} />
             <Row type='flex' justify='center'>
               <Link href='/recipe-selection'>
-                <Button size='large' type='primary' onClick={this.save}>Next</Button>
+                <Button size='large' type='primary' loading={this.isNavigating.isTrue} onClick={this.save}>
+                  Next
+                </Button>
               </Link>
             </Row>
           </>

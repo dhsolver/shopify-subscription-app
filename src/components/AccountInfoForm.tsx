@@ -230,6 +230,7 @@ class AccountInfoForm extends Component <{}> {
           <div className='form-wrapper'>
             <Form
               fieldSets={accountFieldSets}
+              isLoading={this.isLoading.isTrue}
               onSave={this.onSave}
               saveText='Continue to Payment'
             >
