@@ -25,7 +25,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
   @observable private shopifyProductData: any = [];
   @observable public total = 0;
   @observable private isLoading = new SmartBool(true);
-  @observable private isNavigating = new SmartBool(true);
+  @observable private isNavigating = new SmartBool();
   @observable private isRecommended = false;
   private boxItems = {};
   private subscriptionInfo = store.get('subscriptionInfo');
