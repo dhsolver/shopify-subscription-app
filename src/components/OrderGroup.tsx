@@ -260,6 +260,15 @@ class OrderGroup extends Component<IProps> {
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
                 Shipping on: <span>{formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
+                <a onClick={this.isModifyingSchedule.toggle}>Modify Schedule</a>
+                  {this.isModifyingSchedule.isTrue &&
+                    <DatePicker
+                      open
+                      onChange={this.onDateChange}
+                      disabledDate={this.disabledDate}
+                      defaultPickerValue={moment(new Date(charge.scheduled_at))}
+                    />
+                  }
                 <div className='last-date'>
                   The last date to modify this order is{' '}
                   <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
