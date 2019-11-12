@@ -131,7 +131,7 @@ class Orders extends Component<{}> {
         <Spacer />
 
         <Center>
-          <h2>Upcoming Orders</h2>
+          <h2>Upcoming Order</h2>
         </Center>
 
         <Spacer />
