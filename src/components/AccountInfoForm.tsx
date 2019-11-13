@@ -227,6 +227,7 @@ class AccountInfoForm extends Component <{}> {
             <h2>Finalize Your Subscription</h2>
           </Row>
           <Spacer />
+          this is a test
           <div className='form-wrapper'>
             <Form
               fieldSets={accountFieldSets}
