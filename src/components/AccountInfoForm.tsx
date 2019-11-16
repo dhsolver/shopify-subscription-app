@@ -87,12 +87,6 @@ class AccountInfoForm extends Component <{}> {
   @observable private formMessage;
   @observable private discountMessage;
 
-  public componentDidMount () {
-    if (!isEmpty(get(store.get('customerInfo'), 'shopifyCustomerInfo'))) {
-      Router.push('/frequency-selection');
-    }
-  }
-
   private serializeShopifyCustomerInfo (model: any) {
     const data = {
       addresses: [
