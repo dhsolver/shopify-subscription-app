@@ -17,20 +17,7 @@ const RELATIONSHIP_OPTIONS = [
   {value: 'caregiver', name: 'a caregiver'},
 ];
 
-const ALLERGIES_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
-
-const EATS_MEAT_OPTIONS = [{name: 'Does', value: true}, {name: 'Does not', value: false}];
-
-const EATING_STYLE_OPTIONS = [
-  {name: 'picky', value: 'picky'},
-  {name: 'adventurous', value: 'adventurous'},
-  {name: 'both', value: 'both'},
-];
-
 const getOptions = () => ({
-  allergies: ALLERGIES_OPTIONS,
-  eating_style: EATING_STYLE_OPTIONS,
-  eats_meat: EATS_MEAT_OPTIONS,
   relationship_to_child: RELATIONSHIP_OPTIONS,
 });
 

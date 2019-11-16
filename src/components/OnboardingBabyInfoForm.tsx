@@ -34,23 +34,14 @@ const CURRENT_DIET_OPTIONS = [
   {name: 'finger foods', value: 'finger_food'},
 ];
 
-const EATS_MEAT_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
+// const EATS_MEAT_OPTIONS = [{name: 'Yes', value: true}, {name: 'No', value: false}];
 
-const EATING_STYLE_OPTIONS = [
-  {name: 'picky', value: 'picky'},
-  {name: 'adventurous', value: 'adventurous'},
-  {name: 'both', value: 'both'},
-];
+// const EATING_STYLE_OPTIONS = [
+//   {name: 'picky', value: 'picky'},
+//   {name: 'adventurous', value: 'adventurous'},
+//   {name: 'both', value: 'both'},
+// ];
 
-/*
-const DIET_RESEMBLES_OPTIONS = [
-  {name: 'An omnivore (Eats everything!)', value: 'omnivore'},
-  {name: 'A vegetarian', value: 'vegetarian'},
-  {name: 'Dairy Free', value: 'dairy_free'},
-  {name: 'Gluten Free', value: 'gluten_free'},
-  {name: 'Plant-Based', value: 'vegan'},
-];
-*/
 const DIET_RESEMBLES_OPTIONS = [
   {name: 'an omnivore (eats everything)', value: 'omnivore'},
   {name: 'a vegetarian', value: 'vegetarian'},
@@ -63,8 +54,8 @@ const DIET_RESEMBLES_OPTIONS = [
 const getOptions = () => ({
   allergies: ALLERGIES_OPTIONS,
   current_diet: CURRENT_DIET_OPTIONS,
-  eating_style: EATING_STYLE_OPTIONS,
-  eats_meat: EATS_MEAT_OPTIONS,
+  // eating_style: EATING_STYLE_OPTIONS,
+  // eats_meat: EATS_MEAT_OPTIONS,
   relationship_to_child: RELATIONSHIP_OPTIONS,
 });
 
@@ -93,14 +84,14 @@ class OnboardingBabyInfoForm extends Component<{}> {
 
   public componentDidMount () {
     this.name = get(store.get('nameInfo'), 'child_name', '');
-    if (!isEmpty(store.get('babyInfo'))) { Router.push('/onboarding-finish'); }
+    if (!isEmpty(store.get('babyInfo'))) { Router.push('/frequency-selection'); }
   }
 
   private async onSave (data) {
     this.isSaving.setTrue();
     await store.set('babyInfo', data);
     await sleep(SUBMIT_SLEEP);
-    await Router.push('/onboarding-finish');
+    await Router.push('/frequency-selection');
   }
 
   public render () {
@@ -129,21 +120,21 @@ class OnboardingBabyInfoForm extends Component<{}> {
         editComponent: InlineDateInput,
         editProps: { className: 'ant-date-inline', size: 'large' },
         field: 'birthdate',
-        label: `${this.name}'s birthdate is...`,
+        label: `1. ${this.name}'s birthdate is...`,
         required: true,
         type: 'date',
       },
-      {
-        editComponent: InlineDateInput,
-        editProps: { className: 'ant-date-inline', size: 'large' },
-        field: 'parent_birthdate',
-        label: 'My birthdate is...',
-        type: 'date',
-      },
+      // {
+      //   editComponent: InlineDateInput,
+      //   editProps: { className: 'ant-date-inline', size: 'large' },
+      //   field: 'parent_birthdate',
+      //   label: 'My birthdate is...',
+      //   type: 'date',
+      // },
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'has_allergies',
-        label: `Does ${this.name} have any allergies?`,
+        label: `2. Does ${this.name} have any allergies?`,
         options: ALLERGIES_OPTIONS,
         required: true,
         type: 'radio',
@@ -165,7 +156,7 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'stage_of_eating',
-        label: `Which best describes ${this.name}'s developmental phase?`,
+        label: `3. Which best describes ${this.name}'s developmental phase?`,
         options: STAGE_OF_EATING_OPTIONS,
         required: true,
         type: 'radio',
@@ -173,41 +164,41 @@ class OnboardingBabyInfoForm extends Component<{}> {
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'current_diet',
-        label: `${this.name}'s current diet consists of...`,
+        label: `4. ${this.name}'s current diet consists of...`,
         options: CURRENT_DIET_OPTIONS,
         required: true,
         type: 'radio',
       },
-      {
-        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
-        field: 'eats_meat',
-        label: `Does ${this.name} eat meat?`,
-        options: EATS_MEAT_OPTIONS,
-        required: true,
-        type: 'radio',
-      },
+      // {
+      //   editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+      //   field: 'eats_meat',
+      //   label: `Does ${this.name} eat meat?`,
+      //   options: EATS_MEAT_OPTIONS,
+      //   required: true,
+      //   type: 'radio',
+      // },
       // should be a checkbox group, not supported by fields-ant yet
-      {
-        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
-        field: 'diet_resembles',
-        label: `${this.name} is...`,
-        options: DIET_RESEMBLES_OPTIONS,
-        required: true,
-        type: 'radio',
-      },
-      {
-        editProps: { className: 'ant-radio-group-vertical', size: 'large' },
-        field: 'eating_style',
-        label: `${this.name}'s eating style is...`,
-        options: EATING_STYLE_OPTIONS,
-        required: true,
-        type: 'radio',
-      },
+      // {
+      //   editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+      //   field: 'diet_resembles',
+      //   label: `${this.name} is...`,
+      //   options: DIET_RESEMBLES_OPTIONS,
+      //   required: true,
+      //   type: 'radio',
+      // },
+      // {
+      //   editProps: { className: 'ant-radio-group-vertical', size: 'large' },
+      //   field: 'eating_style',
+      //   label: `${this.name}'s eating style is...`,
+      //   options: EATING_STYLE_OPTIONS,
+      //   required: true,
+      //   type: 'radio',
+      // },
       // should be a checkbox group, not supported by fields-ant yet
       {
         editProps: { className: 'ant-radio-group-vertical', size: 'large' },
         field: 'eating_concerns',
-        label: `My biggest feeding priorities for ${this.name} right now are...`,
+        label: `5. My biggest feeding priority for ${this.name} right now is...`,
         options: eatingConcernOptions,
         required: true,
         type: 'radio',
