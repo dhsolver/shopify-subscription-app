@@ -23,7 +23,11 @@ const StripeForm = dynamic(
 );
 
 const billingAddressFieldSet = {
-  fields: [{field: 'billing', type: 'address', showLabel: false}],
+  fields: [
+    {field: 'billing.first_name', required: true},
+    {field: 'billing.last_name', required: true},
+    {field: 'billing', type: 'address', showLabel: false},
+  ],
   legend: 'Billing Address',
 };
 
@@ -127,8 +131,8 @@ class Account extends Component<{}> {
       billing_province: model.billing.state,
       billing_zip: model.billing.zip_code,
       email: model.email,
-      first_name: model.first_name,
-      last_name: model.last_name,
+      first_name: model.billing.first_name,
+      last_name: model.billing.last_name,
       status: 'ACTIVE',
     };
   }
@@ -140,6 +144,8 @@ class Account extends Component<{}> {
         address2: model.billing_address2,
         city: model.billing_city,
         country: model.billing_country,
+        first_name: model.first_name,
+        last_name: model.last_name,
         state: model.billing_province,
         zip_code: model.billing_zip,
       },
