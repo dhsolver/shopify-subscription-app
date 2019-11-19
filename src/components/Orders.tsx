@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { find, get, some } from 'lodash';
+import { find, get, some, last } from 'lodash';
 import store from 'store';
 import Axios from 'axios';
 
@@ -13,6 +13,7 @@ import Center from './common/Center';
 import Spacer from './common/Spacer';
 
 import OrderGroup from './OrderGroup';
+import ProcessedOrderGroup from './ProcessedOrderGroup';
 import Router from 'next/router';
 import PlateIcon from './icons/PlateIcon';
 import SmartBool from '@mighty-justice/smart-bool';
@@ -23,7 +24,8 @@ import Loader from './common/Loader';
 @observer
 class Orders extends Component<{}> {
   @observable private hasAddedFamilyTime = new SmartBool();
-  @observable private charges = [];
+  @observable private queuedCharge = [];
+  @observable private processedCharge = [];
   @observable private recipes = [];
   @observable private oneTime = null;
   @observable private customerAddressID;
@@ -36,22 +38,34 @@ class Orders extends Component<{}> {
       Router.push('/onboarding-name');
       return;
     }
+    await this.fetchProcessedChargeData();
     await this.fetchData();
-  }
-
-  public async fetchData () {
-    this.charges = await this.fetchCharges();
-    if (this.charges[0]) {
-      this.oneTime = find(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
-      const includesFamilyTime = some(this.charges[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
-      if (includesFamilyTime) { this.hasAddedFamilyTime.setTrue(); }
-      else if (store.get('familyTime')) { await this.addFamilyTime(this.charges[0]); }
-    }
     this.recipes = await this.fetchRecipes();
   }
 
-  public async fetchCharges () {
+  public async fetchData () {
+    this.queuedCharge = await this.fetchQueuedCharge();
+    if (this.queuedCharge[0]) {
+      this.oneTime = find(this.queuedCharge[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
+      const includesFamilyTime = some(this.queuedCharge[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
+      if (includesFamilyTime) { this.hasAddedFamilyTime.setTrue(); }
+      else if (store.get('familyTime')) { await this.addFamilyTime(this.queuedCharge[0]); }
+    }
+  }
+
+  public async fetchProcessedChargeData () {
+    const processedCharges = await this.fetchProcessedCharges();
+    this.processedCharge = processedCharges[processedCharges.length - 1];
+  }
+
+  public async fetchQueuedCharge () {
     const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
+
+    return data.charges;
+  }
+
+  public async fetchProcessedCharges () {
+    const { data } = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
 
     return data.charges;
   }
@@ -86,14 +100,14 @@ class Orders extends Component<{}> {
 
     const {data: { onetime }} = await Axios.post(`/onetimes/address/${address_id}`, submitData);
     this.oneTime = onetime;
-    await this.fetchCharges();
+    await this.fetchQueuedCharge();
 
     this.hasAddedFamilyTime.setTrue();
   }
 
   private async onRemoveFamilyTime () {
     await Axios.delete(`/onetimes/${this.oneTime.id || this.oneTime.subscription_id}`);
-    await this.fetchCharges();
+    await this.fetchQueuedCharge();
     this.hasAddedFamilyTime.setFalse();
   }
 
@@ -125,18 +139,27 @@ class Orders extends Component<{}> {
   }
 
   public render () {
-    if (!this.charges.length || !this.recipes.length) { return <Loader />; }
+    if (!this.queuedCharge.length || !this.recipes.length) { return <Loader />; }
     return (
       <div className='page-orders'>
         <Spacer />
 
         <Center>
-          <h2>Upcoming Order</h2>
+          <h2>Upcoming Orders</h2>
         </Center>
 
         <Spacer />
 
-        {this.charges.map(
+            <ProcessedOrderGroup
+              fetchData={this.fetchProcessedChargeData}
+              charge={this.processedCharge}
+              recipes={this.recipes}
+            />
+
+        <Spacer />
+        <Spacer />
+
+        {this.queuedCharge.map(
           charge => [
             this.renderFamilyTimeIcon(charge),
             (<OrderGroup

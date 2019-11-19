@@ -22,7 +22,7 @@ const tabs = [
 const getStateOptions = () => stateOptions;
 
 export default () => (
-  <Layout title='Ant Design Page!'>
+  <Layout title='Tiny Organics User Dashboard'>
     <Provider getOptions={getStateOptions}>
       <Tabs centered tabs={tabs} />
     </Provider>

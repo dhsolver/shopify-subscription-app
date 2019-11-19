@@ -317,6 +317,12 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
+  server.get('/recharge-processed-charges/', async (req, res) => {
+    const response = await rechargeClient.get(`charges?status=SUCCESS&customer_id=${req.query.customer_id}`);
+    return res.end(JSON.stringify(response.data));
+  });
+
+
   // END FETCH CHARGES
 
   // Skip/Un-skip Charges
