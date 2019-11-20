@@ -143,9 +143,10 @@ class Orders extends Component<{}> {
     return (
       <div className='page-orders'>
         <Spacer />
+        <Spacer />
 
         <Center>
-          <h2>Upcoming Orders</h2>
+          <h2>Current Order</h2>
         </Center>
 
         <Spacer />
@@ -157,6 +158,12 @@ class Orders extends Component<{}> {
             />
 
         <Spacer />
+        <Spacer />
+
+        <Center>
+          <h2>Next Order</h2>
+        </Center>
+
         <Spacer />
 
         {this.queuedCharge.map(
