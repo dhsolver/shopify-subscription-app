@@ -184,6 +184,7 @@ class AccountInfoForm extends Component <{}> {
 
   private async onSave (model: any) {
     this.isLoading.setTrue();
+
     try {
       const shopifyCustomerInfo = this.serializeShopifyCustomerInfo(model)
         , submitData = {

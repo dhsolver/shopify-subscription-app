@@ -8,17 +8,19 @@ import Axios from 'axios';
 import store from 'store';
 import { get, isEmpty, omit, noop } from 'lodash';
 import Decimal from 'decimal.js';
+import cx from 'classnames';
 // import { FullStoryAPI } from 'react-fullstory';
 
 import dynamic from 'next/dynamic';
 
 import Spacer from './common/Spacer';
+import TinyLoader from './common/TinyLoader';
+import Alert from './common/Alert';
+import Loader from './common/Loader';
 import { FAMILY_TIME_PRICE, PRICING, states_hash } from '../constants';
 import { formatMoney, pluralize } from '@mighty-justice/utils';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
-import Alert from './common/Alert';
-import Loader from './common/Loader';
 
 import getConfig from 'next/config';
 const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
@@ -91,6 +93,7 @@ const checkoutFieldSets = [
 class CheckoutForm extends Component <{}> {
   @observable private isAddingDiscount = new SmartBool();
   @observable private isLoading = new SmartBool(true);
+  @observable private isSaving = new SmartBool();
   @observable private stripeToken;
   @observable private discountCode;
   @observable private pricing: any = {};
@@ -102,6 +105,7 @@ class CheckoutForm extends Component <{}> {
       Router.push('/account-info');
       return;
     }
+
     const subscriptionInfo = store.get('subscriptionInfo')
       , quantity = get(subscriptionInfo, 'quantity')
       , frequency = get(subscriptionInfo, 'frequency')
@@ -167,13 +171,13 @@ class CheckoutForm extends Component <{}> {
       return null;
     }
 
-    this.isLoading.setTrue();
+    this.isSaving.setTrue();
     try {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     }
     catch (e) {
       this.formMessage = {type: 'error', message: 'Oops! Please provide a valid payment method!'};
-      this.isLoading.setFalse();
+      this.isSaving.setFalse();
       return null;
     }
 
@@ -208,7 +212,7 @@ class CheckoutForm extends Component <{}> {
       return null;
     }
     finally {
-      this.isLoading.setFalse();
+      this.isSaving.setFalse();
     }
   }
 
@@ -280,112 +284,117 @@ class CheckoutForm extends Component <{}> {
     return (
       <Row type='flex' justify='center'>
         <Loader spinning={this.isLoading.isTrue}>
+          {this.isSaving.isTrue &&
+            <TinyLoader>Your order is processing… Please do not refresh, go back, or click again.</TinyLoader>
+          }
           <Spacer />
-          <Row type='flex' justify='center'>
-            <h2>Finalize Your Subscription</h2>
-          </Row>
-          <Spacer />
-          <div className='form-wrapper'>
-            {totalPrice &&
-              <div>
-                <Row type='flex' justify='center'>
-                  <h3>Order Summary</h3>
-                </Row>
-                <Spacer small />
-
-                <Row type='flex' justify='space-between'>
-                  <Col span={16}>
-                    <p className='large'>
-                      {quantity} meal subscription plan every {pluralize('week', 's', frequency)}:
-                    </p>
-                  </Col>
-                  <Col span={4}>
-                    <p>{formatMoney(cupsTotalDecimal.toString())}</p>
-                  </Col>
-                </Row>
-
-                {familyTime && (
-                  <Row type='flex' justify='space-between'>
-                    <Col span={16}>
-                      <p className='large'>Family time add-on:</p>
-                    </Col>
-                    <Col span={4}>
-                      <p>{formatMoney(FAMILY_TIME_PRICE)}</p>
-                    </Col>
-                  </Row>
-                )}
-
-                <Row type='flex' justify='space-between'>
-                  <Col span={16}>
-                    <p className='large'>Subtotal:</p>
-                  </Col>
-                  <Col span={4}>
-                    <p>{formatMoney(totalDecimal.toString())}</p>
-                  </Col>
-                </Row>
-
-                <Row type='flex' justify='space-between'>
-                  <Col span={16}>
-                    <p className='large'>Shipping & Handling:</p>
-                  </Col>
-                  <Col span={4}>
-                    <p>$0.00</p>
-                  </Col>
-                </Row>
-
-                {discount && (
-                  <Row type='flex' justify='space-between'>
-                    <Col span={16}>
-                      <p className='large'>Discount/Gift Card:{'\n'}<i>{this.discountCode.code}</i></p>
-                    </Col>
-                    <Col span={4}>
-                      <p>{discount.toString()} ({this.discountCode.value}%)</p>
-                    </Col>
-                  </Row>
-                )}
-
-                <Row type='flex' justify='space-between'>
-                  <Col span={16}>
-                    <b><p className='large'>Grand Total:</p></b>
-                  </Col>
-                  <Col span={4}>
-                    <b><p>{totalDisplay}<br/><i> + tax</i></p></b>
-                  </Col>
-                </Row>
-
-                <Spacer small />
-                {this.renderDiscount()}
-              </div>
-            }
-            <Spacer large />
+          <div className={cx({'form-saving': this.isSaving.isTrue})}>
             <Row type='flex' justify='center'>
-              <h3>Payment Info</h3>
+              <h2>Finalize Your Subscription</h2>
             </Row>
-            <Spacer small />
-            <StripeForm
-              getStripeFormRef={this.getStripeFormRef}
-              stripePublicKey={STRIPE_PUBLIC_KEY}
-              handleResult={this.handleResult}
-            />
-            <Spacer large />
-            <Form
-              fieldSets={checkoutFieldSets}
-              isLoading={this.isLoading.isTrue}
-              onSave={this.onSave}
-              resetOnSuccess={false}
-              saveText='Place Your Order'
-            >
-              {this.formMessage && (
-                <div className='message-item'>
-                  <Alert
-                    afterClose={this.afterCloseFormMessage}
-                    closable
-                    message={this.formMessage.message}
-                    type={this.formMessage.type}
-                  />
+            <Spacer />
+            <div className='form-wrapper'>
+              {totalPrice &&
+                <div>
+                  <Row type='flex' justify='center'>
+                    <h3>Order Summary</h3>
+                  </Row>
+                  <Spacer small />
+
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
+                      <p className='large'>
+                        {quantity} meal subscription plan every {pluralize('week', 's', frequency)}:
+                      </p>
+                    </Col>
+                    <Col span={4}>
+                      <p>{formatMoney(cupsTotalDecimal.toString())}</p>
+                    </Col>
+                  </Row>
+
+                  {familyTime && (
+                    <Row type='flex' justify='space-between'>
+                      <Col span={16}>
+                        <p className='large'>Family time add-on:</p>
+                      </Col>
+                      <Col span={4}>
+                        <p>{formatMoney(FAMILY_TIME_PRICE)}</p>
+                      </Col>
+                    </Row>
+                  )}
+
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
+                      <p className='large'>Subtotal:</p>
+                    </Col>
+                    <Col span={4}>
+                      <p>{formatMoney(totalDecimal.toString())}</p>
+                    </Col>
+                  </Row>
+
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
+                      <p className='large'>Shipping & Handling:</p>
+                    </Col>
+                    <Col span={4}>
+                      <p>$0.00</p>
+                    </Col>
+                  </Row>
+
+                  {discount && (
+                    <Row type='flex' justify='space-between'>
+                      <Col span={16}>
+                        <p className='large'>Discount/Gift Card:{'\n'}<i>{this.discountCode.code}</i></p>
+                      </Col>
+                      <Col span={4}>
+                        <p>{discount.toString()} ({this.discountCode.value}%)</p>
+                      </Col>
+                    </Row>
+                  )}
+
+                  <Row type='flex' justify='space-between'>
+                    <Col span={16}>
+                      <b><p className='large'>Grand Total:</p></b>
+                    </Col>
+                    <Col span={4}>
+                      <b><p>{totalDisplay}<br/><i> + tax</i></p></b>
+                    </Col>
+                  </Row>
+
+                  <Spacer small />
+                  {this.renderDiscount()}
                 </div>
-              )}
-            </Form>
+              }
+              <Spacer large />
+              <Row type='flex' justify='center'>
+                <h3>Payment Info</h3>
+              </Row>
+              <Spacer small />
+              <StripeForm
+                getStripeFormRef={this.getStripeFormRef}
+                stripePublicKey={STRIPE_PUBLIC_KEY}
+                handleResult={this.handleResult}
+              />
+              <Spacer large />
+              <Form
+                fieldSets={checkoutFieldSets}
+                isLoading={this.isSaving.isTrue}
+                onSave={this.onSave}
+                resetOnSuccess={false}
+                saveText='Place Your Order'
+              >
+                {this.formMessage && (
+                  <div className='message-item'>
+                    <Alert
+                      afterClose={this.afterCloseFormMessage}
+                      closable
+                      message={this.formMessage.message}
+                      type={this.formMessage.type}
+                    />
+                  </div>
+                )}
+              </Form>
+            </div>
           </div>
         </Loader>
       </Row>
