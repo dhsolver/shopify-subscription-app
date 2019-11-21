@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import store from 'store';
 import { find, get, omit, sum } from 'lodash';
-
 import dynamic from 'next/dynamic';
-
 import { Avatar, Col, Icon, Row } from 'antd';
-
 import { Card, fillInFieldSet } from '@mighty-justice/fields-ant';
-
 import {
   personalInfoFieldSet,
   shippingAddressFieldSet,
 } from './AccountInfoForm';
-
 import Center from './common/Center';
 import Loader from './common/Loader';
 import Spacer from './common/Spacer';
@@ -62,7 +57,8 @@ const GUTTER = 48
 @autoBindMethods
 @observer
 class Account extends Component<{}> {
-  @observable private charges: any[] = [];
+  @observable private charges: any = [];
+  @observable private subsriptionId: any;
   @observable private quantity = 0;
   @observable private frequency = 0;
   @observable private rechargeId: any;
@@ -82,7 +78,7 @@ class Account extends Component<{}> {
       this.fetchCustomerInfo(),
     ]);
 
-    const { data } = await Axios.get(`/subscriptions/${this.charges[0].line_items[1].subscription_id}`);
+    const { data } = await Axios.get(`/subscriptions/${this.subsriptionId}`);
     this.frequency = Number(data.subscription.order_interval_frequency);
   }
 
@@ -115,6 +111,7 @@ class Account extends Component<{}> {
     const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
 
     this.charges = data.charges;
+    this.subsriptionId = this.charges[0].line_items[0].subscription_id;
     const lineItems = this.charges[0].line_items.filter(item => item.shopify_product_id !== FAMILY_TIME_PRODUCT_ID);
     this.quantity = sum(lineItems.map(lineItem => lineItem.quantity));
   }
