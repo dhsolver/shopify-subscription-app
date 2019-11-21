@@ -8,7 +8,6 @@ import Axios from 'axios';
 import store from 'store';
 import { get, isEmpty, omit, noop } from 'lodash';
 import Decimal from 'decimal.js';
-// import { FullStoryAPI } from 'react-fullstory';
 
 import dynamic from 'next/dynamic';
 
@@ -111,7 +110,6 @@ class CheckoutForm extends Component <{}> {
       ;
 
     this.pricing = {quantity, frequency, perItemPrice, totalPrice};
-
     this.isLoading.setFalse();
   }
 
@@ -192,10 +190,6 @@ class CheckoutForm extends Component <{}> {
           ;
         await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
       }
-      // FullStoryAPI.identify(id, {
-      //   displayName: `${shopifyCustomerInfo.first_name} ${shopifyCustomerInfo.last_name}`,
-      //   email: `${shopifyCustomerInfo.email}`,
-      // });
 
       Router.push('/order-confirmation');
       return;

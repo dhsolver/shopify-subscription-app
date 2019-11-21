@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'next/router';
 import ReactGA from 'react-ga';
 import App, { Container } from 'next/app';
-// import { FullStoryAPI } from 'react-fullstory';
 
 ReactGA.initialize('UA-132685226-1');
 
@@ -14,13 +13,6 @@ Router.events.on('routeChangeComplete', url => {
 export default class MyApp extends App {
   componentDidMount() {
     ReactGA.pageview(window.location.pathname + window.location.search);
-    // if (localStorage.customerInfo) {
-    //   const shopifyId = JSON.parse(localStorage.customerInfo).id;
-      // FS.identify("test", {
-      //   displayName: 'TEST',
-      //   email: 'TEST',
-      // });
-    // }
   }
 
   render () {
