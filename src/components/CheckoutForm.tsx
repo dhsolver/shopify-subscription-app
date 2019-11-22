@@ -9,10 +9,7 @@ import store from 'store';
 import { get, isEmpty, omit, noop } from 'lodash';
 import Decimal from 'decimal.js';
 import cx from 'classnames';
-// import { FullStoryAPI } from 'react-fullstory';
-
 import dynamic from 'next/dynamic';
-
 import Spacer from './common/Spacer';
 import TinyLoader from './common/TinyLoader';
 import Alert from './common/Alert';

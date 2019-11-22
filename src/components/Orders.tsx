@@ -142,22 +142,25 @@ class Orders extends Component<{}> {
     if (!this.queuedCharge.length || !this.recipes.length) { return <Loader />; }
     return (
       <div className='page-orders'>
-        <Spacer />
-        <Spacer />
-
-        <Center>
-          <h2>Current Order</h2>
-        </Center>
-
-        <Spacer />
-
+      {this.processedCharge ? (
+          <div>
+            <Spacer />
+            <Spacer />
+            <Center>
+              <h2>Current Order</h2>
+            </Center>
+            <Spacer />
             <ProcessedOrderGroup
               fetchData={this.fetchProcessedChargeData}
               charge={this.processedCharge}
               recipes={this.recipes}
             />
-
-        <Spacer />
+           <Spacer />
+          </div>
+          ) : (
+            <Spacer />
+          )
+        }
         <Spacer />
 
         <Center>
