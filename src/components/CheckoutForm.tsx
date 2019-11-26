@@ -52,7 +52,7 @@ const termsFieldset = {
           </Checkbox>
           <small className='chk-info'>
             {/* tslint:disable-next-line max-line-length */}
-            By checking the checkbox above you agree to share your onboarding  information with Tufts School of Nutrition in order to help build the next generation of adventurous eaters.
+            By checking the checkbox above you agree to share your onboarding information with Tufts School of Nutrition in order to help build the next generation of adventurous eaters.
           </small>
         </div>
       ),
@@ -96,6 +96,8 @@ class CheckoutForm extends Component <{}> {
   @observable private pricing: any = {};
   @observable private formMessage;
   @observable private discountMessage;
+  @observable private processedCharge;
+  @observable private rechargeId;
 
   public componentDidMount () {
     if (isEmpty(get(store.get('customerInfo'), 'shopifyCustomerInfo'))) {
@@ -158,17 +160,13 @@ class CheckoutForm extends Component <{}> {
   }
 
   private async onSave (model: any) {
-    // if (!model.share_onboaring_info) {
-    //   this.formMessage = {type: 'error', message: 'Oops! Please agree to share your onboaridng info with us.'};
-    //   return null;
-    // }
-
     if (!model.terms_accept) {
       this.formMessage = {type: 'error', message: 'Oops! Please agree to our terms and conditions.'};
       return null;
     }
 
     this.isSaving.setTrue();
+
     try {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     }
@@ -185,6 +183,8 @@ class CheckoutForm extends Component <{}> {
         , submitData = { rechargeCheckoutData, stripeToken: this.stripeToken }
         ;
 
+      this.rechargeId = rechargeId;
+
       await Axios.post('/checkout/', submitData);
 
       if (familyTime) {
@@ -193,6 +193,7 @@ class CheckoutForm extends Component <{}> {
           ;
         await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
       }
+
       // FullStoryAPI.identify(id, {
       //   displayName: `${shopifyCustomerInfo.first_name} ${shopifyCustomerInfo.last_name}`,
       //   email: `${shopifyCustomerInfo.email}`,
@@ -206,6 +207,14 @@ class CheckoutForm extends Component <{}> {
         message: 'Oops! Something went wrong! Double check your submission and try again',
         type: 'error',
       };
+
+      const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
+      this.processedCharge = charges.data.charges[0];
+
+      if (this.processedCharge) {
+        Router.push('/order-confirmation');
+      }
+
       return null;
     }
     finally {
