@@ -1,21 +1,31 @@
 import React, { Component } from 'react';
 import store from 'store';
 import { find, get, omit, sum } from 'lodash';
-import dynamic from 'next/dynamic';
-import { Avatar, Col, Icon, Row } from 'antd';
+import Axios from 'axios';
+import { observer } from 'mobx-react';
+import autoBindMethods from 'class-autobind-decorator';
+import { observable } from 'mobx';
+
+import Router from 'next/router';
+import getConfig from 'next/config';
+
+import { pluralize } from '@mighty-justice/utils';
+import SmartBool from '@mighty-justice/smart-bool';
 import { Card, fillInFieldSet } from '@mighty-justice/fields-ant';
-import {
-  personalInfoFieldSet,
-  shippingAddressFieldSet,
-} from './AccountInfoForm';
+
+import { Avatar, Col, Row } from 'antd';
+
+import PersonalInfoForm from './PersonalInfoForm';
+import PaymentInfo from './PaymentInfo';
+import SubscriptionSelector from './SubscriptionSelector';
 import Center from './common/Center';
 import Loader from './common/Loader';
 import Spacer from './common/Spacer';
+import { personalInfoFieldSet, shippingAddressFieldSet } from './accountInfoFieldSets';
 
-const StripeForm = dynamic(
-  () => import('./StripeForm'),
-  { ssr: false },
-);
+import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
+
+const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
 
 const billingAddressFieldSet = {
   fields: [
@@ -33,21 +43,6 @@ const editAccountDetailsFieldSet = {
   ],
   legend: 'Account Details',
 };
-
-import PersonalInfoForm from './PersonalInfoForm';
-import PaymentInfo from './PaymentInfo';
-import SubscriptionSelector from './SubscriptionSelector';
-import Axios from 'axios';
-import { observer } from 'mobx-react';
-import autoBindMethods from 'class-autobind-decorator';
-import { observable } from 'mobx';
-import SmartBool from '@mighty-justice/smart-bool';
-import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
-import Router from 'next/router';
-import { pluralize } from '@mighty-justice/utils';
-
-import getConfig from 'next/config';
-const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
 
 const GUTTER = 48
   , AVATAR_SIZE = 200
@@ -88,7 +83,6 @@ class Account extends Component<{}> {
 
   private async fetchCustomerInfo () {
     const shopifyId = get(store.get('customerInfo'), 'id')
-      // , rechargeId = get(store.get('customerInfo'), 'rechargeId')
       , rechargeResponse = await Axios.get(`/recharge-customers/${shopifyId}`)
       , stripeToken = get(rechargeResponse, 'data.customers[0].stripe_customer_token')
       , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
@@ -122,14 +116,14 @@ class Account extends Component<{}> {
       billing_address2: model.billing.address2,
       billing_city: model.billing.city,
       billing_country: 'United States',
-      billing_first_name: model.first_name,
-      billing_last_name: model.last_name,
+      billing_first_name: model.billing.first_name,
+      billing_last_name: model.billing.last_name,
       billing_phone: model.phone,
       billing_province: model.billing.state,
       billing_zip: model.billing.zip_code,
       email: model.email,
-      first_name: model.billing.first_name,
-      last_name: model.billing.last_name,
+      first_name: model.first_name,
+      last_name: model.last_name,
       status: 'ACTIVE',
     };
   }
@@ -299,12 +293,6 @@ class Account extends Component<{}> {
 
           <Col {...ITEM_COLS}>
             <Card fieldSets={[]}>
-              <Row type='flex' justify='end'>
-                {/*{this.isEditingSubscriptionDetails.isTrue*/}
-                  {/*? <IconButton icon={submitIcon} onClick={this.onSubscriptionChange}/>*/}
-                  {/*: <IconButton icon={editIcon} onClick={this.isEditingSubscriptionDetails.setTrue}/>*/}
-                {/*}*/}
-              </Row>
               <Center>
                 {this.isEditingSubscriptionDetails.isTrue
                   ? <SubscriptionSelector ref={this.getSubscriptionSelectorRef} omitNext omitQuantity />

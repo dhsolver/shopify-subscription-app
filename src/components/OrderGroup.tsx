@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { getDay } from 'date-fns';
-import { find, get, sum } from 'lodash';
+import { get, sum } from 'lodash';
 import Axios from 'axios';
 import moment from 'moment';
 import autoBindMethods from 'class-autobind-decorator';
@@ -13,16 +13,13 @@ import {
   DatePicker,
   Icon,
   List,
-  // notification,
   Row,
-  // Spin,
 } from 'antd';
 
 import { formatDate } from '@mighty-justice/utils';
 import SmartBool from '@mighty-justice/smart-bool';
 
 import Spacer from './common/Spacer';
-// import Switch from './common/Switch';
 import { IconButton } from './common/Button';
 import ItemSelector from './ItemSelector';
 import PencilIcon from './icons/PencilIcon';
@@ -36,8 +33,7 @@ interface IProps {
   recipes: any[];
 }
 
-const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
-  , COL_SHIPPING_DATE = 14
+const COL_SHIPPING_DATE = 14
   , GUTTER_ACTIONS = 32
   , editIcon = () => <PencilIcon />
   , submitIcon = () => <Icon type='check' />
@@ -46,7 +42,6 @@ const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
 @autoBindMethods
 @observer
 class OrderGroup extends Component<IProps> {
-  // @observable private isSkipped = new SmartBool();
   @observable private isLoading = new SmartBool();
   @observable private isModifyingSchedule = new SmartBool();
   @observable private isEditingOrder = new SmartBool();
@@ -118,6 +113,7 @@ class OrderGroup extends Component<IProps> {
 
       if (newQuantity === oldQuantity) {
         // tslint:disable-next-line
+        console.log('no change');
       }
       else if (newQuantity && oldQuantity) {
         await Axios.put(
@@ -148,34 +144,6 @@ class OrderGroup extends Component<IProps> {
     this.isEditingOrder.setFalse();
     this.isLoading.setFalse();
   }
-
-  // private async onSkipOrder () {
-  //   const { charge, fetchCharges } = this.props
-  //     , lineItems = charge.line_items.map(lineItem => lineItem.subscription_id)
-  //     ;
-  //
-  //   notification.info({
-  //     description: 'figure out a way to make this take WAAAAYYY less time',
-  //     message: 'TODO: reconcile with recharge support',
-  //   });
-  //
-  //   this.isLoading.setTrue();
-  //   this.isSkipped.toggle();
-  //   if (this.isSkipped.isTrue) {
-  //     // tslint:disable-next-line
-  //     for (let i = 0; i < lineItems.length; i += 1) {
-  //       await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
-  //     }
-  //   }
-  //   else if (this.isSkipped.isFalse) {
-  //     // tslint:disable-next-line
-  //     for (let i = 0; i < lineItems.length; i += 1) {
-  //       await Axios.post(`/skip-charge/${charge.id}/`, {subscription_id: lineItems[i]});
-  //     }
-  //   }
-  //   await fetchCharges();
-  //   this.isLoading.setFalse();
-  // }
 
   private renderItem (data: any, itemIdx: number) {
     const src = data.images.medium || data.images[0].src;
@@ -218,10 +186,6 @@ class OrderGroup extends Component<IProps> {
             : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />
           }
         </Col>
-        {/*<Col>*/}
-          {/*<Switch onChange={this.onSkipOrder} defaultChecked={false} />{' '}*/}
-          {/*{this.isSkipped.isTrue ? 'Skipped' : 'Skip'}*/}
-        {/*</Col>*/}
       </>
     );
   }
@@ -232,11 +196,14 @@ class OrderGroup extends Component<IProps> {
 
   private async onDateChange (_current, date) {
     const { charge, fetchData } = this.props;
+
     this.isLoading.setTrue();
     const chargeDate = formatDate(moment(date).subtract(3, 'days').toString());
     this.isModifyingSchedule.setFalse();
+
     await Axios.post(`/change-order-date/${charge.id}`, {next_charge_date: chargeDate});
     await fetchData();
+
     this.isLoading.setFalse();
   }
 

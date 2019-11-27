@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { find, get, some, last } from 'lodash';
+import { find, get, some } from 'lodash';
 import store from 'store';
 import Axios from 'axios';
-
-import { Icon } from 'antd';
 
 import Button from './common/Button';
 import Center from './common/Center';

@@ -6,7 +6,7 @@ import { Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
-import { get, isEmpty } from 'lodash';
+import { omit } from 'lodash';
 
 import { Form } from '@mighty-justice/fields-ant';
 import SmartBool from '@mighty-justice/smart-bool';
@@ -16,67 +16,7 @@ import { states_hash } from '../constants';
 import Spacer from './common/Spacer';
 import Alert from './common/Alert';
 import Loader from './common/Loader';
-
-export const personalInfoFieldSet = {
-  fields: [
-    { field: 'first_name', required: true },
-    { field: 'last_name', required: true },
-  ],
-  legend: 'Personal Info',
-};
-
-export const insertBillingIf = (model: any) => model.billing && !model.billing.is_same_as_shipping;
-
-export const billingAddressFieldSet = {
-  fields: [
-    {
-      className: 'chk-billing',
-      editProps: {
-        defaultChecked: true,
-        description: 'Is Same as Shipping',
-      },
-      field: 'billing.is_same_as_shipping',
-      label: '',
-      type: 'checkbox',
-      value: true,
-    },
-    { field: 'billing.first_name', insertIf: insertBillingIf },
-    { field: 'billing.last_name', insertIf: insertBillingIf },
-    { field: 'billing', type: 'address', insertIf: insertBillingIf },
-  ],
-  legend: 'Billing Address',
-};
-
-// TODO: seriously, why?
-const emptyFieldSet = {fields: [], legend: ''};
-
-export const shippingAddressFieldSet = {
-  fields: [
-    {field: 'first_name', required: true },
-    {field: 'last_name', required: true },
-    // TODO why is this not autofilling
-    {field: 'shipping', type: 'address', required: true },
-  ],
-  legend: 'Shipping Address',
-};
-
-export const accountDetailsFieldSet = {
-  fields: [
-    {field: 'email', required: true},
-    // TODO: why is this not validating
-    {field: 'phone', required: true, type: 'phone'},
-    {field: 'password', required: true},
-    {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password', required: true },
-  ],
-  legend: 'Account Details',
-};
-
-const accountFieldSets = [
-  accountDetailsFieldSet,
-  shippingAddressFieldSet,
-  billingAddressFieldSet,
-  emptyFieldSet,
-];
+import { accountFieldSets } from './accountInfoFieldSets';
 
 @inject('getOptions')
 @autoBindMethods
@@ -195,7 +135,13 @@ class AccountInfoForm extends Component <{}> {
         ;
 
       const { data: { id, rechargeCustomerResponse } } = await Axios.post('/recharge-customer-info/', submitData);
-      store.set('customerInfo', {id, rechargeId: rechargeCustomerResponse.customer.id, shopifyCustomerInfo});
+      store.set(
+        'customerInfo',
+        {
+          id,
+          rechargeId: rechargeCustomerResponse.customer.id,
+          shopifyCustomerInfo: omit(shopifyCustomerInfo, ['password, password_confirmation']),
+        });
 
       Router.push('/checkout');
     }
@@ -226,6 +172,7 @@ class AccountInfoForm extends Component <{}> {
           <Spacer />
           <div className='form-wrapper'>
             <Form
+              resetOnSuccess={false}
               fieldSets={accountFieldSets}
               isLoading={this.isLoading.isTrue}
               onSave={this.onSave}

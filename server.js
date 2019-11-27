@@ -8,7 +8,7 @@ const next = require('next')
   , Client = require('shopify-buy')
   , Axios = require('axios')
   , stripe = require('stripe')
-  , { get } = require('lodash')
+  , { get, omit } = require('lodash')
   ;
 
 dotenv.config();
@@ -82,22 +82,12 @@ app.prepare().then(() => {
     return res.send(JSON.stringify(response.data));
   })
 
-  server.get('/collections/with-products/', async (req, res) => {
-    const response = await storefrontClient.collection.fetchAllWithProducts();
-    return res.send(JSON.stringify(response));
-  });
-
   /* END FETCH PRODUCTS */
 
   /* GET CUSTOMER INFO */
 
   server.get('/recharge-customers/:id', async (req, res) => {
     const response = await rechargeClient.get(`customers?shopify_customer_id=${req.params.id}`);
-    return res.end(JSON.stringify(response.data));
-  });
-
-  server.get('/recharge-customers/:id/addresses/', async (req, res) => {
-    const response = await rechargeClient.get(`customers/${req.params.id}/addresses/`);
     return res.end(JSON.stringify(response.data));
   });
 
@@ -113,38 +103,7 @@ app.prepare().then(() => {
 
   /* END GET CUSTOMER INFO */
 
-  /* CREATE CUSTOMERS */
-
-  server.post('/shopify-customers/', async (req, res) => {
-    try {
-      const response = await adminAPI.customer.create(req.body);
-      res.send(JSON.stringify(response));
-    }
-    catch (e) {
-      console.error(e);
-      res.status(e.statusCode).json({message: 'Something went wrong! Please check your info and try again!'});
-    }
-  });
-
-  server.post('/recharge-customers/', async (req, res) => {
-    try {
-      const response = await rechargeClient.post('customers', req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-    catch (e) {
-      return res.status(500).send({message: 'Something went wrong! Please check your info and try again!'});
-    }
-  });
-
-  server.post('/customers/:id/addresses/', async (req, res) => {
-    const response = await rechargeClient.post(`customers/${req.body.customer_id}/addresses/`, req.body);
-    return res.end(JSON.stringify(response.data));
-  });
-
-  server.put('/customers/:id/', async (req, res) => {
-    const response = await rechargeClient.put(`customers/${req.params.id}/`, req.body);
-    return res.send(JSON.stringify(response.data));
-  });
+  /* UPDATE CUSTOMERS ADDRESS */
 
   server.put('/customers/:customer_id/addresses/:address_id', async (req, res) => {
     try {
@@ -156,7 +115,12 @@ app.prepare().then(() => {
     }
   });
 
-  /* END CREATE CUSTOMERS */
+  server.put('/customers/:id/', async (req, res) => {
+    const response = await rechargeClient.put(`customers/${req.params.id}/`, req.body);
+    return res.send(JSON.stringify(response.data));
+  });
+
+  /* UPDATE CUSTOMERS ADDRESS */
 
   /* UPDATE CUSTOMER PAYMENT INFO */
 
@@ -185,10 +149,10 @@ app.prepare().then(() => {
     const { shopifyCustomerInfo, rechargeCustomerInfo, metafieldData } = req.body;
 
     let id = ''
-      , isExistingCustomer = false
       , rechargeCustomerResponse = {}
       ;
 
+    // Check if there is an existing shopify customer or create a new one
     try {
       const response = await adminAPI.customer.create(shopifyCustomerInfo);
       id = response.id;
@@ -197,31 +161,55 @@ app.prepare().then(() => {
       const shopifyCustomers = await adminAPI.customer.list({email: shopifyCustomerInfo.email});
       if (shopifyCustomers.length) {
         id = shopifyCustomers[0].id;
-        await adminAPI.customer.update(id, shopifyCustomerInfo);
-        isExistingCustomer = true;
+        // try to update customer's info if one if found
+        try {
+          if (!shopifyCustomers[0].addresses.length) {
+            await adminAPI.customerAddress.create(id, shopifyCustomerInfo.addresses[0]);
+          }
+          await adminAPI.customer.update(id, omit(shopifyCustomerInfo, ['addresses', 'email']));
+        }
+        catch (e) {
+          // Should send sentry error once integrated
+          return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
+        }
+      }
+      // otherwise throw an error as it was an invalid input
+      else {
+        // Should send sentry error once integrated
+        return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
       }
     }
 
+    // Check if there is an existing recharge customer or create a new one
     try {
       const rechargeSubmitData = {...rechargeCustomerInfo, shopify_customer_id: id};
       rechargeCustomerResponse = await rechargeClient.post('customers', rechargeSubmitData);
     }
     catch (e) {
       const rechargeCustomers = await rechargeClient.get(`customers?shopify_customer_id=${id}`);
-      rechargeCustomerResponse = {data: {customer: {id: rechargeCustomers.data.customers[0].id } } };
+      if (get(rechargeCustomers, 'data.customers[0]')) {
+        rechargeCustomerResponse = {data: {customer: {id: rechargeCustomers.data.customers[0].id } } };
+      }
+      else {
+        // Should send sentry error once integrated
+        return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
+      }
     }
 
+    // Add metafield data
     try {
       const rechargeId = rechargeCustomerResponse.data.customer.id;
 
       metafieldSubmitData = { metafield: { ...metafieldData, owner_id: rechargeId } };
       await rechargeClient.post(`/metafields?owner_resource=customer`, metafieldSubmitData);
 
-      res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
+      return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
     }
     catch (e) {
-      console.error(e);
-      res.status(e.statusCode).json({message: e.message});
+      console.error(e.response.data.errors);
+      // TODO: why 'Not unique within namespace, owner_resource, owner_id.' error
+      // return res.status(e.statusCode).json({message: e.message});
+      return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
     }
   });
 
@@ -247,64 +235,8 @@ app.prepare().then(() => {
       res.status(200).json({message: 'Success!'});
     }
     catch (e) {
-      console.error(e)
+      console.error(e.response.data.errors)
       res.status(400).json(e);
-    }
-  });
-
-  server.post('/recharge-checkouts/', async (req, res) => {
-    try {
-      const response = await rechargeClient.post('checkouts', req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-
-    catch (e) {
-      console.error(e.response.data.errors)
-      res.status(e.statusCode).json({message: e.message});
-    }
-  });
-
-  server.post('/recharge-charges/:id/', async (req, res) => {
-    try {
-      const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-    catch (e) {
-      console.error(e.response.data.errors)
-      res.status(e.statusCode).json({message: e.message});
-    }
-  });
-
-  server.put('/recharge-checkouts/:id/', async (req, res) => {
-    try {
-      const response = await rechargeClient.put(`checkouts/${req.params.id}/`, req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-    catch (e) {
-      console.error(e.response.data.errors)
-      res.status(e.statusCode).json({message: e.message});
-    }
-  });
-
-  server.get('/recharge-checkouts/:token/shipping-rates', async (req, res) => {
-    try {
-      const response = await rechargeClient.get(`checkouts/${req.params.token}/shipping_rates/`, req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-    catch (e) {
-      console.error(e.response.data.errors)
-      res.status(e.statusCode).json({message: e.message});
-    }
-  });
-
-  server.put('/recharge-charges/:id/', async (req, res) => {
-    try {
-      const response = await rechargeClient.post(`checkouts/${req.params.id}/charge/`, req.body);
-      return res.end(JSON.stringify(response.data));
-    }
-    catch (e) {
-      console.error(e.response.data.errors)
-      res.status(e.statusCode).json({message: e.message});
     }
   });
 
@@ -324,20 +256,6 @@ app.prepare().then(() => {
 
 
   // END FETCH CHARGES
-
-  // Skip/Un-skip Charges
-
-  server.post('/skip-charge/:id/', async (req, res) => {
-    const response = await rechargeClient.post(`charges/${req.params.id}/skip`, req.body);
-    return res.end(JSON.stringify(response.data))
-  });
-
-  server.post('/unskip-charge/:id/', async (req, res) => {
-    const response = await rechargeClient.post(`charges/${req.params.id}/unskip`, req.body);
-    return res.end(JSON.stringify(response.data))
-  });
-
-  // END Skip/Un-skip Charges
 
   // CHANGE ORDER DATE
 
@@ -411,19 +329,6 @@ app.prepare().then(() => {
   });
 
   // END ADD ONE-TIME PRODUCT TO ORDER
-
-  // GENERIC //
-  // METAFIELDS
-
-  server.post('/recharge-metafields/', async (req, res) => {
-    try {
-      const response = await rechargeClient.post(`/metafields?owner_resource=customer`, req.body);
-      return res.send(JSON.stringify(response.data));
-    }
-    catch (e) {
-      res.json({message: e.message});
-    }
-  });
 
   // DISCOUNTS //
 

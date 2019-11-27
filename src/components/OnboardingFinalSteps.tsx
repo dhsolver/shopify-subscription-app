@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
-import autoBindMethods from 'class-autobind-decorator';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import autoBindMethods from 'class-autobind-decorator';
 import store from 'store';
 import { get } from 'lodash';
-import { observable } from 'mobx';
-import Router from 'next/router';
-import { Card, Icon, message, Upload } from 'antd';
-import Button from './common/Button';
-import Spacer from './common/Spacer';
-import SmartBool from '@mighty-justice/smart-bool';
 import cx from 'classnames';
-import Link from 'next/link';
-
 import AWS from 'aws-sdk';
 
+import Link from 'next/link';
 import getConfig from 'next/config';
+
+import SmartBool from '@mighty-justice/smart-bool';
+
+import { Card, Icon, message, Upload } from 'antd';
+
+import Button from './common/Button';
+import Spacer from './common/Spacer';
+
 const { publicRuntimeConfig: { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET } } = getConfig();
 
 function beforeUpload (file) {

@@ -1,25 +1,29 @@
 import React, { Component } from 'react';
-import { Form } from '@mighty-justice/fields-ant';
-import autoBindMethods from 'class-autobind-decorator';
+import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
+import autoBindMethods from 'class-autobind-decorator';
 import { Checkbox, Col, Row } from 'antd';
-import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
 import { get, isEmpty, omit, noop } from 'lodash';
 import Decimal from 'decimal.js';
 import cx from 'classnames';
+
+import { Form } from '@mighty-justice/fields-ant';
+import { formatMoney, pluralize } from '@mighty-justice/utils';
+import SmartBool from '@mighty-justice/smart-bool';
+
+import Router from 'next/router';
 import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
+
 import Spacer from './common/Spacer';
 import TinyLoader from './common/TinyLoader';
 import Alert from './common/Alert';
 import Loader from './common/Loader';
-import { FAMILY_TIME_PRICE, PRICING, states_hash } from '../constants';
-import { formatMoney, pluralize } from '@mighty-justice/utils';
-import { observable } from 'mobx';
-import SmartBool from '@mighty-justice/smart-bool';
 
-import getConfig from 'next/config';
+import { FAMILY_TIME_PRICE, PRICING } from '../constants';
+
 const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
 
 const MODES = {

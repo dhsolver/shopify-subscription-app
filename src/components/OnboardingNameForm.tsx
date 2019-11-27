@@ -7,9 +7,8 @@ import { Card, Col, Input, Row } from 'antd';
 import store from 'store';
 import Router from 'next/router';
 import SmartBool from '@mighty-justice/smart-bool';
-import { sleep } from '../utils/utils';
 import cx from 'classnames';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 
 const RELATIONSHIP_OPTIONS = [
   {value: 'parent', name: 'a parent'},
@@ -63,8 +62,6 @@ const FORM_COLS = {
   xs: 24,
 };
 
-const SUBMIT_SLEEP = 1500;
-
 @autoBindMethods
 @observer
 class OnboardingNameForm extends Component<{}> {
@@ -77,7 +74,6 @@ class OnboardingNameForm extends Component<{}> {
   private async onSave (data: any) {
     this.isSaving.setTrue();
     await store.set('nameInfo', data);
-    await sleep(SUBMIT_SLEEP);
     await Router.push('/onboarding-baby-info');
   }
 

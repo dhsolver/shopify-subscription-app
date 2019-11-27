@@ -44,6 +44,7 @@ export default class extends Document {
 
   renderSnippet () {
     const opts = {
+      // segment public key -- move to env variable
       apiKey: 'PCrI4XSEhYT2OeSyh4tSoAQWEvpp0yX4',
       // note: the page option only covers SSR tracking.
       // Page.js is used to track other events using `window.analytics.page()`

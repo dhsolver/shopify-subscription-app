@@ -9,9 +9,7 @@ import { observer } from 'mobx-react';
 import StripeForm from './StripeForm';
 
 interface IProps {
-  // fieldSet: any;
   model: any;
-  // onSave: (model: any) => void;
   getStripeFormRef: any;
   stripePublicKey: any;
   handleResult: any;
@@ -63,15 +61,12 @@ class PaymentInfoForm extends Component<IProps> {
         {
           this.isEditing.isTrue
             ? null
-            // ? <IconButton icon={this.submit} onClick={this.isEditing.setFalse} />
             : <IconButton icon={this.pencil} onClick={this.isEditing.setTrue} />
         }
       </>
     );
   }
 
-  // TODO: MAKE THIS DESIGN ACTUALLY WORK
-  // private get submit () { return () => <Icon type='check' />; }
   private get pencil () { return () => <Icon type='edit' />; }
 
   public render () {

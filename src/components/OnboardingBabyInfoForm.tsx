@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Date, Form } from '@mighty-justice/fields-ant';
 import autoBindMethods from 'class-autobind-decorator';
-import { observer, Provider } from 'mobx-react';
-import store from 'store';
-import Router from 'next/router';
 import { observable } from 'mobx';
-import { get, isEmpty } from 'lodash';
-import SmartBool from '@mighty-justice/smart-bool';
-import { sleep } from '../utils/utils';
+import { observer, Provider } from 'mobx-react';
 import cx from 'classnames';
+import store from 'store';
+import { get, isEmpty } from 'lodash';
+import Router from 'next/router';
+
+import { Date, Form } from '@mighty-justice/fields-ant';
+import SmartBool from '@mighty-justice/smart-bool';
+
 import { Card, Col, Row } from 'antd';
 
 const RELATIONSHIP_OPTIONS = [
@@ -74,8 +75,6 @@ const AllergiesBlurb = () => (
   </i>
 );
 
-const SUBMIT_SLEEP = 1500;
-
 @autoBindMethods
 @observer
 class OnboardingBabyInfoForm extends Component<{}> {
@@ -90,7 +89,6 @@ class OnboardingBabyInfoForm extends Component<{}> {
   private async onSave (data) {
     this.isSaving.setTrue();
     await store.set('babyInfo', data);
-    await sleep(SUBMIT_SLEEP);
     await Router.push('/frequency-selection');
   }
 
@@ -214,7 +212,6 @@ class OnboardingBabyInfoForm extends Component<{}> {
                 <Form
                   className={cx({'ant-card-saving': this.isSaving.isTrue})}
                   onSave={this.onSave}
-                  //title={`About ${this.name}`}
                   model={{}}
                   fieldSets={[babyInfoFieldSet]}
                   saveText='Next'
