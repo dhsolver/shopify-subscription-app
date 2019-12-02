@@ -103,7 +103,7 @@ class ProcessedOrderGroup extends Component<IProps> {
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
                 Your order is shipping the week of
-                <span>{formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
+                <span> {formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
                 <div className='last-date email-confirmation'>
                   You will receive a confirmation email with tracking information when your order is fulfilled.
                 </div>
