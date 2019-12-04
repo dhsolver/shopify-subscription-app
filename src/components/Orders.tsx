@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import cx from 'classnames';
 import { find, get, some } from 'lodash';
 import store from 'store';
 import Axios from 'axios';
+
+import { Icon } from 'antd';
 
 import Button from './common/Button';
 import Center from './common/Center';
@@ -22,6 +25,7 @@ import Loader from './common/Loader';
 @observer
 class Orders extends Component<{}> {
   @observable private hasAddedFamilyTime = new SmartBool();
+  @observable private isProcessingFamilyTime = new SmartBool();
   @observable private queuedCharge = [];
   @observable private processedCharge = [];
   @observable private recipes = [];
@@ -96,41 +100,67 @@ class Orders extends Component<{}> {
       }
       ;
 
+    this.isProcessingFamilyTime.setTrue();
     const {data: { onetime }} = await Axios.post(`/onetimes/address/${address_id}`, submitData);
     this.oneTime = onetime;
     await this.fetchQueuedCharge();
 
     this.hasAddedFamilyTime.setTrue();
+    this.isProcessingFamilyTime.setFalse();
   }
 
   private async onRemoveFamilyTime () {
+    this.isProcessingFamilyTime.setTrue();
     await Axios.delete(`/onetimes/${this.oneTime.id || this.oneTime.subscription_id}`);
     await this.fetchQueuedCharge();
     this.hasAddedFamilyTime.setFalse();
+    this.isProcessingFamilyTime.setFalse();
   }
 
-  private renderFamilyTimeIcon = (charge: any) => {
+  private renderFamilyTime = (charge: any) => {
     if (this.hasAddedFamilyTime.isTrue) {
+      const RemoveButton = this.isProcessingFamilyTime.isTrue
+        ? <>Removing... <Icon type='loading' /></>
+        : <a onClick={this.onRemoveFamilyTime}>Remove</a>
+      ;
+
       return (
-        <div className='btn-family-time' key={`icon-${charge}`}>
-          <PlateIcon onClick={this.onRemoveFamilyTime} />
-          <div className='box-info'>
-            Yay! <small>Adult-sized versions of tiny coming your way!</small>
+        <div className={cx('family-time-added', {loading: this.isProcessingFamilyTime.isTrue})} key={`icon-${charge}`}>
+          <div className='content'>
+            <PlateIcon />
+            <div className='title'>Yay! You've added Family Time to your next order!</div>
+            <p>Adult sized versions of Tiny on the way!</p>
+            <div className='remove'>
+              Not that hungry ? {RemoveButton}
+            </div>
           </div>
         </div>
       );
     }
 
     return (
-      <div className='btn-family-time' onClick={this.addFamilyTime.bind(this, charge)} key={`icon-${charge}`}>
-        <Button className='btn-add' type='primary' icon='plus' shape='circle' />
-        <div className='box-info'>
-          <span>Family Time</span>
-          <small className='smaller'>
-            Add a set of three adult sized Tiny
-            <br />
-            meals to this order for 14.99$
-          </small>
+      <div className={cx('family-time', {loading: this.isProcessingFamilyTime.isTrue})} key={`icon-${charge}`}>
+        <div className='content'>
+          <div className='title'>Spend mealtime with your Little One!</div>
+          <p>
+            Add Family Time to your next order and{` `}
+            get three adult sized Tiny meals in your next shipment for $14.99!
+          </p>
+          {
+            this.isProcessingFamilyTime.isTrue
+              ? (
+                <Button type='primary' size='large'>
+                  <Icon type='loading' />
+                  Adding<strong>Family Time</strong>...
+                </Button>
+              )
+              : (
+                <Button type='primary' size='large' onClick={this.addFamilyTime.bind(this, charge)}>
+                  <Icon type='plus-circle' theme='filled' />
+                  Add<strong>Family Time</strong>
+                </Button>
+              )
+          }
         </div>
       </div>
     );
@@ -169,7 +199,8 @@ class Orders extends Component<{}> {
 
         {this.queuedCharge.map(
           charge => [
-            this.renderFamilyTimeIcon(charge),
+            this.renderFamilyTime(charge),
+            <Spacer key={`spacer-${charge.id}`} large />,
             (<OrderGroup
               fetchData={this.fetchData}
               key={charge.id}
