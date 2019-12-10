@@ -292,7 +292,7 @@ class CheckoutForm extends Component <{}> {
     //     <Icon type='close-circle' />Remove code
     //   </Button>
     // </div>
-        
+
     return this.isAddingDiscount.isTrue
       ? this.renderDiscountForm()
       : (

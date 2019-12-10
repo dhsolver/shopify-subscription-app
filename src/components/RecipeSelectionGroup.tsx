@@ -98,6 +98,16 @@ class RecipeSelectionGroup extends React.Component <{}> {
       );
     }
 
+    // disabling the recommended feature for now
+    // this would be added to return function above List
+    // <Row type='flex' justify='center'>
+    //   <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecommended}>
+    //     <Radio.Button value={false}>Build Your Own</Radio.Button>
+    //     <Radio.Button value={true}>Recommended</Radio.Button>
+    //   </Radio.Group>
+    // </Row>
+    // <Spacer />
+
     return (
       <div>
         <Spacer />
@@ -107,15 +117,6 @@ class RecipeSelectionGroup extends React.Component <{}> {
 
         <Row type='flex' justify='center'>
           <p>{this.total} / {this.maxItems} selected</p>
-        </Row>
-
-        <Spacer />
-
-        <Row type='flex' justify='center'>
-          <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecommended}>
-            <Radio.Button value={false}>Build Your Own</Radio.Button>
-            <Radio.Button value={true}>Recommended</Radio.Button>
-          </Radio.Group>
         </Row>
 
         <Spacer />
