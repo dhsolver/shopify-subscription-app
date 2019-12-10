@@ -3,7 +3,11 @@
 */
 
 .modal-product-description {
-  max-width: 732px;
+  max-width: 382px;
+
+  .footer {
+    text-align: center;
+  }
 
   .product-description {
     display: flex;
@@ -72,5 +76,11 @@
         padding-top: 10px;
       }
     }
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal-product-description {
+    max-width: 732px;
   }
 }

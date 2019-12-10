@@ -5,6 +5,8 @@ import cx from 'classnames';
 import parser from 'html-react-parser';
 import { Card, Popover, Descriptions } from 'antd';
 import SelectionButtons from './SelectionButtons';
+import Button from './common/Button';
+import Spacer from './common/Spacer';
 import { observable } from 'mobx';
 import SmartBool from '@mighty-justice/smart-bool';
 
@@ -46,10 +48,18 @@ class ItemSelector extends Component <IProps> {
 
     return (
       <Popover
-        content={parser(description)}
+        content={(
+          <div>
+            {parser(description)}
+            <div className='footer'>
+              <Spacer small />
+              <Button type='primary' onClick={this.isDescriptionVisible.setFalse}>Close</Button>
+            </div>
+          </div>
+        )}
         onVisibleChange={this.isDescriptionVisible.set}
         overlayClassName='modal-product-description'
-        placement='top'
+        placement='bottom'
         trigger='click'
         visible={this.isDescriptionVisible.isTrue}
       >

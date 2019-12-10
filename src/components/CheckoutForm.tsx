@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
-import { Checkbox, Col, Row } from 'antd';
+import { Checkbox, Col, Row, Icon } from 'antd';
 import Axios from 'axios';
 import store from 'store';
 import { get, isEmpty, omit, noop } from 'lodash';
@@ -17,6 +17,7 @@ import Router from 'next/router';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 
+import Button from './common/Button';
 import Spacer from './common/Spacer';
 import TinyLoader from './common/TinyLoader';
 import Alert from './common/Alert';
@@ -163,6 +164,10 @@ class CheckoutForm extends Component <{}> {
     return this.discountMessage = {type: 'error', message: 'This discount code is invalid!'};
   }
 
+  private onRemoveDiscountCode () {
+    // Missing code to remove discount code here.
+  }
+
   private async onSave (model: any) {
     if (!model.terms_accept) {
       this.formMessage = {type: 'error', message: 'Oops! Please agree to our terms and conditions.'};
@@ -236,18 +241,24 @@ class CheckoutForm extends Component <{}> {
 
   private renderDiscountForm () {
     return (
-      <Form onSave={this.onAddDiscount} fieldSets={[discountCodeFieldSet]}>
-        {this.discountMessage && (
-          <Row className='message-item'>
-            <Alert
-              afterClose={this.afterCloseDiscountMessage}
-              closable
-              message={this.discountMessage.message}
-              type={this.discountMessage.type}
-            />
-          </Row>
-        )}
-      </Form>
+      <div className='form-discount-code'>
+        <Form
+          onSave={this.onAddDiscount}
+          fieldSets={[discountCodeFieldSet]}
+          saveText='Submit code'
+        >
+          {this.discountMessage && (
+            <Row className='message-item'>
+              <Alert
+                afterClose={this.afterCloseDiscountMessage}
+                closable
+                message={this.discountMessage.message}
+                type={this.discountMessage.type}
+              />
+            </Row>
+          )}
+        </Form>
+      </div>
     );
   }
 
@@ -265,9 +276,27 @@ class CheckoutForm extends Component <{}> {
       );
     }
 
+    if (this.discountCode) {
+      return (
+        <div className='discount-code'>
+          Discount code:
+          <div><strong>{get(this.discountCode, 'code')}</strong></div>
+          <div>
+            <Button type='link' onClick={this.onRemoveDiscountCode}>
+              <Icon type='close-circle' />Remove code
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
     return this.isAddingDiscount.isTrue
       ? this.renderDiscountForm()
-      : <a onClick={this.isAddingDiscount.setTrue}>+ Add discount code/gift card</a>;
+      : (
+        <Button type='link' onClick={this.isAddingDiscount.setTrue}>
+          <Icon type='plus-circle' /> Add discount code/gift card
+        </Button>
+      );
   }
 
   public render () {

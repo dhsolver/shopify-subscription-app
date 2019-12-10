@@ -186,6 +186,7 @@ class AccountInfoForm extends Component <{}> {
                     message={this.formMessage.message}
                     type={this.formMessage.type}
                   />
+                  <Spacer />
                 </div>
               )}
             </Form>
