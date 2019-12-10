@@ -198,25 +198,21 @@ class CheckoutForm extends Component <{}> {
         await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
       }
 
-      // FullStoryAPI.identify(id, {
-      //   displayName: `${shopifyCustomerInfo.first_name} ${shopifyCustomerInfo.last_name}`,
-      //   email: `${shopifyCustomerInfo.email}`,
-      // });
-
       Router.push('/order-confirmation');
       return;
     }
     catch (e) {
-      this.formMessage = {
-        message: 'Oops! Something went wrong! Double check your submission and try again',
-        type: 'error',
-      };
-
       const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
       this.processedCharge = charges.data.charges[0];
 
       if (this.processedCharge) {
         Router.push('/order-confirmation');
+      }
+      else {
+        this.formMessage = {
+          message: 'Oops! Something went wrong! Double check your submission and try again',
+          type: 'error',
+        };
       }
 
       return null;
