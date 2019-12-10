@@ -281,15 +281,18 @@ class CheckoutForm extends Component <{}> {
         <div className='discount-code'>
           Discount code:
           <div><strong>{get(this.discountCode, 'code')}</strong></div>
-          <div>
-            <Button type='link' onClick={this.onRemoveDiscountCode}>
-              <Icon type='close-circle' />Remove code
-            </Button>
-          </div>
         </div>
       );
     }
 
+    // disable until remove discount code is added
+    // add to .discount-code
+    // <div>
+    //   <Button type='link' onClick={this.onRemoveDiscountCode}>
+    //     <Icon type='close-circle' />Remove code
+    //   </Button>
+    // </div>
+        
     return this.isAddingDiscount.isTrue
       ? this.renderDiscountForm()
       : (
