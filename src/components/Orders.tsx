@@ -118,6 +118,12 @@ class Orders extends Component<{}> {
   }
 
   private renderFamilyTime = (charge: any) => {
+    const className = cx(
+      'family-time',
+      {added: this.hasAddedFamilyTime.isTrue},
+      {loading: this.isProcessingFamilyTime.isTrue},
+    );
+
     if (this.hasAddedFamilyTime.isTrue) {
       const RemoveButton = this.isProcessingFamilyTime.isTrue
         ? <>Removing... <Icon type='loading' /></>
@@ -125,7 +131,7 @@ class Orders extends Component<{}> {
       ;
 
       return (
-        <div className={cx('family-time-added', {loading: this.isProcessingFamilyTime.isTrue})} key={`icon-${charge}`}>
+        <div className={className} key={`icon-${charge}`}>
           <div className='content'>
             <PlateIcon />
             <div className='title'>Yay! You've added Family Time to your next order!</div>
@@ -139,7 +145,7 @@ class Orders extends Component<{}> {
     }
 
     return (
-      <div className={cx('family-time', {loading: this.isProcessingFamilyTime.isTrue})} key={`icon-${charge}`}>
+      <div className={className} key={`icon-${charge}`}>
         <div className='content'>
           <div className='title'>Spend mealtime with your Little One!</div>
           <p>
@@ -168,6 +174,7 @@ class Orders extends Component<{}> {
 
   public render () {
     if (!this.queuedCharge.length || !this.recipes.length) { return <Loader />; }
+
     return (
       <div className='page-orders'>
       {this.processedCharge ? (

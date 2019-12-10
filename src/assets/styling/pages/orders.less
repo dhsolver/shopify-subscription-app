@@ -5,18 +5,34 @@
 
   .family-time {
     position: relative;
-    background: #EEEFE8 url(/static/familytime-bg.png) center center no-repeat;
+    overflow: hidden;
+    background: #EEEFE8 url(/static/family-time-adult-meal.png) center bottom no-repeat;
+    background-size: 100% auto;
     color: #828282;
-    height: 330px;
-    max-width: 820px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      height: 100%;
+      max-height: 175px;
+      width: 100%;
+      left: 0;
+      background: url(/static/family-time-baby-meal.png) center top no-repeat;
+      background-size: contain;
+    }
 
     &.loading { opacity: .75; }
 
     & > .content {
-      position: absolute;
-      width: 316px;
-      padding-top: 70px;
-      right: 175px;
+      z-index: 1;
+      position: relative;
+      width: 320px;
+      margin: 0 auto;
+      padding-left: 25px;
+      padding-right: 25px;
+      padding-top: 175px;
+      padding-bottom: 250px;
 
       .title {
         font-weight: 300;
@@ -45,51 +61,59 @@
         }
       }
     }
-  }
 
-  .family-time-added {
-    position: relative;
-    background: #EEEFE8 url(/static/familytime-added-bg.png) center center no-repeat;
-    color: #828282;
-    height: 165px;
-    max-width: 820px;
+    &.added {
+      background: #eeefe7;
+      height: auto;
 
-    &.loading { opacity: .75; }
-
-    & > .content {
-      position: relative;
-      width: 320px;
-      padding-top: 40px;
-      right: initial;
-      margin: 0 auto;
-
-      .icon-plate {
-        font-size: 60px;
+      &:before,
+      &:after {
+        content: '';
         position: absolute;
-        left: -75px;
-        top: 25px;
-      }
-      
-      .title {
-        font-weight: 300;
-        font-size: 24px;
-        line-height: 1em;
+        width: 750px;
+        height: 750px;
+        max-height: initial;
+        background: #db512d;
+        transform: rotate(32deg);
       }
 
-      p {
-        font-weight: 300;
-        font-size: 17px;
-        line-height: 1.25em;
-        margin: 10px 0 5px;
+      &:before {
+        top: -670px;
+        left: initial;
+        right: -300px;
+      }
+      &:after {
+        bottom: -670px;
+        right: initial;
+        left: -300px;
       }
 
-      .remove {
-        font-size: 12px;
-        color: #1394C9;
-        text-align: right;
-      }
+      & > .content {
+        position: relative;
+        right: initial;
+        margin: 0 auto;
+        padding-top: 190px;
+        padding-bottom: 190px;
 
-      
+        .icon-plate { display: none; }
+
+        .title {
+          font-size: 22px;
+        }
+  
+        p {
+          font-size: 15px;
+          margin: 10px 0 5px;
+        }
+
+        .remove {
+          font-size: 12px;
+          color: #1394C9;
+          text-align: right;
+        }
+
+        
+      }
     }
   }
 
@@ -154,9 +178,57 @@
     }
   }
 
-  .btn-remove {
-    padding-bottom: 10px;
+  .btn-remove { padding-bottom: 10px; }
+}
 
+@media (min-width: @screen-sm-max) {
+  .page-orders {
+    .family-time {
+      background: url(/static/familytime-bg.png) center center no-repeat;
+      height: 330px;
+      max-width: 820px;
+      margin: 0 auto;
 
+      &:before { display: none; }
+
+      & > .content {
+        position: absolute;
+        width: 316px;
+        right: 175px;
+        padding-top: 70px;
+        padding-bottom: 0;
+        margin: initial;
+      }
+
+      &.added {
+        height: 165px;
+
+        & > .content {
+          padding-top: 40px;
+          padding-bottom: 0;
+
+          .icon-plate {
+            display: block;
+            font-size: 60px;
+            position: absolute;
+            left: -75px;
+            top: 25px;
+          }
+        }
+
+        &:before {
+          display: block;
+          top: -630px;
+          left: initial;
+          right: -415px;
+        }
+        &:after {
+          display: block;
+          bottom: -630px;
+          right: initial;
+          left: -415px;
+        }
+      }
+    }
   }
 }
