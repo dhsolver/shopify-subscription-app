@@ -5,7 +5,7 @@ import { Container } from 'next/app';
 
 const {
   // This write key is associated with https://segment.com/nextjs-example/sources/nextjs.
-  ANALYTICS_WRITE_KEY = 'NPsk1GimHq09s7egCUlv7D0tqtUAU5wa',
+  ANALYTICS_WRITE_KEY = 'PCrI4XSEhYT2OeSyh4tSoAQWEvpp0yX4',
   NODE_ENV = 'development'
 } = process.env
 
@@ -45,7 +45,7 @@ export default class extends Document {
   renderSnippet () {
     const opts = {
       // segment public key -- move to env variable
-      apiKey: 'PCrI4XSEhYT2OeSyh4tSoAQWEvpp0yX4',
+      apiKey: ANALYTICS_WRITE_KEY,
       // note: the page option only covers SSR tracking.
       // Page.js is used to track other events using `window.analytics.page()`
       page: true

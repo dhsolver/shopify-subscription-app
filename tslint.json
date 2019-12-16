@@ -1,6 +1,7 @@
 {
   "extends": "@mighty-justice/tslint-config",
   "rules": {
-    "no-magic-numbers": false
+    "no-magic-numbers": false,
+    "object-literal-sort-keys": false
   }
 }

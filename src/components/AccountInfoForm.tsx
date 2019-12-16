@@ -6,7 +6,7 @@ import { Row } from 'antd';
 import Router from 'next/router';
 import Axios from 'axios';
 import store from 'store';
-import { omit } from 'lodash';
+import { omit, isEmpty } from 'lodash';
 
 import { Form } from '@mighty-justice/fields-ant';
 import SmartBool from '@mighty-justice/smart-bool';
@@ -135,13 +135,34 @@ class AccountInfoForm extends Component <{}> {
         ;
 
       const { data: { id, rechargeCustomerResponse } } = await Axios.post('/recharge-customer-info/', submitData);
+      const customerId = rechargeCustomerResponse.customer.id;
       store.set(
         'customerInfo',
         {
           id,
-          rechargeId: rechargeCustomerResponse.customer.id,
+          rechargeId: customerId,
           shopifyCustomerInfo: omit(shopifyCustomerInfo, ['password, password_confirmation']),
         });
+
+      // Google Analytics User Identify
+      const nameInfo = store.get('nameInfo');
+      const babyInfo = store.get('babyInfo');
+      const subscriptionInfo = store.get('subscriptionInfo');
+      const gaIdentifyTraits = {
+        fist_name: shopifyCustomerInfo.first_name,
+        last_name: shopifyCustomerInfo.last_name,
+        // email: shopifyCustomerInfo.email,
+        pack_size: `${subscriptionInfo.quantity}-pack`,
+        order_frequency: subscriptionInfo.frequency,
+        child_name: nameInfo.child_name,
+        relationship_to_child: nameInfo.relationship_to_child,
+        child_birth_date: babyInfo.birthdate,
+        child_allerges: isEmpty(babyInfo.has_allergies) ? '' : babyInfo.allergies,
+        child_developmental_phase: babyInfo.stage_of_eating,
+        child_current_diet: babyInfo.current_diet,
+        biggest_feeding_priority: babyInfo.eating_concerns,
+      };
+      (window as any).analytics.identify(id, gaIdentifyTraits);
 
       Router.push('/checkout');
     }

@@ -203,6 +203,32 @@ class CheckoutForm extends Component <{}> {
         await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
       }
 
+      // FullStoryAPI.identify(id, {
+      //   displayName: `${shopifyCustomerInfo.first_name} ${shopifyCustomerInfo.last_name}`,
+      //   email: `${shopifyCustomerInfo.email}`,
+      // });
+
+      // Track purchase event for analytics (GA, Segment)
+      if (!isEmpty(this.pricing)) {
+
+        const {quantity, frequency, totalPrice} = this.pricing
+          , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
+          , cupsTotalDecimal = new Decimal(totalPrice)
+          , is24 = quantity === 24
+          , discount24 = new Decimal(19.2)
+          , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
+          , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
+          , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
+          , discount = this.discountCode && totalDecimal.times(discountDecimal)
+          , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
+          ;
+        (window as any).analytics.track('Subscription initiated', {
+          revenue: discount ? totalWithDiscount : totalDecimal,
+          pack_size: `${quantity}-pack`,
+          order_frequency: frequency,
+        });
+      }
+
       Router.push('/order-confirmation');
       return;
     }
