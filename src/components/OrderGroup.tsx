@@ -217,8 +217,7 @@ class OrderGroup extends Component<IProps> {
 
           return {...recipe, ...(foundItem || {})};
         },
-      )
-      ;
+      );
 
     return (
       <Card className='order-group'>
@@ -226,7 +225,10 @@ class OrderGroup extends Component<IProps> {
           <>
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-                Shipping on: <span>{formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
+                Your card will be charged on <span>{formatDate(moment(charge.scheduled_at).toString())}</span>{' '}
+                <br/>
+                The last date to modify this order is{' '}
+                <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
                 <a onClick={this.isModifyingSchedule.toggle}>Modify Schedule</a>
                   {this.isModifyingSchedule.isTrue &&
                     <DatePicker
@@ -236,9 +238,14 @@ class OrderGroup extends Component<IProps> {
                       defaultPickerValue={moment(new Date(charge.scheduled_at))}
                     />
                   }
+                  <Spacer small />
                 <div className='last-date'>
-                  The last date to modify this order is{' '}
-                  <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
+                    <p>
+                      <strong> Holiday Hours: </strong>
+                      All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
+                      All orders scheduled for the following week will be delivered on Friday, January 3rd.
+                      Happy Holidays from the Tiny team!
+                    </p>
                 </div>
               </Col>
               <Col xs={10} className='actions'>

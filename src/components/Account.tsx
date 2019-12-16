@@ -250,6 +250,22 @@ class Account extends Component<{}> {
   public render () {
     if (this.isLoading.isTrue) { return <Loader spinning />; }
     const profilePicture = store.get('profilePicture');
+    // the following have been disabled until shipping address routes to recharge instead of shopify
+    // personal info (first/last name) should tie to billing information
+    // <Row>
+    //   <PersonalInfoForm
+    //     model={this.deserializeFormData(this.customer)}
+    //     fieldSet={fillInFieldSet(personalInfoFieldSet)}
+    //     onSave={this.saveCustomerInfo}
+    //   />
+    // </Row>
+    //   <Row>
+    //     <PersonalInfoForm
+    //       model={this.deserializeShippingData(this.shippingAddress)}
+    //       fieldSet={fillInFieldSet(shippingAddressFieldSet)}
+    //       onSave={this.updateShippingInfo}
+    //     />
+    //   </Row>
 
     return (
       <Row>
@@ -268,29 +284,24 @@ class Account extends Component<{}> {
         <Spacer large />
         <Row gutter={GUTTER}>
           <Col {...ITEM_COLS}>
-            <Row>
-              <PersonalInfoForm
-                model={this.deserializeFormData(this.customer)}
-                fieldSet={fillInFieldSet(personalInfoFieldSet)}
-                onSave={this.saveCustomerInfo}
-              />
-            </Row>
-            <Row>
-              <PersonalInfoForm
-                model={this.deserializeShippingData(this.shippingAddress)}
-                fieldSet={fillInFieldSet(shippingAddressFieldSet)}
-                onSave={this.updateShippingInfo}
-              />
-            </Row>
-            <Row>
-              <PersonalInfoForm
-                model={this.deserializeFormData(this.customer)}
-                fieldSet={fillInFieldSet(billingAddressFieldSet)}
-                onSave={this.saveCustomerInfo}
-              />
-            </Row>
+          <Card fieldSets={[]}>
+            <Center>
+              <p>
+              <strong> Holiday Hours: </strong>
+              All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
+              All orders scheduled for the following week will be delivered on Friday, January 3rd.
+              Happy Holidays from the Tiny team!
+              </p>
+            </Center>
+          </Card>
+          <Row>
+            <PersonalInfoForm
+              model={this.deserializeFormData(this.customer)}
+              fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
+              onSave={this.saveCustomerInfo}
+            />
+          </Row>
           </Col>
-
           <Col {...ITEM_COLS}>
             <Card fieldSets={[]}>
               <Center>
@@ -299,25 +310,26 @@ class Account extends Component<{}> {
                   : this.renderSubscriptionPlan()
                 }
                 <small>
-                  * Please send us a chat or email us at hello@tinyorganics.com to update your subscription{' '}
-                  details. (This feature is coming soon!) You can always change your recipe selection in the Orders{' '}
-                  tab above.
+                  * Please send us a chat or email us at hello@tinyorganics.com to
+                  update your shipping address or subscription{' '}
+                  details. You can always change your recipe selection in the Orders{' '}
+                  tab above. More features coming soon!
                 </small>
               </Center>
             </Card>
-            <Row>
-              <PersonalInfoForm
-                model={this.deserializeFormData(this.customer)}
-                fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
-                onSave={this.saveCustomerInfo}
-              />
-            </Row>
             <Row>
               <PaymentInfo
                 getStripeFormRef={this.getStripeFormRef}
                 stripePublicKey={STRIPE_PUBLIC_KEY}
                 handleResult={this.handlePaymentInfoChange}
                 model={this.paymentSource}
+              />
+            </Row>
+            <Row>
+              <PersonalInfoForm
+                model={this.deserializeFormData(this.customer)}
+                fieldSet={fillInFieldSet(billingAddressFieldSet)}
+                onSave={this.saveCustomerInfo}
               />
             </Row>
           </Col>
