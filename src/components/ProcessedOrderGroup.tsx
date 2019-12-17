@@ -101,13 +101,22 @@ class ProcessedOrderGroup extends Component<IProps> {
         <Loader spinning={this.isLoading.isTrue}>
           <>
             <Row type='flex' justify='space-between'>
-              <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
+            <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
                 Your order is shipping the week of
                 <span> {formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
                 <div className='last-date email-confirmation'>
                   You will receive a confirmation email with tracking information when your order is fulfilled.
                 </div>
-              </Col>
+                <Spacer small />
+                <div className='last-date'>
+                  <p>
+                    <strong> Holiday Hours: </strong>
+                    All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
+                    All orders scheduled for the following week will be delivered on Friday, January 3rd.
+                    Happy Holidays from the Tiny team!
+                  </p>
+                </div>
+            </Col>
             </Row>
 
             <Spacer />
