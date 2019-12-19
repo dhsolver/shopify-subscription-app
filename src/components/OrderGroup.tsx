@@ -191,7 +191,7 @@ class OrderGroup extends Component<IProps> {
   }
 
   private disabledDate (current) {
-    return (current && current < moment().endOf('day')) || getDay(current.toDate()) !== 2;
+    return (current && current < moment().endOf('day')) || getDay(current.toDate()) !== 4;
   }
 
   private async onDateChange (_current, date) {
@@ -225,11 +225,13 @@ class OrderGroup extends Component<IProps> {
           <>
             <Row type='flex' justify='space-between'>
               <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-                Your card will be charged on <span>{formatDate(moment(charge.scheduled_at).toString())}</span>{' '}
+                Your order will arrive on
+                <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>{' '}
                 <br/>
-                The last date to modify this order is{' '}
+                The last day to make changes is{' '}
                 <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
-                <a onClick={this.isModifyingSchedule.toggle}>Modify Schedule</a>
+                <br/>
+                <a onClick={this.isModifyingSchedule.toggle}>Change Delivery Schedule</a>
                   {this.isModifyingSchedule.isTrue &&
                     <DatePicker
                       open

@@ -28,6 +28,7 @@ class Orders extends Component<{}> {
   @observable private isProcessingFamilyTime = new SmartBool();
   @observable private queuedCharge = [];
   @observable private processedCharge = [];
+  @observable private firstCharge = new SmartBool();
   @observable private recipes = [];
   @observable private oneTime = null;
   @observable private customerAddressID;
@@ -58,6 +59,11 @@ class Orders extends Component<{}> {
   public async fetchProcessedChargeData () {
     const processedCharges = await this.fetchProcessedCharges();
     this.processedCharge = processedCharges[processedCharges.length - 1];
+    processedCharges.length = 1 ? (
+      this.firstCharge.setTrue()
+    ) : (
+      this.firstCharge.setFalse()
+    );
   }
 
   public async fetchQueuedCharge () {
@@ -189,6 +195,7 @@ class Orders extends Component<{}> {
               fetchData={this.fetchProcessedChargeData}
               charge={this.processedCharge}
               recipes={this.recipes}
+              firstCharge={this.firstCharge}
             />
            <Spacer />
           </div>

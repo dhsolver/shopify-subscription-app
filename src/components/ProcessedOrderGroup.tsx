@@ -30,6 +30,7 @@ interface IProps {
   charge: any;
   fetchData: () => void;
   recipes: any[];
+  firstCharge: any;
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
@@ -54,7 +55,7 @@ class ProcessedOrderGroup extends Component<IProps> {
   }
 
   private serializeData () {
-    const { charge, recipes } = this.props;
+    const { charge, recipes, firstCharge } = this.props;
 
     const lineItemData = charge.line_items.map(
       lineItem => {
@@ -83,8 +84,15 @@ class ProcessedOrderGroup extends Component<IProps> {
      );
   }
 
+  // Add this to processed charge after the holidays
+  // <div className='last-date email-confirmation'>
+  //   Our orders are delivered on Thursday. If you placed an order before Thursday,
+  // your order will arrive the following week.
+  //   You will receive an email with tracking information once your order is fulfilled.
+  // </div>
+
   public render () {
-    const { charge, recipes } = this.props
+    const { charge, recipes, firstCharge } = this.props
       , recipeData = recipes.map(
         recipe => {
           const foundItem = charge.line_items.find(
@@ -102,11 +110,19 @@ class ProcessedOrderGroup extends Component<IProps> {
           <>
             <Row type='flex' justify='space-between'>
             <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-                Your order is shipping the week of
-                <span> {formatDate(moment(charge.scheduled_at).add(3, 'days').toString())}</span>{' '}
-                <div className='last-date email-confirmation'>
-                  You will receive a confirmation email with tracking information when your order is fulfilled.
+              { firstCharge.isTrue ? (
+                <div>
+                  Welcome to the Tiny family!
                 </div>
+              ) : (
+                <div>
+                  Your order will arrive on
+                  <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>{' '}
+                </div>
+              )}
+              <div className='last-date email-confirmation'>
+                You will receive an email with tracking information once your order is fulfilled.
+              </div>
                 <Spacer small />
                 <div className='last-date'>
                   <p>
