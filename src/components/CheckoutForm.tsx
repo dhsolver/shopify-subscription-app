@@ -131,6 +131,7 @@ class CheckoutForm extends Component <{}> {
       , { shopifyCustomerInfo } = store.get('customerInfo')
       , lineItems = Object.keys(boxItems).map(id => ({
           charge_interval_frequency: frequency,
+          order_day_of_week: 6,
           order_interval_frequency: frequency,
           order_interval_unit: 'week',
           product_id: id,
