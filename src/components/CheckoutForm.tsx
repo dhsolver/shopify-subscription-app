@@ -140,6 +140,11 @@ class CheckoutForm extends Component <{}> {
         }))
       ;
 
+    if (store.get('familyTime')) {
+      const familyTime = store.get('familyTime');
+      lineItems.push(familyTime);
+    }
+
     return {
       checkout: {
         discount_code: this.pricing.quantity === 24 ? '24-PRICING-FIX' : get(this.discountCode, 'code'),
@@ -196,18 +201,6 @@ class CheckoutForm extends Component <{}> {
       this.rechargeId = rechargeId;
 
       await Axios.post('/checkout/', submitData);
-
-      if (familyTime) {
-        const { data: { charges } } = await Axios.get(`/recharge-queued-charges/?customer_id=${rechargeId}`)
-          , familyTimeSubmitData = {...familyTime, next_charge_scheduled_at: charges[0].scheduled_at}
-          ;
-        await Axios.post(`/onetimes/address/${charges[0].address_id}`, familyTimeSubmitData);
-      }
-
-      // FullStoryAPI.identify(id, {
-      //   displayName: `${shopifyCustomerInfo.first_name} ${shopifyCustomerInfo.last_name}`,
-      //   email: `${shopifyCustomerInfo.email}`,
-      // });
 
       // Track purchase event for analytics (GA, Segment)
       if (!isEmpty(this.pricing)) {
