@@ -9,6 +9,7 @@ const next = require('next')
   , Axios = require('axios')
   , stripe = require('stripe')
   , { get, omit } = require('lodash')
+  , Sentry = require('@sentry/node')
   ;
 
 dotenv.config();
@@ -26,6 +27,7 @@ const {
   SHOPIFY_STOREFRONT_KEY,
   SHOPIFY_DOMAIN,
   SHOPIFY_PASSWORD,
+  SENTRY_DSN,
 } = process.env;
 
 const storefrontClient = Client.buildClient({
@@ -58,6 +60,9 @@ const rechargeClient = Axios.create({
 });
 
 mobxReact.useStaticRendering(true);
+
+// Sentry Integration
+Sentry.init({ dsn: SENTRY_DSN });
 
 app.prepare().then(() => {
   const server = express();
@@ -169,13 +174,15 @@ app.prepare().then(() => {
           await adminAPI.customer.update(id, omit(shopifyCustomerInfo, ['addresses', 'email']));
         }
         catch (e) {
-          // Should send sentry error once integrated
+          // Sentry capture exception
+          Sentry.captureException(e);
           return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
         }
       }
       // otherwise throw an error as it was an invalid input
       else {
-        // Should send sentry error once integrated
+        // Sentry capture exception
+        Sentry.captureException(e);
         return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
       }
     }
@@ -191,7 +198,8 @@ app.prepare().then(() => {
         rechargeCustomerResponse = {data: {customer: {id: rechargeCustomers.data.customers[0].id } } };
       }
       else {
-        // Should send sentry error once integrated
+        // Sentry capture exception
+        Sentry.captureException(e);
         return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
       }
     }
@@ -221,21 +229,36 @@ app.prepare().then(() => {
         , shippingRates = await rechargeClient.get(`checkouts/${token}/shipping_rates/`)
         ;
 
-      await rechargeClient.put(`checkouts/${token}/`, {
-        checkout: {
-          shipping_line: {
-            handle: get(shippingRates, 'data.shipping_rates[0].handle', 'shopify-Free%20Shipping-0.00'),
+      try {
+        await rechargeClient.put(`checkouts/${token}/`, {
+          checkout: {
+            shipping_line: {
+              handle: get(shippingRates, 'data.shipping_rates[0].handle', 'shopify-Free%20Shipping-0.00'),
+            },
           },
-        },
-      });
-      await rechargeClient.post(`checkouts/${token}/charge/`,{
-        checkout_charge: { payment_processor: 'stripe', payment_token: stripeToken },
-      });
+        });
+      }
+      catch (e) {
+        // Sentry capture exception
+        Sentry.captureException(e);
+      }
+
+      try {
+        await rechargeClient.post(`checkouts/${token}/charge/`,{
+          checkout_charge: { payment_processor: 'stripe', payment_token: stripeToken },
+        });
+      }
+      catch (e) {
+        // Sentry capture exception
+        Sentry.captureException(e);
+      } 
 
       res.status(200).json({message: 'Success!'});
     }
     catch (e) {
       console.error(e.response.data.errors)
+      // Sentry capture exception
+      Sentry.captureException(e);
       res.status(400).json(e);
     }
   });

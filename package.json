@@ -28,6 +28,7 @@
     "@mighty-justice/smart-bool": "^1.0.0",
     "@mighty-justice/utils": "^1.3.4",
     "@segment/snippet": "^4.4.0",
+    "@sentry/node": "^5.10.2",
     "@types/classnames": "^2.2.9",
     "@types/urijs": "^1.19.3",
     "@zeit/next-css": "^1.0.1",
