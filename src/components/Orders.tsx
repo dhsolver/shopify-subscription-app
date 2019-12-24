@@ -51,12 +51,6 @@ class Orders extends Component<{}> {
 
   public async fetchData () {
     this.queuedCharge = await this.fetchQueuedCharge();
-    if (this.queuedCharge[0]) {
-      this.oneTime = find(this.queuedCharge[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
-      const includesFamilyTime = some(this.queuedCharge[0].line_items, {shopify_product_id: FAMILY_TIME_PRODUCT_ID});
-      if (includesFamilyTime) { this.hasAddedFamilyTime.setTrue(); }
-      else if (store.get('familyTime')) { await this.addFamilyTime(this.queuedCharge[0]); }
-    }
   }
 
   public async fetchProcessedChargeData () {

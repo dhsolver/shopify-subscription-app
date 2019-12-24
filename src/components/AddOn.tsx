@@ -15,9 +15,6 @@ import { FAMILY_TIME_PRICE, FAMILY_TIME_PRODUCT_ID, FAMILY_TIME_VARIANT_ID } fro
 
 const ADD_ON_STATIC_PHOTO = 'https://cdn.shopify.com/s/files/1/0018/4650/9667/files/family-time-banner-image.jpg?40232';
 export const FAMILY_TIME_DATA = {
-  charge_interval_frequency: null,
-  order_interval_frequency: null,
-  order_interval_unit: null,
   price: FAMILY_TIME_PRICE,
   product_id: FAMILY_TIME_PRODUCT_ID,
   quantity: 1,
