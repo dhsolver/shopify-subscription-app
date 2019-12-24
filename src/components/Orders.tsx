@@ -34,6 +34,8 @@ class Orders extends Component<{}> {
   @observable private customerAddressID;
 
   private rechargeId: string | number = null;
+  private subscriptionId: string | number = null;
+  private subscriptionInfo: {};
 
   public async componentDidMount () {
     this.rechargeId = get(store.get('customerInfo'), 'rechargeId');
@@ -43,6 +45,7 @@ class Orders extends Component<{}> {
     }
     await this.fetchProcessedChargeData();
     await this.fetchData();
+    await this.fetchSubscriptionInfo();
     this.recipes = await this.fetchRecipes();
   }
 
@@ -68,8 +71,15 @@ class Orders extends Component<{}> {
 
   public async fetchQueuedCharge () {
     const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
+    this.subscriptionId = data.charges[0].line_items[0].subscription_id;
 
     return data.charges;
+  }
+
+  public async fetchSubscriptionInfo () {
+    const { data } = await Axios.get(`/subscriptions/${this.subscriptionId}`);
+    this.subscriptionInfo = data.subscription;
+    return;
   }
 
   public async fetchProcessedCharges () {
@@ -217,6 +227,7 @@ class Orders extends Component<{}> {
             <Spacer key={`spacer-${charge.id}`} large />,
             (<OrderGroup
               fetchData={this.fetchData}
+              subscriptionData={this.subscriptionInfo}
               key={charge.id}
               charge={charge}
               hasAddedFamilyTime={this.hasAddedFamilyTime.isTrue}

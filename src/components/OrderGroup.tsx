@@ -31,6 +31,7 @@ interface IProps {
   fetchData: () => void;
   hasAddedFamilyTime: boolean;
   recipes: any[];
+  subscriptionData: {};
 }
 
 const COL_SHIPPING_DATE = 14
@@ -46,16 +47,37 @@ class OrderGroup extends Component<IProps> {
   @observable private isModifyingSchedule = new SmartBool();
   @observable private isEditingOrder = new SmartBool();
   @observable private total = 0;
-  private subscriptionInfo: any = {};
+  @observable private nextChargeScheduledAt: string | number = null;
+  @observable private orderIntervalFrequency: any;
+  @observable private chargeIntervalFrequency: any;
 
+  private subscriptionInfo: any = {};
   private boxItems = {};
   private maxItems = 0;
 
   public constructor (props) {
     super(props);
 
+    this.setSubscriptionDetails();
     this.serializeData();
   }
+
+  public async componentDidMount () {
+    await this.setSubscriptionDetails();
+  }
+
+  private setSubscriptionDetails () {
+    const { subscriptionData } = this.props;
+
+    this.nextChargeScheduledAt = subscriptionData['next_charge_scheduled_at'];
+    this.orderIntervalFrequency = subscriptionData['order_interval_frequency'];
+    this.chargeIntervalFrequency = subscriptionData['charge_interval_frequency'];
+
+    return;
+  }
+
+// TODO: refactor to remove this.fetchSubscriptionInfo
+// Is next_charge_date necessary?
 
   private serializeData () {
     const { charge, recipes } = this.props;
@@ -74,13 +96,13 @@ class OrderGroup extends Component<IProps> {
     lineItemData.forEach(lineItem => {
       this.boxItems[lineItem.id] = {
         ...lineItem,
-        order_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
+        order_interval_frequency: this.orderIntervalFrequency,
         order_interval_unit: 'week',
       };
-      if (!this.subscriptionInfo.charge_interval_frequency) {
+      if (!this.subscriptionInfo.chargeIntervalFrequency) {
         this.subscriptionInfo = {
-          charge_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
-          order_interval_frequency: get(lineItem, 'subscription_defaults.order_interval_frequency', null),
+          charge_interval_frequency: this.chargeIntervalFrequency,
+          order_interval_frequency: this.orderIntervalFrequency,
           order_interval_unit: 'week',
         };
       }
