@@ -202,24 +202,40 @@ class CheckoutForm extends Component <{}> {
 
       await Axios.post('/checkout/', submitData);
 
-      // Track purchase event for analytics (GA, Segment)
       if (!isEmpty(this.pricing)) {
-
         const {quantity, frequency, totalPrice} = this.pricing
-          , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
-          , cupsTotalDecimal = new Decimal(totalPrice)
-          , is24 = quantity === 24
-          , discount24 = new Decimal(19.2)
-          , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
-          , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
-          , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
-          , discount = this.discountCode && totalDecimal.times(discountDecimal)
-          , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
-          ;
+        , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
+        , cupsTotalDecimal = new Decimal(totalPrice)
+        , is24 = quantity === 24
+        , discount24 = new Decimal(19.2)
+        , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
+        , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
+        , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
+        , discount = this.discountCode && totalDecimal.times(discountDecimal)
+        , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
+        ;
+
+        // Track purchase event for analytics (GA, Segment)
         (window as any).analytics.track('Subscription initiated', {
           revenue: discount ? totalWithDiscount : totalDecimal,
           pack_size: `${quantity}-pack`,
           order_frequency: frequency,
+        });
+
+        // // GA Ecommerce track order completed
+        const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
+        this.processedCharge = charges.data.charges[0];
+
+        (window as any).analytics.track('Order Completed', {
+          order_id: this.processedCharge.shopify_order_id,
+          total: totalDecimal,
+          subtotal: totalDecimal,
+          revenue: discount ? totalWithDiscount : totalDecimal,
+          tax: 0,
+          discount: discount ? discount.toString() : 0,
+          coupon: discount ? 'discount code applied' : '',
+          currency: 'US',
+          products: `${quantity}/${frequency}`,
         });
       }
 
