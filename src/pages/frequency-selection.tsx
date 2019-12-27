@@ -13,7 +13,7 @@ const steps = [
 export default class FrequencySelectionPage extends Component<{}> {
   public render () {
     return (
-      <Layout title='Plan Details'>
+      <Layout title='Plan Selection'>
         <Row type='flex' justify='center'>
           <Steps steps={steps} current={1} />
         </Row>
