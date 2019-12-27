@@ -16,7 +16,7 @@ const steps = [
 const getStateOptions = () => stateOptions;
 
 export default () => (
-  <Layout title='Checkout Page'>
+  <Layout title='Checkout'>
     <Provider getOptions={getStateOptions}>
       <div className='page-checkout'>
         <Row type='flex' justify='center'>

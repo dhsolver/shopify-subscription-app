@@ -13,7 +13,7 @@ const steps = [
 ];
 
 export default () => (
-  <Layout title='Onboarding - informations'>
+  <Layout title='Onboarding - Information'>
     <Row type='flex' justify='center'>
       <Steps steps={steps} current={0} />
     </Row>

@@ -16,7 +16,7 @@ const steps = [
 const getStateOptions = () => stateOptions;
 
 export default () => (
-  <Layout title='Account Info Page'>
+  <Layout title='Account Information'>
     <Provider getOptions={getStateOptions}>
       <div className='page-account-info'>
         <Row type='flex' justify='center'>

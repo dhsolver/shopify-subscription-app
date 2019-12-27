@@ -22,7 +22,7 @@ const tabs = [
 const getStateOptions = () => stateOptions;
 
 export default () => (
-  <Layout title='Tiny Organics User Dashboard'>
+  <Layout title='Tiny Organics Dashboard'>
     <Provider getOptions={getStateOptions}>
       <Tabs centered tabs={tabs} />
     </Provider>
