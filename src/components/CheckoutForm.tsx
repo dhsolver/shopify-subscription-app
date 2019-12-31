@@ -134,7 +134,7 @@ class CheckoutForm extends Component <{}> {
           order_day_of_week: 6,
           order_interval_frequency: frequency,
           order_interval_unit: 'week',
-          product_id: id,
+          shopify_product_id: boxItems[id].shopify_product_id,
           quantity: boxItems[id].quantity,
           variant_id: boxItems[id].variant_id,
         }))

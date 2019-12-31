@@ -251,7 +251,7 @@ app.prepare().then(() => {
       catch (e) {
         // Sentry capture exception
         Sentry.captureException(e);
-      } 
+      }
 
       res.status(200).json({message: 'Success!'});
     }
@@ -266,7 +266,7 @@ app.prepare().then(() => {
   // END CREATE ORDER
 
   // FETCH CHARGES
-  
+
   server.get('/recharge-queued-charges/', async (req, res) => {
     const response = await rechargeClient.get(`charges?status=QUEUED&customer_id=${req.query.customer_id}`);
     return res.end(JSON.stringify(response.data));
