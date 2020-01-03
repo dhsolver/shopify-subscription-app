@@ -56,11 +56,12 @@ class Orders extends Component<{}> {
   public async fetchProcessedChargeData () {
     const processedCharges = await this.fetchProcessedCharges();
     this.processedCharge = processedCharges[processedCharges.length - 1];
-    processedCharges.length = 1 ? (
-      this.firstCharge.setTrue()
-    ) : (
-      this.firstCharge.setFalse()
-    );
+
+    if (processedCharges.length === 1) {
+      this.firstCharge.setTrue();
+    } else {
+      this.firstCharge.setFalse();
+    }
   }
 
   public async fetchQueuedCharge () {

@@ -272,36 +272,9 @@ class Account extends Component<{}> {
         <Spacer />
         <Center>
           <h2>My Account</h2>
-          <Spacer />
-          {profilePicture && (
-            <Row gutter={GUTTER} type='flex' justify='center'>
-              <Col {...HEADER_COLS}>
-                <Avatar size={AVATAR_SIZE} src={profilePicture} />
-              </Col>
-            </Row>
-          )}
         </Center>
         <Spacer large />
         <Row gutter={GUTTER}>
-          <Col {...ITEM_COLS}>
-          <Card fieldSets={[]}>
-            <Center>
-              <p>
-              <strong> Holiday Hours: </strong>
-              All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
-              All orders scheduled for the following week will be delivered on Friday, January 3rd.
-              Happy Holidays from the Tiny team!
-              </p>
-            </Center>
-          </Card>
-          <Row>
-            <PersonalInfoForm
-              model={this.deserializeFormData(this.customer)}
-              fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
-              onSave={this.saveCustomerInfo}
-            />
-          </Row>
-          </Col>
           <Col {...ITEM_COLS}>
             <Card fieldSets={[]}>
               <Center>
@@ -317,6 +290,15 @@ class Account extends Component<{}> {
                 </small>
               </Center>
             </Card>
+            <Row>
+              <PersonalInfoForm
+                model={this.deserializeFormData(this.customer)}
+                fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
+                onSave={this.saveCustomerInfo}
+              />
+            </Row>
+          </Col>
+          <Col {...ITEM_COLS}>
             <Row>
               <PaymentInfo
                 getStripeFormRef={this.getStripeFormRef}

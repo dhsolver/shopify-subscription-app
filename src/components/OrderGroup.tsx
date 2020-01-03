@@ -263,14 +263,6 @@ class OrderGroup extends Component<IProps> {
                     />
                   }
                   <Spacer small />
-                <div className='last-date'>
-                    <p>
-                      <strong> Holiday Hours: </strong>
-                      All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
-                      All orders scheduled for the following week will be delivered on Friday, January 3rd.
-                      Happy Holidays from the Tiny team!
-                    </p>
-                </div>
               </Col>
               <Col xs={10} className='actions'>
                 <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>

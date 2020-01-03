@@ -112,26 +112,22 @@ class ProcessedOrderGroup extends Component<IProps> {
             <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
               { firstCharge.isTrue ? (
                 <div>
-                  Welcome to the Tiny family!
+                  <p> Welcome to the Tiny family! </p>
+                  <p className='last-date email-confirmation'>
+                    Orders are delivered on Thursday.
+                    If you placed an order before Thursday, your order will arrive the following week.
+                    You will receive an email with tracking information once your order is fulfilled.
+                  </p>
                 </div>
               ) : (
                 <div>
                   Your order will arrive on
                   <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>{' '}
-                </div>
-              )}
-              <div className='last-date email-confirmation'>
-                You will receive an email with tracking information once your order is fulfilled.
-              </div>
-                <Spacer small />
-                <div className='last-date'>
-                  <p>
-                    <strong> Holiday Hours: </strong>
-                    All orders scheduled for the week of December 25th will be delivered on Friday, December 27th.
-                    All orders scheduled for the following week will be delivered on Friday, January 3rd.
-                    Happy Holidays from the Tiny team!
+                  <p className='last-date email-confirmation' >
+                    You will receive an email with tracking information once your order is fulfilled.
                   </p>
                 </div>
+              )}
             </Col>
             </Row>
 
