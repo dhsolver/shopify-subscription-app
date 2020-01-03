@@ -239,6 +239,7 @@ app.prepare().then(() => {
         });
       }
       catch (e) {
+        console.error(e.response.data.errors)
         // Sentry capture exception
         Sentry.captureException(e);
       }
@@ -249,6 +250,7 @@ app.prepare().then(() => {
         });
       }
       catch (e) {
+        console.error(e.response.data.errors)
         // Sentry capture exception
         Sentry.captureException(e);
       }
@@ -256,6 +258,7 @@ app.prepare().then(() => {
       res.status(200).json({message: 'Success!'});
     }
     catch (e) {
+      console.error(get(e.response.data.errors, 'line_items[0].product_id'));
       console.error(e.response.data.errors)
       // Sentry capture exception
       Sentry.captureException(e);
