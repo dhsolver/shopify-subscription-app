@@ -5,7 +5,7 @@ import autoBindMethods from 'class-autobind-decorator';
 import { Checkbox, Col, Row, Icon } from 'antd';
 import Axios from 'axios';
 import store from 'store';
-import { get, isEmpty, omit, noop } from 'lodash';
+import { get, isEmpty, omit, noop, padStart } from 'lodash';
 import Decimal from 'decimal.js';
 import cx from 'classnames';
 
@@ -26,11 +26,6 @@ import Loader from './common/Loader';
 import { FAMILY_TIME_PRICE, PRICING } from '../constants';
 
 const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
-
-const MODES = {
-  ACCOUNT_INFO: 'account_info',
-  CHECKOUT: 'checkout',
-};
 
 const StripeForm = dynamic(
   () => import('./StripeForm'),
@@ -224,18 +219,31 @@ class CheckoutForm extends Component <{}> {
 
         // // GA Ecommerce track order completed
         const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
-        this.processedCharge = charges.data.charges[0];
+        const processedCharge = charges.data.charges[0];
+        const products = [
+          {
+            product_id: `TSUB${quantity}${padStart(frequency, 2, '0')}`,
+            name: `${quantity} Pack ${frequency} ${pluralize('Week', 's', frequency)}`,
+            price: cupsTotalDecimal.toString(),
+          },
+        ];
+        if (!isEmpty(familyTime)) {
+          products.push({
+            product_id: get(familyTime, 'product_id'),
+            name: 'Family Time',
+            price: familyTimeDecimal.toString(),
+          });
+        }
 
         (window as any).analytics.track('Order Completed', {
-          order_id: this.processedCharge.shopify_order_id,
-          total: totalDecimal,
-          subtotal: totalDecimal,
-          revenue: discount ? totalWithDiscount : totalDecimal,
-          tax: 0,
+          order_id: processedCharge.shopify_order_id,
+          total: processedCharge.total_price,
+          subtotal: processedCharge.subtotal_price,
+          tax: processedCharge.tax_lines,
           discount: discount ? discount.toString() : 0,
           coupon: discount ? 'discount code applied' : '',
-          currency: 'US',
-          products: `${quantity}/${frequency}`,
+          currency: 'USD',
+          products,
         });
       }
 
