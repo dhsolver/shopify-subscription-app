@@ -108,28 +108,39 @@ class ProcessedOrderGroup extends Component<IProps> {
       <Card className='order-group'>
         <Loader spinning={this.isLoading.isTrue}>
           <>
+          { firstCharge.isTrue ? (
+            <>
             <Row type='flex' justify='space-between'>
-            <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-              { firstCharge.isTrue ? (
-                <div>
-                  <p> Welcome to the Tiny family! </p>
+              <h2>First Order of Tiny!</h2>
+            </Row>
+            <Row type='flex' justify='space-between'>
+              <Col lg={COL_SHIPPING_DATE}>
                   <p className='last-date email-confirmation'>
                     Orders are delivered on Thursday.
                     If you placed an order before Thursday, your order will arrive the following week.
-                    You will receive an email with tracking information once your order is fulfilled.
+                    You'll receive an email with tracking information when your order is shipped!
                   </p>
-                </div>
+              </Col>
+              </Row>
+              </>
               ) : (
-                <div>
-                  Your order will arrive on
-                  <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>{' '}
-                  <p className='last-date email-confirmation' >
-                    You will receive an email with tracking information once your order is fulfilled.
-                  </p>
-                </div>
+              <>
+                <Row type='flex' justify='space-between'>
+                  <h2>Current Order</h2>
+                </Row>
+                <Row>
+                  <Col sm={COL_SHIPPING_DATE}>
+                    <div>
+                      This order will arrive on{' '}
+                      <span>{formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>
+                      <p className='last-date email-confirmation' >
+                        You'll receive an email with tracking information when it ships!
+                      </p>
+                    </div>
+                  </Col>
+                </Row>
+              </>
               )}
-            </Col>
-            </Row>
 
             <Spacer />
 

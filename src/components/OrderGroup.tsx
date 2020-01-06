@@ -197,16 +197,25 @@ class OrderGroup extends Component<IProps> {
      );
   }
 
-  private renderIconButton () {
+  private renderEditIcon () {
     const disabled = this.total !== this.maxItems;
     return (
       <>
         <Col>
-          {this.props.hasAddedFamilyTime && <IconButton icon={PlateIcon} textAfter='Family Time' />}
           {this.isEditingOrder.isTrue
             ? <IconButton icon={submitIcon} disabled={disabled} onClick={this.onSave} textAfter='Submit' />
-            : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit' />
+            : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit Items' />
           }
+        </Col>
+      </>
+    );
+  }
+
+  private renderFamilyTimeIcon () {
+    return (
+      <>
+        <Col>
+          {this.props.hasAddedFamilyTime && <IconButton icon={PlateIcon} textAfter='Family Time' />}
         </Col>
       </>
     );
@@ -246,31 +255,38 @@ class OrderGroup extends Component<IProps> {
         <Loader spinning={this.isLoading.isTrue}>
           <>
             <Row type='flex' justify='space-between'>
-              <Col xs={COL_SHIPPING_DATE} className='shipping-date'>
-                Your order will arrive on
-                <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>{' '}
-                <br/>
-                The last day to make changes is{' '}
-                <span>{formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}</span>
-                <br/>
-                <a onClick={this.isModifyingSchedule.toggle}>Change Delivery Schedule</a>
-                  {this.isModifyingSchedule.isTrue &&
-                    <DatePicker
-                      open
-                      onChange={this.onDateChange}
-                      disabledDate={this.disabledDate}
-                      defaultPickerValue={moment(new Date(charge.scheduled_at))}
-                    />
-                  }
-                  <Spacer small />
+              <Col>
+                <h2>Next Order</h2>
               </Col>
-              <Col xs={10} className='actions'>
-                <Row gutter={GUTTER_ACTIONS} type='flex' justify='end'>
-                  {this.renderIconButton()}
-                </Row>
-              </Col>
+              { this.renderFamilyTimeIcon() }
             </Row>
-
+            <Row type='flex' justify='start'>
+              <div>
+                This order will arrive on{' '}
+                <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())} </span>
+              </div>
+            </Row>
+            <Row type='flex' justify='start'>
+              <span>
+                The last day to make changes is{' '}
+                {formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}
+              </span>
+            </Row>
+            <Spacer small />
+            <Row gutter={GUTTER_ACTIONS} type='flex' justify='start'>
+              {this.renderEditIcon()}
+              <a onClick={this.isModifyingSchedule.toggle} style={{ textDecoration: 'none' }}>
+                Change Delivery Schedule
+              </a>
+                {this.isModifyingSchedule.isTrue &&
+                  <DatePicker
+                    open
+                    onChange={this.onDateChange}
+                    disabledDate={this.disabledDate}
+                    defaultPickerValue={moment(new Date(charge.scheduled_at))}
+                  />
+                }
+            </Row>
             <Spacer />
 
             <List

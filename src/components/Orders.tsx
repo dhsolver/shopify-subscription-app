@@ -192,10 +192,6 @@ class Orders extends Component<{}> {
           <div>
             <Spacer />
             <Spacer />
-            <Center>
-              <h2>Current Order</h2>
-            </Center>
-            <Spacer />
             <ProcessedOrderGroup
               fetchData={this.fetchProcessedChargeData}
               charge={this.processedCharge}
@@ -208,11 +204,6 @@ class Orders extends Component<{}> {
             <Spacer />
           )
         }
-        <Spacer />
-
-        <Center>
-          <h2>Next Order</h2>
-        </Center>
 
         <Spacer />
 
