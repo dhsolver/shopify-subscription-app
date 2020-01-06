@@ -268,11 +268,7 @@ class Account extends Component<{}> {
     //   </Row>
 
     return (
-      <Row>
-        <Spacer />
-        <Center>
-          <h2>My Account</h2>
-        </Center>
+      <>
         <Spacer large />
         <Row gutter={GUTTER}>
           <Col {...ITEM_COLS}>
@@ -316,7 +312,7 @@ class Account extends Component<{}> {
             </Row>
           </Col>
         </Row>
-      </Row>
+      </>
     );
   }
 }
