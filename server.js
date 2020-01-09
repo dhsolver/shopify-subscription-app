@@ -268,6 +268,29 @@ app.prepare().then(() => {
 
   // END CREATE ORDER
 
+  // FETCH ADDRESSES
+  
+  server.get('/recharge-addresses', async (req, res) => {
+    const response = await rechargeClient.get(`customers/${req.query.customer_id}/addresses`);
+    return res.json(response.data);
+  });
+
+  // END FETCH ADDRESSES
+
+  // UPDATE SHIPPING ADDRESS
+
+  server.put('/recharge-addresses/:id', async (req, res) => {
+    try {
+      const { data } = await rechargeClient.put(`/addresses/${req.params.id}`, req.body);
+      return res.json(data);
+    }
+    catch (e) {
+      res.json({message: e.response.data.errors});
+    }
+  });
+
+  // END UPDATE SHIPPING ADDRESS
+
   // FETCH CHARGES
 
   server.get('/recharge-queued-charges/', async (req, res) => {

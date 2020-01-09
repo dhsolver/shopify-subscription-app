@@ -85,14 +85,16 @@ class Account extends Component<{}> {
     const shopifyId = get(store.get('customerInfo'), 'id')
       , rechargeResponse = await Axios.get(`/recharge-customers/${shopifyId}`)
       , stripeToken = get(rechargeResponse, 'data.customers[0].stripe_customer_token')
-      , addressesResponse = await Axios.get(`/customers/${shopifyId}/addresses`)
       , paymentResponse = await Axios.get(`/recharge-customers/${stripeToken}/payment_sources`)
       , { data: { default_source, sources } } = paymentResponse
       ;
 
-    this.shippingAddress = find(addressesResponse.data.addresses, {default: true});
     this.paymentSource = sources.data.find(source => source.id === default_source) || sources.data[0];
     this.customer = rechargeResponse.data.customers[0];
+
+    // Get shipping address from recharge
+    const addressesResponse = await Axios.get(`/recharge-addresses/?customer_id=${this.customer.id}`);
+    this.shippingAddress = addressesResponse.data.addresses[0];
     this.isLoading.setFalse();
   }
 
@@ -168,23 +170,20 @@ class Account extends Component<{}> {
 
   private serializeShippingData (model) {
     return {
-      address: {
-        ...omit(model.shipping, 'state', 'zip_code'),
-        country: 'United States',
-        first_name: model.first_name,
-        id: this.shippingAddress.id,
-        last_name: model.last_name,
-        province: states_hash[model.shipping.state],
-        zip: model.shipping.zip_code,
-      },
+      ...omit(model.shipping, 'state', 'zip_code'),
+      country: 'United States',
+      first_name: model.first_name,
+      id: this.shippingAddress.id,
+      last_name: model.last_name,
+      province: states_hash[model.shipping.state],
+      zip: model.shipping.zip_code,
     };
   }
 
   private async updateShippingInfo (model) {
-    const endpoint = `customers/${this.customer.shopify_customer_id}/addresses/${this.shippingAddress.id}`
-      , response = await Axios.put(endpoint, this.serializeShippingData(model));
-
-    this.shippingAddress = response.data.customer_address;
+    const endpoint = `recharge-addresses/${this.shippingAddress.id}`;
+    const response = await Axios.put(endpoint, this.serializeShippingData(model));
+    this.shippingAddress = response.data.address;
   }
 
   private renderSubscriptionPlan () {
@@ -259,13 +258,6 @@ class Account extends Component<{}> {
     //     onSave={this.saveCustomerInfo}
     //   />
     // </Row>
-    //   <Row>
-    //     <PersonalInfoForm
-    //       model={this.deserializeShippingData(this.shippingAddress)}
-    //       fieldSet={fillInFieldSet(shippingAddressFieldSet)}
-    //       onSave={this.updateShippingInfo}
-    //     />
-    //   </Row>
 
     return (
       <>
@@ -308,6 +300,13 @@ class Account extends Component<{}> {
                 model={this.deserializeFormData(this.customer)}
                 fieldSet={fillInFieldSet(billingAddressFieldSet)}
                 onSave={this.saveCustomerInfo}
+              />
+            </Row>
+            <Row>
+              <PersonalInfoForm
+                model={this.deserializeShippingData(this.shippingAddress)}
+                fieldSet={fillInFieldSet(shippingAddressFieldSet)}
+                onSave={this.updateShippingInfo}
               />
             </Row>
           </Col>
