@@ -8,7 +8,7 @@ const next = require('next')
   , Client = require('shopify-buy')
   , Axios = require('axios')
   , stripe = require('stripe')
-  , { get, omit } = require('lodash')
+  , { get, omit, isEmpty } = require('lodash')
   , Sentry = require('@sentry/node')
   ;
 
@@ -120,9 +120,42 @@ app.prepare().then(() => {
     }
   });
 
-  server.put('/customers/:id/', async (req, res) => {
-    const response = await rechargeClient.put(`customers/${req.params.id}/`, req.body);
-    return res.send(JSON.stringify(response.data));
+  server.put('/customers', async (req, res) => {
+    const { recharge_id, shopify_id } = req.query;
+    
+    // Update name, email, phone, password in Shopify details
+    try {
+      const { first_name, last_name, email, billing_phone, password, password_confirmation } = req.body;
+      const shopifyCustomerInfo = {
+        first_name,
+        last_name,
+        email,
+        phone: billing_phone,
+      };
+
+      if (!isEmpty(password)) {
+        shopifyCustomerInfo.password = password;
+        shopifyCustomerInfo.password_confirmation = password_confirmation;
+      }
+
+      await adminAPI.customer.update(shopify_id, shopifyCustomerInfo);
+    }
+    catch (e) {
+      // Sentry capture exception
+      Sentry.captureException(e);
+      return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
+    }
+
+    // Update Recharge
+    try {
+      const response = await rechargeClient.put(`customers/${recharge_id}/`, req.body);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch (e) {
+      // Sentry capture exception
+      Sentry.captureException(e);
+      return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
+    }
   });
 
   /* UPDATE CUSTOMERS ADDRESS */

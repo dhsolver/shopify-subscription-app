@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import store from 'store';
-import { find, get, omit, sum } from 'lodash';
+import { find, get, omit, sum, has } from 'lodash';
 import Axios from 'axios';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
@@ -21,7 +21,7 @@ import SubscriptionSelector from './SubscriptionSelector';
 import Center from './common/Center';
 import Loader from './common/Loader';
 import Spacer from './common/Spacer';
-import { personalInfoFieldSet, shippingAddressFieldSet } from './accountInfoFieldSets';
+import { shippingAddressFieldSet } from './accountInfoFieldSets';
 
 import { FAMILY_TIME_PRODUCT_ID, states_hash } from '../constants';
 
@@ -38,16 +38,17 @@ const billingAddressFieldSet = {
 
 const editAccountDetailsFieldSet = {
   fields: [
+    {field: 'first_name', required: true},
+    {field: 'last_name', required: true},
     {field: 'email', required: true, render: (value: string) => <span className='text-break-word'>{value}</span>},
-    {field: 'phone', required: true},
+    {field: 'password'},
+    {field: 'password_confirmation', writeOnly: true, label: 'Confirm Password'},
   ],
   legend: 'Account Details',
 };
 
 const GUTTER = 48
-  , AVATAR_SIZE = 200
-  , ITEM_COLS = {xs: 24, md: 12}
-  , HEADER_COLS = {xs: 24, sm: 8};
+  , ITEM_COLS = {xs: 24, md: 12};
 
 @autoBindMethods
 @observer
@@ -127,6 +128,8 @@ class Account extends Component<{}> {
       first_name: model.first_name,
       last_name: model.last_name,
       status: 'ACTIVE',
+      password: model.password,
+      password_confirmation: model.password_confirmation,
     };
   }
 
@@ -152,6 +155,8 @@ class Account extends Component<{}> {
       'first_name': model.first_name,
       'last_name': model.last_name,
       'phone': model.billing_phone,
+      'password': has(model, 'password') ? model.password : '',
+      'password_confirmation': has(model, 'password_confirmation') ? model.password_confirmation : '',
     };
   }
 
@@ -224,10 +229,10 @@ class Account extends Component<{}> {
   }
 
   private async saveCustomerInfo (model: any) {
+    const shopifyId = get(store.get('customerInfo'), 'id');
     const serializedData = this.serializeRechargeCustomerInfo({...this.deserializeFormData(this.customer), ...model})
-      , response = await Axios.put(`/customers/${this.customer.id}/`, serializedData)
+      , response = await Axios.put(`/customers?recharge_id=${this.customer.id}&shopify_id=${shopifyId}`, serializedData)
       ;
-
     this.customer = {...this.customer, ...response.data.customer};
   }
 
@@ -249,15 +254,6 @@ class Account extends Component<{}> {
   public render () {
     if (this.isLoading.isTrue) { return <Loader spinning />; }
     const profilePicture = store.get('profilePicture');
-    // the following have been disabled until shipping address routes to recharge instead of shopify
-    // personal info (first/last name) should tie to billing information
-    // <Row>
-    //   <PersonalInfoForm
-    //     model={this.deserializeFormData(this.customer)}
-    //     fieldSet={fillInFieldSet(personalInfoFieldSet)}
-    //     onSave={this.saveCustomerInfo}
-    //   />
-    // </Row>
 
     return (
       <>
