@@ -207,19 +207,19 @@ class CheckoutForm extends Component <{}> {
         , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
         , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
         , discount = this.discountCode && totalDecimal.times(discountDecimal)
-        , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
         ;
+
+        const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
+        const processedCharge = charges.data.charges[0];
 
         // Track purchase event for analytics (GA, Segment)
         (window as any).analytics.track('Subscription initiated', {
-          revenue: discount ? totalWithDiscount : totalDecimal,
+          revenue: processedCharge.total_price,
           pack_size: `${quantity}-pack`,
           order_frequency: frequency,
         });
 
         // // GA Ecommerce track order completed
-        const charges = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
-        const processedCharge = charges.data.charges[0];
         const products = [
           {
             product_id: `TSUB${quantity}${padStart(frequency, 2, '0')}`,
