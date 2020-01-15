@@ -37,6 +37,7 @@ const storefrontClient = Client.buildClient({
 
 const adminClient = Axios.create({
   baseURL: `https://${SHOPIFY_API_KEY}:${SHOPIFY_PASSWORD}@${SHOPIFY_DOMAIN}/admin/api/2019-07`,
+  timeout: 2900000,
   headers: {
     'Accept': 'application/json; charset=utf-8;',
     'Content-Type': 'application/json',
@@ -52,6 +53,7 @@ const adminAPI = new Shopify({
 
 const rechargeClient = Axios.create({
   baseURL: 'https://api.rechargeapps.com/',
+  timeout: 2900000,
   headers: {
     'Accept': 'application/json; charset=utf-8;',
     'Content-Type': 'application/json',

@@ -69,7 +69,7 @@ const FORM_COLS = {
 const AllergiesBlurb = () => (
   <i style={{fontSize: 11}}>
     {'Our meals do not contain any of the Big-8 Allergens (milk, eggs, fish, crustacean shellfish, tree nuts '}
-    {'(except coconut), peanuts, wheat and soybean).'}
+    {'(except coconut), peanuts, wheat and soybean). '}
     {'Please note that while we do not use ingredients that contain allergens, '}
     {'Tiny Organics meals are manufactured in a facility that also processes allergens.'}
   </i>
