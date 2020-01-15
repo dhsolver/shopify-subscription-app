@@ -16,9 +16,37 @@ import { sleep } from '../utils/utils';
 @observer
 export default class Index extends Component <{}> {
   public async componentDidMount () {
-    const query = URI.parseQuery(window.location.search) as {user_id?: string}
+    const query = URI.parseQuery(window.location.search) as {
+      user_id?: string,
+      utm_source?: string,
+      utm_medium?: string,
+      utm_name?: string,
+      utm_term?: string,
+      utm_content?: string,
+      gclid?: string,
+    }
       , userId = query.user_id
+      , utm_source = query.utm_source
+      , utm_medium = query.utm_medium
+      , utm_name = query.utm_name
+      , utm_term = query.utm_term
+      , utm_content = query.utm_content
+      , gclid = query.gclid
       ;
+
+    if (utm_source) {
+      store.set('utmInfo', {
+        source: utm_source,
+        medium: utm_medium,
+        name: utm_name,
+        term: utm_term,
+        content: utm_content,
+      });
+    }
+
+    if (gclid) {
+      store.set('gclidInfo', gclid);
+    }
 
     if (userId) {
       const { data } = await Axios.get(`/recharge-customers/${userId}`);

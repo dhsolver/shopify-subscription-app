@@ -235,16 +235,38 @@ class CheckoutForm extends Component <{}> {
           });
         }
 
-        (window as any).analytics.track('Order Completed', {
-          order_id: processedCharge.shopify_order_id,
-          total: processedCharge.total_price,
-          subtotal: processedCharge.subtotal_price,
-          tax: processedCharge.tax_lines,
-          discount: discount ? discount.toString() : 0,
-          coupon: discount ? 'discount code applied' : '',
-          currency: 'USD',
-          products,
-        });
+        const utmInfo = store.get('utmInfo');
+        if (!isEmpty(utmInfo)) {
+          // for utm reports
+          (window as any).analytics.track({
+            event: 'Order Completed',
+            propoerties: {
+              order_id: processedCharge.shopify_order_id,
+              total: processedCharge.total_price,
+              subtotal: processedCharge.subtotal_price,
+              tax: processedCharge.tax_lines,
+              discount: discount ? discount.toString() : 0,
+              coupon: discount ? 'discount code applied' : '',
+              currency: 'USD',
+              products,
+            },
+            context: {
+              campaign: utmInfo,
+            },
+          });
+        }
+        else {
+          (window as any).analytics.track('Order Completed', {
+            order_id: processedCharge.shopify_order_id,
+            total: processedCharge.total_price,
+            subtotal: processedCharge.subtotal_price,
+            tax: processedCharge.tax_lines,
+            discount: discount ? discount.toString() : 0,
+            coupon: discount ? 'discount code applied' : '',
+            currency: 'USD',
+            products,
+          });
+        }
       }
 
       Router.push('/order-confirmation');
