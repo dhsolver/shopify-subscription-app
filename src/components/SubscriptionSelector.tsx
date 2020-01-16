@@ -1,20 +1,18 @@
-// tslint:disable no-magic-numbers
-
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import autoBindMethods from 'class-autobind-decorator';
-
-import { Row } from 'antd';
-
-import QuantitySelector from './common/QuantitySelector';
-import { PRICING, PRODUCT_ID, VARIANT_ID } from '../constants';
-import Link from 'next/link';
-import Button from '../components/common/Button';
 import store from 'store';
-import Spacer from './common/Spacer';
+import Link from 'next/link';
+import { Row } from 'antd';
 import { pluralize } from '@mighty-justice/utils';
 import SmartBool from '@mighty-justice/smart-bool';
+
+import Button from '../components/common/Button';
+import QuantitySelector from './common/QuantitySelector';
+import Spacer from './common/Spacer';
+
+import { PRICING } from '../constants';
 
 interface IProps {
   omitNext?: boolean;
@@ -23,6 +21,7 @@ interface IProps {
 
 @autoBindMethods
 @observer
+
 class SubscriptionSelector extends Component <IProps> {
   @observable private isNavigating = new SmartBool();
   @observable private selectedQuantity = 12;
@@ -43,8 +42,7 @@ class SubscriptionSelector extends Component <IProps> {
   private save () {
     this.isNavigating.setTrue();
     store.set('subscriptionInfo', {quantity: this.selectedQuantity, frequency: this.selectedSchedule});
-    store.set('product_id', PRODUCT_ID[this.selectedQuantity]);
-    store.set('variant_id', VARIANT_ID[this.selectedQuantity]);
+    if (store.get('boxItems')) { store.remove('boxItems'); }
   }
 
   public render () {
@@ -99,7 +97,7 @@ class SubscriptionSelector extends Component <IProps> {
             <div style={{height: 100}} />
             <Row type='flex' justify='center'>
               <Link href='/recipe-selection'>
-                <Button size='large' type='primary' loading={this.isNavigating.isTrue} onClick={this.save}>
+                <Button size='large' type='primary' loading={this.isNavigating.isTrue} onClick={this.save} className='save-plan-selection'>
                   Next
                 </Button>
               </Link>

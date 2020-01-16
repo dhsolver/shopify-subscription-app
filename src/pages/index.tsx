@@ -7,13 +7,14 @@ import Axios from 'axios';
 import Router from 'next/router';
 import { get } from 'lodash';
 import store from 'store';
-
 import { Row } from 'antd';
+
 import Loader from '../components/common/Loader';
 import { sleep } from '../utils/utils';
 
 @autoBindMethods
 @observer
+
 export default class Index extends Component <{}> {
   public async componentDidMount () {
     const query = URI.parseQuery(window.location.search) as {

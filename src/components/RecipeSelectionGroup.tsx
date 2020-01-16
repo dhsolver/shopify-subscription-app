@@ -1,25 +1,27 @@
 import React from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import Link from 'next/link';
 import Axios from 'axios';
+import store from 'store';
 import { get } from 'lodash';
 import autoBindMethods from 'class-autobind-decorator';
 import { Col, List, Radio, Row, Spin } from 'antd';
-import store from 'store';
-
-import ItemSelector from './ItemSelector';
 import SmartBool from '@mighty-justice/smart-bool';
+
 import AddOn from './AddOn';
-import Spacer from './common/Spacer';
-import Link from 'next/link';
 import Button from '../components/common/Button';
-import { PRODUCT_RECOMMENDATIONS } from '../constants';
+import ItemSelector from './ItemSelector';
 import Loader from './common/Loader';
+import Spacer from './common/Spacer';
+
+import { PRODUCT_RECOMMENDATIONS } from '../constants';
 
 const ITEM_COLS = {xs: 24, sm: 12, lg: 8};
 
 @autoBindMethods
 @observer
+
 class RecipeSelectionGroup extends React.Component <{}> {
   @observable private rechargeProductData: any = [];
   @observable private shopifyProductData: any = [];
@@ -50,19 +52,28 @@ class RecipeSelectionGroup extends React.Component <{}> {
     this.boxItems[item.id].quantity += value;
   }
 
-  private onChangeRecommended (event) {
-    this.isLoading.setTrue();
-    this.isRecommended = event.target.value;
-    if (this.isRecommended) { this.total = 0; }
-    this.isLoading.setFalse();
-  }
+// recommendations temporarily disabled
+  // private onChangeRecommended (event) {
+  //   this.isLoading.setTrue();
+  //   this.isRecommended = event.target.value;
+  //   if (this.isRecommended) { this.total = 0; }
+  //   this.isLoading.setFalse();
+  // }
 
   private save () {
+    const quantity = this.subscriptionInfo.quantity;
+    let variantIndex = 0;
+    if (store.get('subscriptionInfo').quantity === 24) {
+      variantIndex = 1;
+    }
+
     this.isNavigating.setTrue();
+
     Object.keys(this.boxItems).forEach(id => {
       const item = this.shopifyProductData.find(product => product.id === this.boxItems[id].shopify_product_id);
-      this.boxItems[id].variant_id = item.variants[0].id;
+      this.boxItems[id].variant_id = item.variants[variantIndex].id;
     });
+
     store.set('boxItems', this.boxItems);
   }
 
@@ -98,7 +109,7 @@ class RecipeSelectionGroup extends React.Component <{}> {
       );
     }
 
-    // disabling the recommended feature for now
+  // recommendations temporarily disabled
     // this would be added to return function above List
     // <Row type='flex' justify='center'>
     //   <Radio.Group defaultValue={false} size='large' onChange={this.onChangeRecommended}>
@@ -129,13 +140,14 @@ class RecipeSelectionGroup extends React.Component <{}> {
         <AddOn />
         <br/>
         <Row type='flex' justify='center'>
-          <Link href='/account-info'>
+        <Link href='/account-info'>
             <Button
               disabled={this.maxItems !== this.total}
               loading={this.isNavigating.isTrue}
               onClick={this.save}
               size='large'
               type='primary'
+              className='save-recipe-selection'
             >
               Next
             </Button>

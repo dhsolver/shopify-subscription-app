@@ -50,6 +50,7 @@ class OrderGroup extends Component<IProps> {
   @observable private nextChargeScheduledAt: string | number = null;
   @observable private orderIntervalFrequency: any;
   @observable private chargeIntervalFrequency: any;
+  @observable private variantId = 0;
 
   private subscriptionInfo: any = {};
   private boxItems = {};
@@ -93,6 +94,11 @@ class OrderGroup extends Component<IProps> {
     );
 
     this.maxItems = this.total = sum(charge.line_items.map(lineItem => lineItem.quantity));
+
+    if (this.maxItems === 24) {
+      this.variantId = 1;
+    }
+
     lineItemData.forEach(lineItem => {
       this.boxItems[lineItem.id] = {
         ...lineItem,
@@ -152,10 +158,9 @@ class OrderGroup extends Component<IProps> {
           {
             address_id: charge.address_id,
             next_charge_scheduled_at: charge.scheduled_at,
-            price: get(this.boxItems[subscriptionIds[i]], 'variants[0].price'),
             product_title: this.boxItems[subscriptionIds[i]].title,
             quantity: newQuantity,
-            shopify_variant_id: get(this.boxItems[subscriptionIds[i]], 'variants[0].id'),
+            shopify_variant_id: get(this.boxItems[subscriptionIds[i]], `variants[${this.variantId}].id`),
             ...this.subscriptionInfo,
           },
         );

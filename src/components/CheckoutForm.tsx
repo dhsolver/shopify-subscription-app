@@ -1,29 +1,28 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
+import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import autoBindMethods from 'class-autobind-decorator';
-import { Checkbox, Col, Row, Icon } from 'antd';
 import Axios from 'axios';
 import store from 'store';
+
+import autoBindMethods from 'class-autobind-decorator';
+import { Checkbox, Col, Row, Icon } from 'antd';
 import { get, isEmpty, omit, noop, padStart } from 'lodash';
 import Decimal from 'decimal.js';
 import cx from 'classnames';
-
 import { Form } from '@mighty-justice/fields-ant';
 import { formatMoney, pluralize } from '@mighty-justice/utils';
 import SmartBool from '@mighty-justice/smart-bool';
 
-import Router from 'next/router';
-import dynamic from 'next/dynamic';
-import getConfig from 'next/config';
-
+import Alert from './common/Alert';
 import Button from './common/Button';
+import Loader from './common/Loader';
 import Spacer from './common/Spacer';
 import TinyLoader from './common/TinyLoader';
-import Alert from './common/Alert';
-import Loader from './common/Loader';
 
-import { FAMILY_TIME_PRICE, PRICING } from '../constants';
+import { FAMILY_TIME_PRICE } from '../constants';
 
 const { publicRuntimeConfig: { STRIPE_PUBLIC_KEY } } = getConfig();
 
@@ -87,17 +86,18 @@ const checkoutFieldSets = [
 @inject('getOptions')
 @autoBindMethods
 @observer
+
 class CheckoutForm extends Component <{}> {
+  @observable private discountCode;
+  @observable private discountMessage;
+  @observable private formMessage;
   @observable private isAddingDiscount = new SmartBool();
   @observable private isLoading = new SmartBool(true);
   @observable private isSaving = new SmartBool();
-  @observable private stripeToken;
-  @observable private discountCode;
   @observable private pricing: any = {};
-  @observable private formMessage;
-  @observable private discountMessage;
   @observable private processedCharge;
   @observable private rechargeId;
+  @observable private stripeToken;
 
   public componentDidMount () {
     if (isEmpty(get(store.get('customerInfo'), 'shopifyCustomerInfo'))) {
@@ -108,7 +108,7 @@ class CheckoutForm extends Component <{}> {
     const subscriptionInfo = store.get('subscriptionInfo')
       , quantity = get(subscriptionInfo, 'quantity')
       , frequency = get(subscriptionInfo, 'frequency')
-      , perItemPrice = PRICING[12] // All prices currently at $5.49 until price overhaul
+      , perItemPrice = quantity === 12 ? 5.49 : 4.69
       , itemDecimal = new Decimal(perItemPrice)
       , totalPrice = itemDecimal.times(quantity).toDecimalPlaces(2).toString()
       ;
@@ -142,7 +142,7 @@ class CheckoutForm extends Component <{}> {
 
     return {
       checkout: {
-        discount_code: this.pricing.quantity === 24 ? '24-PRICING-FIX' : get(this.discountCode, 'code'),
+        discount_code: get(this.discountCode, 'code'),
         email: shopifyCustomerInfo.email,
         line_items: lineItems.filter(lineItem => lineItem.quantity),
         shipping_address: {...shopifyCustomerInfo.addresses[0], province: shopifyCustomerInfo.province},
@@ -201,10 +201,8 @@ class CheckoutForm extends Component <{}> {
         const {quantity, frequency, totalPrice} = this.pricing
         , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
         , cupsTotalDecimal = new Decimal(totalPrice)
-        , is24 = quantity === 24
-        , discount24 = new Decimal(19.2)
         , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
-        , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
+        , totalDecimal = totalWithAddOnDecimal
         , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
         , discount = this.discountCode && totalDecimal.times(discountDecimal)
         ;
@@ -329,19 +327,6 @@ class CheckoutForm extends Component <{}> {
   }
 
   private renderDiscount () {
-    if (this.pricing.quantity === 24) {
-      return (
-        <Row type='flex' justify='space-between'>
-          <Col span={16}>
-            <p className='large'>$0.80/cup discount automatically applied</p>
-          </Col>
-          <Col span={4}>
-            <p>(-$19.20)</p>
-          </Col>
-        </Row>
-      );
-    }
-
     if (this.discountCode) {
       return (
         <div className='discount-code'>
@@ -351,7 +336,7 @@ class CheckoutForm extends Component <{}> {
       );
     }
 
-    // disable until remove discount code is added
+  // disable until remove discount code is added
     // add to .discount-code
     // <div>
     //   <Button type='link' onClick={this.onRemoveDiscountCode}>
@@ -375,10 +360,8 @@ class CheckoutForm extends Component <{}> {
       , familyTime = store.get('familyTime')
       , familyTimeDecimal = new Decimal(get(familyTime, 'price', 0))
       , cupsTotalDecimal = new Decimal(totalPrice)
-      , is24 = this.pricing.quantity === 24
-      , discount24 = new Decimal(19.2)
       , totalWithAddOnDecimal = cupsTotalDecimal.add(familyTimeDecimal)
-      , totalDecimal = is24 ? totalWithAddOnDecimal.minus(discount24) : totalWithAddOnDecimal
+      , totalDecimal = totalWithAddOnDecimal
       , discountDecimal = this.discountCode && new Decimal(this.discountCode.value).dividedBy(100)
       , discount = this.discountCode && totalDecimal.times(discountDecimal)
       , totalWithDiscount = this.discountCode && totalDecimal.minus(totalDecimal.times(discountDecimal))
@@ -408,7 +391,7 @@ class CheckoutForm extends Component <{}> {
                   <Row type='flex' justify='space-between'>
                     <Col span={16}>
                       <p className='large'>
-                        {quantity} meal subscription plan every {pluralize('week', 's', frequency)}:
+                        {quantity} Meals Every {frequency}{' '}{pluralize('Week', 's', frequency)}:
                       </p>
                     </Col>
                     <Col span={4}>
@@ -419,7 +402,7 @@ class CheckoutForm extends Component <{}> {
                   {familyTime && (
                     <Row type='flex' justify='space-between'>
                       <Col span={16}>
-                        <p className='large'>Family time add-on:</p>
+                        <p className='large'>Family Time:</p>
                       </Col>
                       <Col span={4}>
                         <p>{formatMoney(FAMILY_TIME_PRICE)}</p>
@@ -448,7 +431,7 @@ class CheckoutForm extends Component <{}> {
                   {discount && (
                     <Row type='flex' justify='space-between'>
                       <Col span={16}>
-                        <p className='large'>Discount/Gift Card:{'\n'}<i>{this.discountCode.code}</i></p>
+                        <p className='large'>Discount/Gift Card{'\n'}<i>{this.discountCode.code}</i></p>
                       </Col>
                       <Col span={4}>
                         <p>{discount.toString()} ({this.discountCode.value}%)</p>
