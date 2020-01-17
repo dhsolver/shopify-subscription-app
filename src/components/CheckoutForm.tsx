@@ -238,7 +238,7 @@ class CheckoutForm extends Component <{}> {
           // for utm reports
           (window as any).analytics.track({
             event: 'Order Completed',
-            propoerties: {
+            properties: {
               order_id: processedCharge.shopify_order_id,
               total: processedCharge.total_price,
               subtotal: processedCharge.subtotal_price,

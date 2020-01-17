@@ -97,7 +97,13 @@ class SubscriptionSelector extends Component <IProps> {
             <div style={{height: 100}} />
             <Row type='flex' justify='center'>
               <Link href='/recipe-selection'>
-                <Button size='large' type='primary' loading={this.isNavigating.isTrue} onClick={this.save} className='save-plan-selection'>
+                <Button
+                  size='large'
+                  type='primary'
+                  loading={this.isNavigating.isTrue}
+                  onClick={this.save}
+                  className='save-plan-selection'
+                >
                   Next
                 </Button>
               </Link>
