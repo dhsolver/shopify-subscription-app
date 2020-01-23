@@ -19,35 +19,21 @@ export default class Index extends Component <{}> {
   public async componentDidMount () {
     const query = URI.parseQuery(window.location.search) as {
       user_id?: string,
+      utm_campaign?: string,
       utm_source?: string,
       utm_medium?: string,
-      utm_name?: string,
       utm_term?: string,
       utm_content?: string,
       gclid?: string,
     }
       , userId = query.user_id
+      , utm_campaign = query.utm_campaign
       , utm_source = query.utm_source
       , utm_medium = query.utm_medium
-      , utm_name = query.utm_name
       , utm_term = query.utm_term
       , utm_content = query.utm_content
       , gclid = query.gclid
       ;
-
-    if (utm_source) {
-      store.set('utmInfo', {
-        source: utm_source,
-        medium: utm_medium,
-        name: utm_name,
-        term: utm_term,
-        content: utm_content,
-      });
-    }
-
-    if (gclid) {
-      store.set('gclidInfo', gclid);
-    }
 
     if (userId) {
       const { data } = await Axios.get(`/recharge-customers/${userId}`);
@@ -57,6 +43,23 @@ export default class Index extends Component <{}> {
     else {
       await sleep();
       store.clearAll();
+
+      // store utm info
+      if (utm_source) {
+        store.set('utmInfo', {
+          source: utm_source,
+          medium: utm_medium,
+          name: utm_campaign,
+          term: utm_term,
+          content: utm_content,
+        });
+      }
+
+      // store gclid data
+      if (gclid) {
+        store.set('gclidInfo', gclid);
+      }
+
       Router.push('/onboarding-name');
     }
   }

@@ -236,9 +236,9 @@ class CheckoutForm extends Component <{}> {
         const utmInfo = store.get('utmInfo');
         if (!isEmpty(utmInfo)) {
           // for utm reports
-          (window as any).analytics.track({
-            event: 'Order Completed',
-            properties: {
+          (window as any).analytics.track(
+            'Order Completed',
+            {
               order_id: processedCharge.shopify_order_id,
               total: processedCharge.total_price,
               subtotal: processedCharge.subtotal_price,
@@ -248,10 +248,10 @@ class CheckoutForm extends Component <{}> {
               currency: 'USD',
               products,
             },
-            context: {
+            {
               campaign: utmInfo,
             },
-          });
+          );
         }
         else {
           (window as any).analytics.track('Order Completed', {
