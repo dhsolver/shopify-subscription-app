@@ -30,7 +30,8 @@ interface IProps {
   charge: any;
   fetchData: () => void;
   recipes: any[];
-  firstCharge: any;
+  trackingURL: any;
+  fedExInfo: any;
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
@@ -43,8 +44,12 @@ const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
 class ProcessedOrderGroup extends Component<IProps> {
   @observable private isLoading = new SmartBool();
   @observable private total = 0;
-  private subscriptionInfo: any = {};
+  @observable private deliveryStatusMessage = null;
+  @observable private estimatedDeliveryDate = null;
+  @observable private deliveryStatusLink = null;
+  @observable private chargeDate = null;
 
+  private subscriptionInfo: any = {};
   private boxItems = {};
   private maxItems = 0;
 
@@ -54,8 +59,12 @@ class ProcessedOrderGroup extends Component<IProps> {
     this.serializeData();
   }
 
+  public componentDidMount () {
+    this.setTrackingDetails();
+  }
+
   private serializeData () {
-    const { charge, recipes, firstCharge } = this.props;
+    const { charge, recipes } = this.props;
 
     const lineItemData = charge.line_items.map(
       lineItem => {
@@ -66,6 +75,104 @@ class ProcessedOrderGroup extends Component<IProps> {
         return {...lineItem, ...(foundItem || {})};
       },
     );
+  }
+
+  private setTrackingDetails () {
+    const { fedExInfo, trackingURL } = this.props;
+    this.chargeDate = this.props.charge.processed_at;
+
+    if (!!fedExInfo) {
+      this.parsetrackingInfoCode(
+        fedExInfo.status_code,
+        fedExInfo.estimated_delivery_date || fedExInfo.actual_delivery_date,
+      );
+    } else {
+      this.deliveryStatusMessage = 'Your order is processing!';
+      this.estimatedDeliveryNoTracking();
+    }
+
+    this.deliveryStatusLink = trackingURL;
+
+    return;
+  }
+
+  // if no tracking number, set expected delivery based on charge day
+  private estimatedDeliveryNoTracking () {
+    const chargeDate = new Date(this.props.charge.processed_at);
+    const dayNum = chargeDate.getDay();
+    this.getChargeDayDeliveryDate(dayNum);
+
+    return;
+  }
+
+  private async getChargeDayDeliveryDate (dayNum) {
+    let numberOfDays;
+
+    switch (dayNum) {
+      case 1: {
+        numberOfDays = 10;
+        break;
+      }
+      case 2: {
+        numberOfDays = 9;
+        break;
+      }
+      case 3: {
+        numberOfDays = 8;
+        break;
+      }
+      case 4: {
+        numberOfDays = 7;
+        break;
+      }
+      case 5: {
+        numberOfDays = 6;
+        break;
+      }
+      case 6: {
+        numberOfDays = 5;
+        break;
+      }
+      default: {
+        numberOfDays = 4;
+      }
+    }
+
+    const addDay = await moment(this.chargeDate).add(numberOfDays, 'd');
+    this.setEstimatdDelivery(addDay);
+
+    return;
+  }
+
+  private setEstimatdDelivery (date) {
+    this.estimatedDeliveryDate = moment(date).format('dddd MMMM Do');
+  }
+
+  private parsetrackingInfoCode (statusCode, deliveryDate) {
+    let statusMessage;
+
+    switch (statusCode) {
+      case 'IT': {
+        statusMessage = 'Your order is on its way!';
+        this.setEstimatdDelivery(deliveryDate);
+        break;
+      }
+      case 'DE': {
+        statusMessage = 'Your order is has been delivered!';
+        this.setEstimatdDelivery(deliveryDate);
+        break;
+      }
+      case 'EX': {
+        statusMessage = 'Oh no! There was a problem with your order. Please contact hello@tinyorganics.com for more information.';
+        break;
+      }
+      default: {
+        statusMessage = 'Your order is processing!';
+      }
+    }
+
+    this.deliveryStatusMessage = statusMessage;
+    return;
   }
 
   private renderItem (data: any, itemIdx: number) {
@@ -84,15 +191,8 @@ class ProcessedOrderGroup extends Component<IProps> {
      );
   }
 
-  // Add this to processed charge after the holidays
-  // <div className='last-date email-confirmation'>
-  //   Our orders are delivered on Thursday. If you placed an order before Thursday,
-  // your order will arrive the following week.
-  //   You will receive an email with tracking information once your order is fulfilled.
-  // </div>
-
   public render () {
-    const { charge, recipes, firstCharge } = this.props
+    const { charge, recipes } = this.props
       , recipeData = recipes.map(
         recipe => {
           const foundItem = charge.line_items.find(
@@ -104,46 +204,56 @@ class ProcessedOrderGroup extends Component<IProps> {
       )
       ;
 
+// TODO verify day of the week
     return (
       <Card className='order-group'>
         <Loader spinning={this.isLoading.isTrue}>
           <>
-          { firstCharge.isTrue ? (
-            <>
             <Row type='flex' justify='space-between'>
-              <h2>First Order of Tiny!</h2>
-            </Row>
-            <Row type='flex' justify='space-between'>
-              <Col lg={COL_SHIPPING_DATE}>
-                  <p className='last-date email-confirmation'>
-                    Orders are delivered on Thursday.
-                    If you placed an order before Thursday, your order will arrive the following week.
-                    You'll receive an email with tracking information when your order is shipped!
-                  </p>
+              <Col>
+                { this.estimatedDeliveryDate ? (
+                  <>
+                    <h3
+                      style={{lineHeight: '28px'}}
+                    >
+                      {this.estimatedDeliveryDate}
+                    </h3>
+                  </>
+                ) : (<></>)}
               </Col>
-              </Row>
-              </>
-              ) : (
-              <>
-                <Row type='flex' justify='space-between'>
-                  <h2>Current Order</h2>
-                </Row>
-                <Row>
-                  <Col sm={COL_SHIPPING_DATE}>
-                    <div>
-                      This order will arrive on{' '}
-                      <span>{formatDate(moment(charge.scheduled_at).add(4, 'days').toString())}</span>
-                      <p className='last-date email-confirmation' >
-                        You'll receive an email with tracking information when it ships!
-                      </p>
-                    </div>
+                { this.deliveryStatusLink ? (
+                  <Col>
+                    <p
+                      style={{
+                        verticalAlign: 'middle',
+                        lineHeight: '28px',
+                        color: '#1394C9',
+                      }}
+                    >
+                      <a
+                        href={this.deliveryStatusLink}
+                        style={{
+                          textDecoration: 'none',
+                        }}
+                      >
+                        {this.deliveryStatusMessage}
+                      </a>
+                    </p>
                   </Col>
-                </Row>
-              </>
-              )}
-
+                  ) : (
+                  <p
+                    style={{
+                      verticalAlign: 'middle',
+                      lineHeight: '28px',
+                      color: '#1394C9',
+                    }}
+                  >
+                    {this.deliveryStatusMessage}
+                  </p>
+                  )
+                }
+            </Row>
             <Spacer />
-
             <List
               grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 3, xxl: 4}}
               dataSource={recipeData.filter(item => item.quantity)}

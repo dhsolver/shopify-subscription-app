@@ -28,10 +28,14 @@ class Orders extends Component<{}> {
   @observable private isProcessingFamilyTime = new SmartBool();
   @observable private queuedCharge = [];
   @observable private processedCharge = [];
-  @observable private firstCharge = new SmartBool();
   @observable private recipes = [];
   @observable private oneTime = null;
   @observable private customerAddressID;
+  @observable private shopifyOrderId = 0;
+  @observable private trackingNumber = null;
+  @observable private trackingURL = null;
+  @observable private fedExInfo = null;
+  @observable private serializedTrackingInfo = {};
 
   private rechargeId: string | number = null;
   private subscriptionId: string | number = null;
@@ -46,6 +50,8 @@ class Orders extends Component<{}> {
     await this.fetchProcessedChargeData();
     await this.fetchData();
     await this.fetchSubscriptionInfo();
+    await this.fetchTrackingNumber();
+    await this.fetchTrackingInfo();
     this.recipes = await this.fetchRecipes();
   }
 
@@ -56,12 +62,9 @@ class Orders extends Component<{}> {
   public async fetchProcessedChargeData () {
     const processedCharges = await this.fetchProcessedCharges();
     this.processedCharge = processedCharges[processedCharges.length - 1];
+    this.shopifyOrderId = processedCharges[processedCharges.length - 1].shopify_order_id;
 
-    if (processedCharges.length === 1) {
-      this.firstCharge.setTrue();
-    } else {
-      this.firstCharge.setFalse();
-    }
+    return;
   }
 
   public async fetchQueuedCharge () {
@@ -74,6 +77,7 @@ class Orders extends Component<{}> {
   public async fetchSubscriptionInfo () {
     const { data } = await Axios.get(`/subscriptions/${this.subscriptionId}`);
     this.subscriptionInfo = data.subscription;
+
     return;
   }
 
@@ -81,6 +85,27 @@ class Orders extends Component<{}> {
     const { data } = await Axios.get(`/recharge-processed-charges/?customer_id=${this.rechargeId}`);
 
     return data.charges;
+  }
+
+  public async fetchTrackingInfo () {
+    if (this.trackingNumber) {
+      const { data } = await Axios.get(`/tracking/${this.trackingNumber}`);
+      this.fedExInfo = data;
+    }
+
+    return;
+  }
+
+  public async fetchTrackingNumber () {
+    const { data } = await Axios.get(`/orders/${this.shopifyOrderId}`);
+    if (data.order.fulfillments.length > 0) {
+      this.trackingNumber = data.order.fulfillments[0].tracking_number;
+      this.trackingURL = data.order.fulfillments[0].tracking_url;
+    } else {
+      this.trackingURL = data.order.order_status_url;
+    }
+
+    return;
   }
 
   public async fetchRecipes () {
@@ -196,7 +221,8 @@ class Orders extends Component<{}> {
               fetchData={this.fetchProcessedChargeData}
               charge={this.processedCharge}
               recipes={this.recipes}
-              firstCharge={this.firstCharge}
+              trackingURL={this.trackingURL}
+              fedExInfo={this.fedExInfo}
             />
            <Spacer />
           </div>

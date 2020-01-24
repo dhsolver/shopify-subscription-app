@@ -28,6 +28,7 @@ const {
   SHOPIFY_DOMAIN,
   SHOPIFY_PASSWORD,
   SENTRY_DSN,
+  SHIP_ENGINE_API_KEY,
 } = process.env;
 
 const storefrontClient = Client.buildClient({
@@ -58,6 +59,16 @@ const rechargeClient = Axios.create({
     'Accept': 'application/json; charset=utf-8;',
     'Content-Type': 'application/json',
     'X-Recharge-Access-Token': RECHARGE_API_KEY,
+  }
+});
+
+const shipEngineClient = Axios.create({
+  baseURL: 'https://api.shipengine.com/',
+  timeout: 2900000,
+  headers: {
+    'Accept': 'application/json; charset=utf-8;',
+    'Content-Type': 'application/json',
+    'API-Key': SHIP_ENGINE_API_KEY,
   }
 });
 
@@ -124,7 +135,7 @@ app.prepare().then(() => {
 
   server.put('/customers', async (req, res) => {
     const { recharge_id, shopify_id } = req.query;
-    
+
     // Update name, email, phone, password in Shopify details
     try {
       const { first_name, last_name, email, billing_phone, password, password_confirmation } = req.body;
@@ -304,7 +315,7 @@ app.prepare().then(() => {
   // END CREATE ORDER
 
   // FETCH ADDRESSES
-  
+
   server.get('/recharge-addresses', async (req, res) => {
     const response = await rechargeClient.get(`customers/${req.query.customer_id}/addresses`);
     return res.json(response.data);
@@ -427,6 +438,38 @@ app.prepare().then(() => {
   });
 
   // END METAFIELDS
+
+
+  // SHOPIFY ORDER INFO
+
+  server.get('/orders/:id/', async (req, res) => {
+    try {
+      const response = await adminClient.get(`orders/${req.params.id}.json/`);
+      return res.end(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e)
+      res.status(400).json(e);
+    }
+  });
+
+  // END SHOPIFY ORDER INFO
+
+
+  // SHIP ENGINE TRACKING
+
+  server.get('/tracking/:id', async (req, res) => {
+    try {
+      const response = await shipEngineClient.get(`/v1/tracking?carrier_code=fedex&tracking_number=${req.params.id}`);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch (e) {
+      console.error(e)
+      res.status(400).json(e);
+    }
+  });
+
+  // END SHIP ENGINE TRACKING
 
   // GENERIC
 

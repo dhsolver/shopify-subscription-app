@@ -6,6 +6,8 @@ import { get, sum } from 'lodash';
 import Axios from 'axios';
 import moment from 'moment';
 import autoBindMethods from 'class-autobind-decorator';
+import Moment from 'react-moment';
+import 'moment-timezone';
 
 import {
   Card,
@@ -24,6 +26,7 @@ import { IconButton } from './common/Button';
 import ItemSelector from './ItemSelector';
 import PencilIcon from './icons/PencilIcon';
 import PlateIcon from './icons/PlateIcon';
+import TruckIcon from './icons/TruckIcon';
 import Loader from './common/Loader';
 
 interface IProps {
@@ -205,29 +208,49 @@ class OrderGroup extends Component<IProps> {
   private renderEditIcon () {
     const disabled = this.total !== this.maxItems;
     return (
-      <>
-        <Col>
-          {this.isEditingOrder.isTrue
-            ? <IconButton icon={submitIcon} disabled={disabled} onClick={this.onSave} textAfter='Submit' />
-            : <IconButton icon={editIcon} onClick={this.isEditingOrder.setTrue} textAfter='Edit Items' />
-          }
-        </Col>
-      </>
+      this.isEditingOrder.isTrue ? (
+        <IconButton
+          icon={submitIcon}
+          disabled={disabled}
+          onClick={this.onSave}
+          textAfter='Submit'
+        />
+      ) : (
+        <IconButton
+          icon={editIcon}
+          onClick={this.isEditingOrder.setTrue}
+          textAfter='Modify'
+        />
+      )
     );
   }
 
   private renderFamilyTimeIcon () {
     return (
-      <>
-        <Col>
-          {this.props.hasAddedFamilyTime && <IconButton icon={PlateIcon} textAfter='Family Time' />}
-        </Col>
-      </>
+      this.props.hasAddedFamilyTime && (
+        <IconButton
+          icon={PlateIcon}
+          textAfter='Family Time'
+        />
+      )
+    );
+  }
+
+  private renderTruckIcon () {
+    return (
+      <IconButton
+        icon={TruckIcon}
+        onClick={this.isModifyingSchedule.toggle}
+        textAfter='Schedule'
+      />
     );
   }
 
   private disabledDate (current) {
-    return (current && current < moment().endOf('day')) || getDay(current.toDate()) !== 4;
+    const maxDate = moment().add(3, 'months').toDate();
+
+    // disable dates in the past, days other than Thursday, and dates 3+ months in the future
+    return (current && current < moment().endOf('day')) || getDay(current.toDate()) !== 4 || current > maxDate;
   }
 
   private async onDateChange (_current, date) {
@@ -259,30 +282,24 @@ class OrderGroup extends Component<IProps> {
       <Card className='order-group'>
         <Loader spinning={this.isLoading.isTrue}>
           <>
-            <Row type='flex' justify='space-between'>
-              <Col>
-                <h2>Next Order</h2>
+            <Row type='flex' justify='start' className='hide-tablet'>
+              <Col span={24}>
+                <h3>{moment(charge.scheduled_at).add(4, 'days').format('dddd MMMM Do')}</h3>
               </Col>
-              { this.renderFamilyTimeIcon() }
             </Row>
-            <Row type='flex' justify='start'>
-              <div>
-                This order will arrive on{' '}
-                <span> {formatDate(moment(charge.scheduled_at).add(4, 'days').toString())} </span>
-              </div>
-            </Row>
-            <Row type='flex' justify='start'>
+            <Row type='flex' justify='start' className='hide-tablet'>
               <span>
                 The last day to make changes is{' '}
-                {formatDate(moment(charge.scheduled_at).subtract(1, 'days').toString())}
+                {moment(charge.scheduled_at).subtract(1, 'days').format('dddd MMMM Do')}
               </span>
             </Row>
-            <Spacer small />
-            <Row gutter={GUTTER_ACTIONS} type='flex' justify='start'>
-              {this.renderEditIcon()}
-              <a onClick={this.isModifyingSchedule.toggle} style={{ textDecoration: 'none' }}>
-                Change Delivery Schedule
-              </a>
+            <Spacer small className='hide-tablet' />
+            <Row type='flex' justify='space-between'>
+              <Col span={12} className='hide-desktop'>
+                <h3>{moment(charge.scheduled_at).add(4, 'days').format('dddd MMMM Do')}</h3>
+              </Col>
+              <Col>
+                {this.renderTruckIcon()}
                 {this.isModifyingSchedule.isTrue &&
                   <DatePicker
                     open
@@ -291,9 +308,18 @@ class OrderGroup extends Component<IProps> {
                     defaultPickerValue={moment(new Date(charge.scheduled_at))}
                   />
                 }
+              </Col>
+              <Col>
+                {this.renderEditIcon()}
+              </Col>
             </Row>
-            <Spacer />
-
+            <Row type='flex' justify='start' className='hide-desktop'>
+              <span>
+                The last day to make changes is{' '}
+                {moment(charge.scheduled_at).subtract(1, 'days').format('dddd MMMM Do')}
+              </span>
+            </Row>
+            <Spacer small />
             <List
               grid={{gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 3, xxl: 4}}
               dataSource={this.isEditingOrder.isTrue ? recipeData : recipeData.filter(item => item.quantity)}

@@ -23,5 +23,17 @@
         &:first-child { margin-left: 0; }
       }
     }
+
+    @media (max-width: @breakpoint-tablet-large) {
+      .hide-desktop {
+        display: none;
+      }
+    }
+    @media (min-width: @breakpoint-desktop ) {
+      .hide-tablet {
+        display: none;
+      }
+    }
+    
   }
 }
