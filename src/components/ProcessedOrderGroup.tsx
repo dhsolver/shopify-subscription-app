@@ -158,7 +158,7 @@ class ProcessedOrderGroup extends Component<IProps> {
         break;
       }
       case 'DE': {
-        statusMessage = 'Your order is has been delivered!';
+        statusMessage = 'Your order has been delivered!';
         this.setEstimatdDelivery(deliveryDate);
         break;
       }
