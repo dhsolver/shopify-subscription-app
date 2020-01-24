@@ -221,37 +221,17 @@ class ProcessedOrderGroup extends Component<IProps> {
                   </>
                 ) : (<></>)}
               </Col>
-                { this.deliveryStatusLink ? (
-                  <Col>
-                    <p
-                      style={{
-                        verticalAlign: 'middle',
-                        lineHeight: '28px',
-                        color: '#1394C9',
-                      }}
-                    >
-                      <a
-                        href={this.deliveryStatusLink}
-                        style={{
-                          textDecoration: 'none',
-                        }}
-                      >
-                        {this.deliveryStatusMessage}
-                      </a>
-                    </p>
-                  </Col>
-                  ) : (
-                  <p
-                    style={{
-                      verticalAlign: 'middle',
-                      lineHeight: '28px',
-                      color: '#1394C9',
-                    }}
-                  >
+              <Col>
+                <p
+                  style={{
+                    verticalAlign: 'middle',
+                    lineHeight: '28px',
+                    color: '#1394C9',
+                  }}
+                >
                     {this.deliveryStatusMessage}
-                  </p>
-                  )
-                }
+                </p>
+              </Col>
             </Row>
             <Spacer />
             <List
