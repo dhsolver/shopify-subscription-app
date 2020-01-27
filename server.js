@@ -440,11 +440,11 @@ app.prepare().then(() => {
   // END METAFIELDS
 
 
-  // SHOPIFY ORDER INFO
+  // SHOPIFY FULFILLMENT INFO
 
   server.get('/orders/:id/', async (req, res) => {
     try {
-      const response = await adminClient.get(`orders/${req.params.id}.json/`);
+      const response = await adminClient.get(`orders/${req.params.id}/fulfillments.json/`);
       return res.end(JSON.stringify(response.data));
     }
     catch (e) {
@@ -453,21 +453,22 @@ app.prepare().then(() => {
     }
   });
 
-  // END SHOPIFY ORDER INFO
+  // END SHOPIFY FULFILLMENT INFO
 
 
+  // TODO why is this getting the incorrect tracking number?
   // SHIP ENGINE TRACKING
 
-  server.get('/tracking/:id', async (req, res) => {
-    try {
-      const response = await shipEngineClient.get(`/v1/tracking?carrier_code=fedex&tracking_number=${req.params.id}`);
-      return res.send(JSON.stringify(response.data));
-    }
-    catch (e) {
-      console.error(e)
-      res.status(400).json(e);
-    }
-  });
+  // server.get('/tracking/:id', async (req, res) => {
+  //   try {
+  //     const response = await shipEngineClient.get(`/v1/tracking?carrier_code=fedex&tracking_number=${req.params.id}`);
+  //     return res.send(JSON.stringify(response.data));
+  //   }
+  //   catch (e) {
+  //     console.error(e)
+  //     res.status(400).json(e);
+  //   }
+  // });
 
   // END SHIP ENGINE TRACKING
 

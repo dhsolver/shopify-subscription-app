@@ -27,15 +27,10 @@ class Orders extends Component<{}> {
   @observable private hasAddedFamilyTime = new SmartBool();
   @observable private isProcessingFamilyTime = new SmartBool();
   @observable private queuedCharge = [];
-  @observable private processedCharge = [];
+  @observable private processedCharge = null;
   @observable private recipes = [];
   @observable private oneTime = null;
-  @observable private customerAddressID;
-  @observable private shopifyOrderId = 0;
-  @observable private trackingNumber = null;
-  @observable private trackingURL = null;
-  @observable private fedExInfo = null;
-  @observable private serializedTrackingInfo = {};
+  @observable private fulfillmentInfo = [];
 
   private rechargeId: string | number = null;
   private subscriptionId: string | number = null;
@@ -50,8 +45,6 @@ class Orders extends Component<{}> {
     await this.fetchProcessedChargeData();
     await this.fetchData();
     await this.fetchSubscriptionInfo();
-    await this.fetchTrackingNumber();
-    await this.fetchTrackingInfo();
     this.recipes = await this.fetchRecipes();
   }
 
@@ -61,8 +54,12 @@ class Orders extends Component<{}> {
 
   public async fetchProcessedChargeData () {
     const processedCharges = await this.fetchProcessedCharges();
-    this.processedCharge = processedCharges[processedCharges.length - 1];
-    this.shopifyOrderId = processedCharges[processedCharges.length - 1].shopify_order_id;
+
+    if (processedCharges.length > 0) {
+      this.processedCharge = await processedCharges[processedCharges.length - 1];
+      const shopifyOrderId = await processedCharges[processedCharges.length - 1].shopify_order_id;
+      await this.fetchFulfillmentInfo(shopifyOrderId);
+    }
 
     return;
   }
@@ -87,23 +84,9 @@ class Orders extends Component<{}> {
     return data.charges;
   }
 
-  public async fetchTrackingInfo () {
-    if (this.trackingNumber) {
-      const { data } = await Axios.get(`/tracking/${this.trackingNumber}`);
-      this.fedExInfo = data;
-    }
-
-    return;
-  }
-
-  public async fetchTrackingNumber () {
-    const { data } = await Axios.get(`/orders/${this.shopifyOrderId}`);
-    if (data.order.fulfillments.length > 0) {
-      this.trackingNumber = data.order.fulfillments[0].tracking_number;
-      this.trackingURL = data.order.fulfillments[0].tracking_url;
-    } else {
-      this.trackingURL = data.order.order_status_url;
-    }
+  public async fetchFulfillmentInfo (shopifyOrderId) {
+    const { data } = await Axios.get(`/orders/${shopifyOrderId}`);
+    this.fulfillmentInfo = data.fulfillments;
 
     return;
   }
@@ -221,8 +204,7 @@ class Orders extends Component<{}> {
               fetchData={this.fetchProcessedChargeData}
               charge={this.processedCharge}
               recipes={this.recipes}
-              trackingURL={this.trackingURL}
-              fedExInfo={this.fedExInfo}
+              fulfillmentInfo={this.fulfillmentInfo}
             />
            <Spacer />
           </div>

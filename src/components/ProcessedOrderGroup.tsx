@@ -30,8 +30,7 @@ interface IProps {
   charge: any;
   fetchData: () => void;
   recipes: any[];
-  trackingURL: any;
-  fedExInfo: any;
+  fulfillmentInfo: any[];
 }
 
 const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
@@ -44,23 +43,21 @@ const ITEM_COLS = {xs: 12, sm: 8, lg: 6}
 class ProcessedOrderGroup extends Component<IProps> {
   @observable private isLoading = new SmartBool();
   @observable private total = 0;
-  @observable private deliveryStatusMessage = null;
-  @observable private estimatedDeliveryDate = null;
-  @observable private deliveryStatusLink = null;
-  @observable private chargeDate = null;
+  @observable private shipmentStatusMessage = null;
+  @observable private estimatedDelivery = null;
 
   private subscriptionInfo: any = {};
   private boxItems = {};
   private maxItems = 0;
+  private trackingNumber = null;
+  private trackingUrl = null;
+  private defaultShippingStatusMessage = 'Yay! Your order is processing!';
 
   public constructor (props) {
     super(props);
 
     this.serializeData();
-  }
-
-  public componentDidMount () {
-    this.setTrackingDetails();
+    this.setTrackingInfo();
   }
 
   private serializeData () {
@@ -77,35 +74,31 @@ class ProcessedOrderGroup extends Component<IProps> {
     );
   }
 
-  private setTrackingDetails () {
-    const { fedExInfo, trackingURL } = this.props;
-    this.chargeDate = this.props.charge.processed_at;
+  private async setTrackingInfo () {
+    const { fulfillmentInfo } = this.props;
 
-    if (!!fedExInfo) {
-      this.parsetrackingInfoCode(
-        fedExInfo.status_code,
-        fedExInfo.estimated_delivery_date || fedExInfo.actual_delivery_date,
-      );
+    if (fulfillmentInfo.length > 0) {
+      this.trackingNumber = fulfillmentInfo[0].tracking_numbers[0];
+      this.trackingUrl = fulfillmentInfo[0].tracking_urls[0];
+      await this.seializeShipmentStatus(fulfillmentInfo[0].shipment_status);
     } else {
-      this.deliveryStatusMessage = 'Your order is processing!';
-      this.estimatedDeliveryNoTracking();
+      this.shipmentStatusMessage = this.defaultShippingStatusMessage;
     }
 
-    this.deliveryStatusLink = trackingURL;
+    this.setEstimatedDeliveryDate();
 
     return;
   }
 
-  // if no tracking number, set expected delivery based on charge day
-  private estimatedDeliveryNoTracking () {
+  private setEstimatedDeliveryDate () {
     const chargeDate = new Date(this.props.charge.processed_at);
     const dayNum = chargeDate.getDay();
-    this.getChargeDayDeliveryDate(dayNum);
+    this.getChargeDayDeliveryDate(dayNum, chargeDate);
 
     return;
   }
 
-  private async getChargeDayDeliveryDate (dayNum) {
+  private async getChargeDayDeliveryDate (dayNum, chargeDate) {
     let numberOfDays;
 
     switch (dayNum) {
@@ -138,40 +131,42 @@ class ProcessedOrderGroup extends Component<IProps> {
       }
     }
 
-    const addDay = await moment(this.chargeDate).add(numberOfDays, 'd');
-    this.setEstimatdDelivery(addDay);
+    const addDay = await moment(chargeDate).add(numberOfDays, 'd');
+    this.estimatedDelivery = moment(addDay).format('dddd MMMM Do');
 
     return;
   }
 
-  private setEstimatdDelivery (date) {
-    this.estimatedDeliveryDate = moment(date).format('dddd MMMM Do');
-  }
-
-  private parsetrackingInfoCode (statusCode, deliveryDate) {
+  private seializeShipmentStatus (status) {
     let statusMessage;
 
-    switch (statusCode) {
-      case 'IT': {
+    switch (status) {
+      case 'in_transit': {
         statusMessage = 'Your order is on its way!';
-        this.setEstimatdDelivery(deliveryDate);
         break;
       }
-      case 'DE': {
+      case 'delivered': {
         statusMessage = 'Your order has been delivered!';
-        this.setEstimatdDelivery(deliveryDate);
         break;
       }
-      case 'EX': {
+      case 'out_for_delivery': {
+        statusMessage = 'Your order is out for delivery!';
+        break;
+      }
+      case 'attempted_delivery': {
+        statusMessage = 'A delivery attempt was made!';
+        break;
+      }
+      case 'failure': {
         statusMessage = 'Oh no! There was a problem with your order. Please contact hello@tinyorganics.com for more information.';
         break;
       }
       default: {
-        statusMessage = 'Your order is processing!';
+        statusMessage = this.defaultShippingStatusMessage;
       }
     }
 
-    this.deliveryStatusMessage = statusMessage;
+    this.shipmentStatusMessage = statusMessage;
     return;
   }
 
@@ -204,33 +199,36 @@ class ProcessedOrderGroup extends Component<IProps> {
       )
       ;
 
-// TODO verify day of the week
     return (
       <Card className='order-group'>
         <Loader spinning={this.isLoading.isTrue}>
           <>
             <Row type='flex' justify='space-between'>
               <Col>
-                { this.estimatedDeliveryDate ? (
+                { this.estimatedDelivery ? (
                   <>
                     <h3
                       style={{lineHeight: '28px'}}
                     >
-                      {this.estimatedDeliveryDate}
+                      {this.estimatedDelivery}
                     </h3>
                   </>
-                ) : (<></>)}
+                ) : (<>{this.shipmentStatusMessage}</>)}
               </Col>
               <Col>
-                <p
-                  style={{
-                    verticalAlign: 'middle',
-                    lineHeight: '28px',
-                    color: '#1394C9',
-                  }}
-                >
-                    {this.deliveryStatusMessage}
-                </p>
+              { this.estimatedDelivery ? (
+                <>
+                  <p
+                    style={{
+                      verticalAlign: 'middle',
+                      lineHeight: '28px',
+                      color: '#1394C9',
+                    }}
+                  >
+                      {this.shipmentStatusMessage}
+                  </p>
+                </>
+              ) : (<></>)}
               </Col>
             </Row>
             <Spacer />
