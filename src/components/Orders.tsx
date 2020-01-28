@@ -113,6 +113,7 @@ class Orders extends Component<{}> {
 
     if (familyTime) {
       this.hasAddedFamilyTime.setTrue();
+      this.oneTime = familyTime;
     }
 
     return;
@@ -141,7 +142,7 @@ class Orders extends Component<{}> {
 
   private async onRemoveFamilyTime () {
     this.isProcessingFamilyTime.setTrue();
-    await Axios.delete(`/onetimes/${this.oneTime.id || this.oneTime.subscription_id}`);
+    await Axios.delete(`/onetimes/${this.oneTime.subscription_id}`);
     await this.fetchQueuedCharge();
     this.hasAddedFamilyTime.setFalse();
     this.isProcessingFamilyTime.setFalse();
