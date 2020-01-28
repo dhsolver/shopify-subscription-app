@@ -31,7 +31,7 @@ export default () => (
         <Spacer small/>
         <Row type='flex' justify='center' style={{ maxWidth: '600px', margin: 'auto' }}>
           {/* tslint:disable-next-line max-line-length */}
-          <h3>Orders placed before Sunday at 11:59 PM will be delivered on Thursday or Friday. All orders placed after Sunday at 11:59 PM will ship the following week. You will receive a separate email with tracking information when your order ships.</h3>
+          <h3>Orders placed before Sunday at 11:59 PM will be delivered on Thursday or Friday (roughly five days after our Sunday cut-off date). If you placed your order on Monday morning, your order will ship to you the following Thursday (roughly 10 days after placing your order). You will receive a separate email with tracking information once your order ships.</h3>
         </Row>
         <Spacer large/>
         <Row type='flex' justify='center'>

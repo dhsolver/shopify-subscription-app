@@ -67,6 +67,7 @@ class Orders extends Component<{}> {
   public async fetchQueuedCharge () {
     const { data } = await Axios.get(`/recharge-queued-charges/?customer_id=${this.rechargeId}`);
     this.subscriptionId = data.charges[0].line_items[0].subscription_id;
+    this.fetchFamilyTime(data.charges[0].line_items);
 
     return data.charges;
   }
@@ -105,6 +106,16 @@ class Orders extends Component<{}> {
       ;
 
     return recipes;
+  }
+
+  private fetchFamilyTime (charge) {
+    const familyTime = charge.find(lineItem => lineItem.shopify_product_id === '3563244126307');
+
+    if (familyTime) {
+      this.hasAddedFamilyTime.setTrue();
+    }
+
+    return;
   }
 
   private async addFamilyTime (charge) {
@@ -152,7 +163,6 @@ class Orders extends Component<{}> {
       return (
         <div className={className} key={`icon-${charge}`}>
           <div className='content'>
-            <PlateIcon />
             <div className='title'>Yay! You've added Family Time to your next order!</div>
             <p>Adult sized versions of Tiny on the way!</p>
             <div className='remove'>
