@@ -220,6 +220,8 @@ app.prepare().then(() => {
           await adminAPI.customer.update(id, omit(shopifyCustomerInfo, ['addresses', 'email']));
         }
         catch (e) {
+        console.log('second catch');
+        console.log(e);
           // Sentry capture exception
           Sentry.captureException(e);
           return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
@@ -228,6 +230,8 @@ app.prepare().then(() => {
       // otherwise throw an error as it was an invalid input
       else {
         // Sentry capture exception
+        console.log('third catch');
+        console.log(e);
         Sentry.captureException(e);
         return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
       }
@@ -239,11 +243,15 @@ app.prepare().then(() => {
       rechargeCustomerResponse = await rechargeClient.post('customers', rechargeSubmitData);
     }
     catch (e) {
+      console.log('fourth catch');
+      console.log(e);
       const rechargeCustomers = await rechargeClient.get(`customers?shopify_customer_id=${id}`);
       if (get(rechargeCustomers, 'data.customers[0]')) {
         rechargeCustomerResponse = {data: {customer: {id: rechargeCustomers.data.customers[0].id } } };
       }
       else {
+        console.log('fifth catch');
+        console.log(e);
         // Sentry capture exception
         Sentry.captureException(e);
         return res.status(500).end(JSON.stringify({message: 'Something went wrong!'}));
@@ -260,6 +268,8 @@ app.prepare().then(() => {
       return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
     }
     catch (e) {
+      console.log('onboarding catch');
+      console.log(e);
       console.error(e.response.data.errors);
       // TODO: why 'Not unique within namespace, owner_resource, owner_id.' error
       // return res.status(e.statusCode).json({message: e.message});
