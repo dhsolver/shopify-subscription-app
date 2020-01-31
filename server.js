@@ -270,7 +270,6 @@ app.prepare().then(() => {
     catch (e) {
       console.log('onboarding catch');
       console.log(e);
-      console.error(e.response.data.errors);
       // TODO: why 'Not unique within namespace, owner_resource, owner_id.' error
       // return res.status(e.statusCode).json({message: e.message});
       return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));

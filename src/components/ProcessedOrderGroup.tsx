@@ -186,6 +186,23 @@ class ProcessedOrderGroup extends Component<IProps> {
      );
   }
 
+  // put back after shopify fulfillment status populates
+  // <Col>
+  // { this.estimatedDelivery ? (
+  //   <>
+  //     <p
+  //       style={{
+  //         verticalAlign: 'middle',
+  //         lineHeight: '28px',
+  //         color: '#1394C9',
+  //       }}
+  //     >
+  //         {this.shipmentStatusMessage}
+  //     </p>
+  //   </>
+  // ) : (<></>)}
+  // </Col>
+
   public render () {
     const { charge, recipes } = this.props
       , recipeData = recipes.map(
@@ -213,22 +230,7 @@ class ProcessedOrderGroup extends Component<IProps> {
                       {this.estimatedDelivery}
                     </h3>
                   </>
-                ) : (<>{this.shipmentStatusMessage}</>)}
-              </Col>
-              <Col>
-              { this.estimatedDelivery ? (
-                <>
-                  <p
-                    style={{
-                      verticalAlign: 'middle',
-                      lineHeight: '28px',
-                      color: '#1394C9',
-                    }}
-                  >
-                      {this.shipmentStatusMessage}
-                  </p>
-                </>
-              ) : (<></>)}
+                ) : (<></>)}
               </Col>
             </Row>
             <Spacer />

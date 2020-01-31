@@ -67,8 +67,8 @@ class AddOn extends Component<{}> {
             <div className='info'>
               <h3>Don’t miss out on Family Time!</h3>
               <p>
-              Our Family Time meals come in a set of three 8-oz cups. Recipes include: Ratatouille,{' '}
-              Give it a Chai, and Coconut Curry.
+              Our Family Time meals come in a set of three 8-oz cups. Recipes include: Coconut Curry,{' '}
+              Potato Hash, and Wizard of Orzo.
               </p>
               <p>
                 $14.99 with your Tiny subscription plan.
