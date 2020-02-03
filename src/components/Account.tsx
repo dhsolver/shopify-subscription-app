@@ -11,11 +11,12 @@ import getConfig from 'next/config';
 
 import { pluralize } from '@mighty-justice/utils';
 import SmartBool from '@mighty-justice/smart-bool';
-import { Card, fillInFieldSet } from '@mighty-justice/fields-ant';
+import { Form, FormCard, Card, fillInFieldSet } from '@mighty-justice/fields-ant';
 
 import { Avatar, Col, Row } from 'antd';
 
 import PersonalInfoForm from './PersonalInfoForm';
+import DiscountForm from './DiscountForm';
 import PaymentInfo from './PaymentInfo';
 import SubscriptionSelector from './SubscriptionSelector';
 import Center from './common/Center';
@@ -47,6 +48,13 @@ const editAccountDetailsFieldSet = {
   legend: 'Account Details',
 };
 
+export const discountCodeFieldSet = {
+  fields: [
+    { field: 'discount_code'},
+  ],
+  legend: 'Apply Discount',
+};
+
 const GUTTER = 48
   , ITEM_COLS = {xs: 24, md: 12};
 
@@ -54,6 +62,7 @@ const GUTTER = 48
 @observer
 class Account extends Component<{}> {
   @observable private charges: any = [];
+  @observable private discountCode = '';
   @observable private subsriptionId: any;
   @observable private quantity = 0;
   @observable private frequency = 0;
@@ -111,6 +120,10 @@ class Account extends Component<{}> {
     this.subsriptionId = this.charges[0].line_items[0].subscription_id;
     const lineItems = this.charges[0].line_items.filter(item => item.shopify_product_id !== FAMILY_TIME_PRODUCT_ID);
     this.quantity = sum(lineItems.map(lineItem => lineItem.quantity));
+
+    if (this.charges[0].discount_codes.length) {
+      this.discountCode = this.charges[0].discount_codes[0].code;
+    }
   }
 
   private serializeRechargeCustomerInfo (model: any) {
@@ -251,6 +264,30 @@ class Account extends Component<{}> {
     this.paymentSource = sources.data.find(source => source.id === default_source);
   }
 
+  private serializeDiscountCode (discountCode) {
+
+    return {discount_code: `${discountCode}`};
+  }
+
+  private async onAddDiscount (model) {
+    const submitData = this.serializeDiscountCode(model.discount_code);
+    const res = await Axios.post(`/add-new-discount/${this.shippingAddress.id}`, submitData);
+
+    return;
+  }
+
+  private renderDiscountForm () {
+    return (
+      <div className='form-discount-code'>
+        <Form
+          onSave={this.onAddDiscount}
+          fieldSets={[discountCodeFieldSet]}
+          saveText='Submit'
+        />
+      </div>
+    );
+  }
+
   public render () {
     if (this.isLoading.isTrue) { return <Loader spinning />; }
     const profilePicture = store.get('profilePicture');
@@ -279,6 +316,13 @@ class Account extends Component<{}> {
                 model={this.deserializeFormData(this.customer)}
                 fieldSet={fillInFieldSet(editAccountDetailsFieldSet)}
                 onSave={this.saveCustomerInfo}
+              />
+            </Row>
+            <Row>
+              <DiscountForm
+                model={{discount_code: this.discountCode}}
+                onSave={this.onAddDiscount}
+                fieldSet={fillInFieldSet(discountCodeFieldSet)}
               />
             </Row>
           </Col>

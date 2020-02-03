@@ -358,7 +358,6 @@ app.prepare().then(() => {
     return res.end(JSON.stringify(response.data));
   });
 
-
   // END FETCH CHARGES
 
   // CHANGE ORDER DATE
@@ -369,6 +368,21 @@ app.prepare().then(() => {
   });
 
   // END CHANGE ORDER DATE
+
+  // ADD DISCOUNT TO ADDRESS
+
+    server.post('/add-new-discount/:addressId', async (req, res) => {
+      try {
+        const response = await rechargeClient.post(`/addresses/${req.params.addressId}/apply_discount`, req.body);
+        return res.send(JSON.stringify(response.data));
+      }
+      catch (e) {
+        console.log(e);
+        res.json({message: e.response.data.errors});
+      }
+    });
+
+  // END ADD DISCOUNT TO ADDRESS
 
   // SUBSCRIPTIONS
 
