@@ -95,11 +95,13 @@ class CheckoutForm extends Component <{}> {
   @observable private isLoading = new SmartBool(true);
   @observable private isSaving = new SmartBool();
   @observable private pricing: any = {};
+  @observable private shopifyId: any;
+  @observable private metafields: any;
   @observable private processedCharge;
   @observable private rechargeId;
   @observable private stripeToken;
 
-  public componentDidMount () {
+  public async componentDidMount () {
     if (isEmpty(get(store.get('customerInfo'), 'shopifyCustomerInfo'))) {
       Router.push('/account-info');
       return;
@@ -114,6 +116,11 @@ class CheckoutForm extends Component <{}> {
       ;
 
     this.pricing = {quantity, frequency, perItemPrice, totalPrice};
+
+    // GET METAFIELDS DATA
+    this.shopifyId = get(store.get('customerInfo'), 'id');
+    const { data } = await Axios.get(`/customers/${this.shopifyId}/metafields`);
+    this.metafields = data.metafields;
 
     this.isLoading.setFalse();
   }
@@ -176,6 +183,16 @@ class CheckoutForm extends Component <{}> {
     }
 
     this.isSaving.setTrue();
+
+    // Update tufts_share metafield
+    if (model.share_onboaring_info) {
+      this.metafields.map(async metafield => {
+        if (metafield.key === 'tufts_share') {
+          metafield.value = 'true';
+          await Axios.put(`/customers/${this.shopifyId}/metafields/${metafield.id}`, { metafield });
+        }
+      });
+    }
 
     try {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});

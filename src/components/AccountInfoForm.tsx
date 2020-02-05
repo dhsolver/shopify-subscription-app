@@ -109,17 +109,31 @@ class AccountInfoForm extends Component <{}> {
   private serializeMetafields () {
     const nameInfo = store.get('nameInfo')
       , babyInfo = store.get('babyInfo')
-      , combinedInfo = JSON.stringify({...nameInfo, ...babyInfo})
+      , combinedInfo = {...nameInfo, ...babyInfo}
       ;
 
-    return {
+    const metafields = [];
+    Object.keys(combinedInfo).map(key => {
+      metafields.push({
+        description: 'onboarding_info',
+        namespace: 'onboarding',
+        owner_resource: 'customer',
+        key,
+        value: combinedInfo[key],
+        value_type: 'string',
+      });
+    });
+
+    metafields.push({
       description: 'onboarding_info',
-      key: 'onboarding',
-      namespace: 'personal_info',
+      namespace: 'onboarding',
       owner_resource: 'customer',
-      value: combinedInfo,
+      key: 'tufts_share',
+      value: 'false',
       value_type: 'string',
-    };
+    });
+
+    return metafields;
   }
 
   private async onSave (model: any) {

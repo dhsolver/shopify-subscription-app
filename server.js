@@ -205,6 +205,9 @@ app.prepare().then(() => {
 
     // Check if there is an existing shopify customer or create a new one
     try {
+      // ADD metafields data
+      shopifyCustomerInfo.metafields = metafieldData;
+
       const response = await adminAPI.customer.create(shopifyCustomerInfo);
       id = response.id;
     }
@@ -258,22 +261,7 @@ app.prepare().then(() => {
       }
     }
 
-    // Add metafield data
-    try {
-      const rechargeId = rechargeCustomerResponse.data.customer.id;
-
-      metafieldSubmitData = { metafield: { ...metafieldData, owner_id: rechargeId } };
-      await rechargeClient.post(`/metafields?owner_resource=customer`, metafieldSubmitData);
-
-      return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
-    }
-    catch (e) {
-      console.log('onboarding catch');
-      console.log(e);
-      // TODO: why 'Not unique within namespace, owner_resource, owner_id.' error
-      // return res.status(e.statusCode).json({message: e.message});
-      return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
-    }
+    return res.end(JSON.stringify({id, rechargeCustomerResponse: rechargeCustomerResponse.data}));
   });
 
   server.post('/checkout/', async (req, res) => {
@@ -322,6 +310,36 @@ app.prepare().then(() => {
   });
 
   // END CREATE ORDER
+
+  // GET METAFIELDS FOR CUSTOMER
+
+  server.get(`/customers/:customer_id/metafields`, async (req, res) => {
+    try {
+      const response = await adminClient.get(`/customers/${req.params.customer_id}/metafields.json`);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch(e) {
+      console.log(e.message);
+      return res.status(500).end(JSON.stringify({message: e.message}));
+    }
+  });
+  
+  // END GET METAFIELDS
+
+  // UPDATE CUSTOMER METAFIELD BY ID
+
+  server.put(`/customers/:customer_id/metafields/:metafield_id`, async (req, res) => {
+    try {
+      const response = await adminClient.put(`/customers/${req.params.customer_id}/metafields/${req.params.metafield_id}.json`, req.body);
+      return res.send(JSON.stringify(response.data));
+    }
+    catch(e) {
+      return res.status(500).end(JSON.stringify({message: e.message}));
+    }
+  });
+
+  // END UPDATE CUSTOMER METAFIELD
+  
 
   // FETCH ADDRESSES
 
