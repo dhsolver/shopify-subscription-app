@@ -168,7 +168,7 @@ class AccountInfoForm extends Component <{}> {
     }
     catch (e) {
       this.formMessage = {
-        message: 'Oops! Something went wrong! Double check your submission and try again',
+        message: 'Please ensure all of your information is entered correctly and try again, thank you!',
         type: 'error',
       };
       return null;

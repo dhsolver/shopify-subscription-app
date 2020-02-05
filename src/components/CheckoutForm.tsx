@@ -171,7 +171,7 @@ class CheckoutForm extends Component <{}> {
 
   private async onSave (model: any) {
     if (!model.terms_accept) {
-      this.formMessage = {type: 'error', message: 'Oops! Please agree to our terms and conditions.'};
+      this.formMessage = {type: 'error', message: 'Please agree to our terms and conditions.'};
       return null;
     }
 
@@ -181,7 +181,7 @@ class CheckoutForm extends Component <{}> {
       await this.stripeFormRef.props.onSubmit({preventDefault: noop});
     }
     catch (e) {
-      this.formMessage = {type: 'error', message: 'Oops! Please provide a valid payment method!'};
+      this.formMessage = {type: 'error', message: 'Please provide a valid payment method!'};
       this.isSaving.setFalse();
       return null;
     }
@@ -279,7 +279,7 @@ class CheckoutForm extends Component <{}> {
       }
       else {
         this.formMessage = {
-          message: 'Oops! Something went wrong! Double check your submission and try again',
+          message: 'Please ensure all of your information is entered correctly and try again, thank you!',
           type: 'error',
         };
       }
