@@ -131,7 +131,7 @@ class ProcessedOrderGroup extends Component<IProps> {
       }
     }
 
-    const addDay = await moment(chargeDate).add(numberOfDays, 'd');
+    const addDay = moment(chargeDate).add(numberOfDays, 'd');
     this.estimatedDelivery = moment(addDay).format('dddd MMMM Do');
 
     return;

@@ -5,6 +5,7 @@ import Axios from 'axios';
 import { observer } from 'mobx-react';
 import autoBindMethods from 'class-autobind-decorator';
 import { observable } from 'mobx';
+import NumberFormat from 'react-number-format';
 
 import Router from 'next/router';
 import getConfig from 'next/config';
@@ -62,7 +63,7 @@ const GUTTER = 48
 @observer
 class Account extends Component<{}> {
   @observable private charges: any = [];
-  @observable private discountCode = '';
+  @observable private discount = '';
   @observable private subsriptionId: any;
   @observable private quantity = 0;
   @observable private frequency = 0;
@@ -120,10 +121,15 @@ class Account extends Component<{}> {
     this.subsriptionId = this.charges[0].line_items[0].subscription_id;
     const lineItems = this.charges[0].line_items.filter(item => item.shopify_product_id !== FAMILY_TIME_PRODUCT_ID);
     this.quantity = sum(lineItems.map(lineItem => lineItem.quantity));
+    this.fetchDiscount();
+  }
 
-    if (this.charges[0].discount_codes.length) {
-      this.discountCode = this.charges[0].discount_codes[0].code;
-    }
+  private fetchDiscount () {
+    this.charges[0].discount_codes.length ? (
+      this.discount = this.deserializeDiscount(this.charges[0].discount_codes[0])
+    ) : (this.discount = null);
+
+    return;
   }
 
   private serializeRechargeCustomerInfo (model: any) {
@@ -209,10 +215,10 @@ class Account extends Component<{}> {
       <div>
         <Row type='flex' justify='center'>
           <h3>
-            Your plan includes {this.quantity} meals in every order,{' '}
-            every {this.frequency} {pluralize('week', 's', this.frequency)}!
+            Your plan includes {this.quantity} meals in every order, every{' '}
+            {this.frequency} {pluralize('week', 's', this.frequency)}!
           </h3>
-          <br/>
+          <br />
         </Row>
       </div>
     );
@@ -243,20 +249,20 @@ class Account extends Component<{}> {
 
   private async saveCustomerInfo (model: any) {
     const shopifyId = get(store.get('customerInfo'), 'id');
-    const serializedData = this.serializeRechargeCustomerInfo({...this.deserializeFormData(this.customer), ...model})
+    const serializedData = this.serializeRechargeCustomerInfo({ ...this.deserializeFormData(this.customer), ...model })
       , response = await Axios.put(`/customers?recharge_id=${this.customer.id}&shopify_id=${shopifyId}`, serializedData)
       ;
-    this.customer = {...this.customer, ...response.data.customer};
+    this.customer = { ...this.customer, ...response.data.customer };
   }
 
-  private async handlePaymentInfoChange ({token}: any) {
+  private async handlePaymentInfoChange ({ token }: any) {
     await Axios.put(
       `customers/${this.customer.stripe_customer_token}/payment-info`,
-      {token: token.id, email: this.customer.email},
+      { token: token.id, email: this.customer.email },
     );
 
     const paymentResponse = await Axios.get(
-      `/recharge-customers/${this.customer.stripe_customer_token}/payment_sources?id=${this.customer.id}`,
+        `/recharge-customers/${this.customer.stripe_customer_token}/payment_sources?id=${this.customer.id}`,
       )
       , { data: { default_source, sources } } = paymentResponse
       ;
@@ -265,32 +271,58 @@ class Account extends Component<{}> {
   }
 
   private serializeDiscountCode (discountCode) {
+    return { discount_code: `${discountCode}` };
+  }
 
-    return {discount_code: `${discountCode}`};
+  // TODO disable block with lambda
+  private deserializeDiscount (discount) {
+    const discountType = discount.type;
+    let discountMessage;
+
+    switch (discountType) {
+      case 'percentage': {
+        discountMessage = (
+          <NumberFormat
+            value={discount.amount}
+            displayType={'text'}
+            suffix={'%'}
+            decimalScale={0}
+            renderText={value => `${value} off your next order!`}
+          />
+        );
+
+        break;
+      }
+
+      case 'fixed_amount': {
+        discountMessage = (
+          <NumberFormat
+            value={discount.amount}
+            displayType={'text'}
+            prefix={'$'}
+            renderText={value => `${value} off your next order!`}
+          />
+        );
+        break;
+      }
+
+      default: {
+        discountMessage = 'No discount code applied';
+      }
+    }
+    return discountMessage;
   }
 
   private async onAddDiscount (model) {
     const submitData = this.serializeDiscountCode(model.discount_code);
-    const res = await Axios.post(`/add-new-discount/${this.shippingAddress.id}`, submitData);
+    await Axios.post(`/add-new-discount/${this.shippingAddress.id}`, submitData);
+    this.fetchCharges();
 
     return;
   }
 
-  private renderDiscountForm () {
-    return (
-      <div className='form-discount-code'>
-        <Form
-          onSave={this.onAddDiscount}
-          fieldSets={[discountCodeFieldSet]}
-          saveText='Submit'
-        />
-      </div>
-    );
-  }
-
   public render () {
     if (this.isLoading.isTrue) { return <Loader spinning />; }
-    const profilePicture = store.get('profilePicture');
 
     return (
       <>
@@ -319,10 +351,10 @@ class Account extends Component<{}> {
               />
             </Row>
             <Row>
-              <DiscountForm
-                model={{discount_code: this.discountCode}}
-                onSave={this.onAddDiscount}
-                fieldSet={fillInFieldSet(discountCodeFieldSet)}
+              <PersonalInfoForm
+                model={this.deserializeShippingData(this.shippingAddress)}
+                fieldSet={fillInFieldSet(shippingAddressFieldSet)}
+                onSave={this.updateShippingInfo}
               />
             </Row>
           </Col>
@@ -343,10 +375,10 @@ class Account extends Component<{}> {
               />
             </Row>
             <Row>
-              <PersonalInfoForm
-                model={this.deserializeShippingData(this.shippingAddress)}
-                fieldSet={fillInFieldSet(shippingAddressFieldSet)}
-                onSave={this.updateShippingInfo}
+              <DiscountForm
+                model={{ discount_code: this.discount }}
+                onSave={this.onAddDiscount}
+                fieldSet={fillInFieldSet(discountCodeFieldSet)}
               />
             </Row>
           </Col>

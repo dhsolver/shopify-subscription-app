@@ -2,6 +2,7 @@
   "extends": "@mighty-justice/tslint-config",
   "rules": {
     "no-magic-numbers": false,
-    "object-literal-sort-keys": false
-  }
+    "object-literal-sort-keys": false,
+    "jsx-no-lambda": false
+  } 
 }
