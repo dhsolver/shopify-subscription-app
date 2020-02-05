@@ -48,10 +48,13 @@ class SubscriptionSelector extends Component <IProps> {
   public render () {
     return (
       <div>
-        <Row style={{padding: '30px 0'}}>
+        <Row style={{padding: '20px 0'}}>
           <h2>Select Quantity and Frequency</h2>
-          <p>${PRICING[this.selectedQuantity]} per meal</p>
         </Row>
+        <Row >
+          <h3>${PRICING[this.selectedQuantity]} per meal</h3>
+        </Row>
+        <Spacer small />
         <Row type='flex' justify='center'>
           <p>
             I want to receive <span style={{fontSize: '16px'}}>{this.selectedQuantity}</span> meals in every order
@@ -90,11 +93,16 @@ class SubscriptionSelector extends Component <IProps> {
             <QuantitySelector.Button value={4}>4</QuantitySelector.Button>
           </QuantitySelector>
         </Row>
+        <Spacer />
+        <Spacer />
+        <Row>
+          <h4>
+            No commitment! Cancel any time!
+          </h4>
+        </Row>
+        <Spacer />
         {!this.props.omitNext && (
           <>
-            <Spacer />
-            <Spacer />
-            <div style={{height: 100}} />
             <Row type='flex' justify='center'>
               <Link href='/recipe-selection'>
                 <Button
